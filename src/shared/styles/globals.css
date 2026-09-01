@@ -1,0 +1,68 @@
+@import "tailwindcss";
+
+@theme {
+  /* Primary — black */
+  --color-primary: #000000;
+  --color-primary-hover: #2e2e2e;
+  --color-primary-soft: #f2f2f2;
+  --color-primary-contrast: #ffffff;
+
+  /* Secondary — white */
+  --color-secondary: #ffffff;
+  --color-secondary-hover: #f2f2f2;
+  --color-secondary-soft: #fafafa;
+  --color-secondary-contrast: #000000;
+
+  /* Neutrals */
+  --color-ink: #000000;
+  --color-ink-muted: #525252;
+  --color-ink-subtle: #8a8a8a;
+  --color-canvas: #fafafa;
+  --color-surface: #ffffff;
+  --color-surface-muted: #f2f2f2;
+  --color-line: #e5e5e5;
+  --color-line-strong: #cfcfcf;
+
+  /* Typography */
+  --font-sans: var(--font-heebo), var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-montserrat), var(--font-heebo), ui-sans-serif, sans-serif;
+
+  /* Radii */
+  --radius-card: 0.75rem;
+
+  /* Elevation */
+  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.05), 0 8px 24px rgb(0 0 0 / 0.06);
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-display);
+    color: var(--color-primary);
+    text-wrap: balance;
+  }
+
+  ::selection {
+    background-color: var(--color-primary);
+    color: var(--color-primary-contrast);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+}
