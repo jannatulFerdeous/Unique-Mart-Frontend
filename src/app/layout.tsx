@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Header } from "@/common/widgets/Header";
 import { site } from "@/shared/config/site";
 import { fontVariables } from "@/shared/libs/fonts";
 import "@/shared/styles/globals.css";
@@ -15,7 +16,12 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang={site.locale} className={`${fontVariables} h-full antialiased`}>
-      <body className="min-h-full">{children}</body>
+      <body className="flex min-h-full flex-col">
+        <Header />
+        <main id="main" className="flex-1">
+          {children}
+        </main>
+      </body>
     </html>
   );
 }

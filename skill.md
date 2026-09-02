@@ -11,6 +11,8 @@ Capabilities available on this project. Add a row when a new one is used.
 | `next/font/google` | Self-hosted Heebo + Montserrat, zero layout shift               |
 | `next/image`       | Optimized product and banner imagery                            |
 | Metadata API       | Title template, description, OG tags from `lib/site.ts`         |
+| `next/form`        | Site search — GET form, no-JS fallback, client-side navigation  |
+| JSON-LD            | `Organization` + `WebSite` with `SearchAction` in the header    |
 | TypeScript         | Strict mode, `@/*` path alias                                   |
 
 ## Styling
@@ -39,10 +41,11 @@ Capabilities available on this project. Add a row when a new one is used.
 | Dependency hygiene   | Runtime vs. dev dependencies kept separate                    |
 | Dead code removal    | Stripped Create Next App boilerplate assets                   |
 | ESLint               | `eslint-config-next` via `npm run lint`                       |
-| Accessibility        | Visible focus rings, semantic landmarks                       |
+| Accessibility        | Skip link, semantic landmarks, hover **and** focus mega-menus  |
 
 ## Planned
 
+- Footer widget
 - Cart and checkout state management
 - Product data layer / API integration
 - Search and filtering

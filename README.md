@@ -24,7 +24,7 @@ The app runs at <http://localhost:3000>.
 
 Feature-module architecture. `app/` only routes; the UI lives in `modules/`.
 
-Folders are scaffolded and empty — nothing is built yet.
+The `Header` widget is built; the remaining folders are scaffolded and empty.
 
 ```
 src/
@@ -50,7 +50,8 @@ src/
     ContactUs/     components/
     Blog/          components/
   shared/                  Framework-agnostic building blocks
-    config/  site.ts
+    config/  site.ts        Site-wide constants
+             navigation.ts  Category tree and utility links
     libs/    fonts.ts       Third-party wrappers (next/font)
     styles/  globals.css    Tailwind import + @theme tokens
     utils/   cn.ts          Class-name merger
@@ -73,10 +74,11 @@ migrate older code: `npx @next/codemod@canary middleware-to-proxy .`
 
 ## Design system
 
-All colors, fonts, radii and shadows are declared once in the `@theme` block of
-[`app/globals.css`](app/globals.css) and consumed as Tailwind utilities
-(`bg-primary`, `text-ink-muted`, `rounded-card`). Do not hardcode hex values in
-components.
+All colors, fonts, radii, shadows and the page width are declared once in the
+`@theme` block of
+[`src/shared/styles/globals.css`](src/shared/styles/globals.css) and consumed as
+Tailwind utilities (`bg-primary`, `text-ink-muted`, `rounded-card`, `max-w-page`).
+Do not hardcode hex values in components.
 
 See [`memory.md`](memory.md) for the token table and where each value came from,
 and [`skill.md`](skill.md) for the capability list.
