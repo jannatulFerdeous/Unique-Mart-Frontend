@@ -23,15 +23,48 @@
   --color-line: #e5e5e5;
   --color-line-strong: #cfcfcf;
 
+  /* Inverted surfaces — dark bars, footer */
+  --color-inverse: #1a1a1a;
+  --color-inverse-deep: #000000;
+  --color-inverse-raised: #2b2b2b;
+  --color-inverse-hover: #3d3d3d;
+  --color-ink-inverse: #ffffff;
+  --color-ink-inverse-muted: #b3b3b3;
+  --color-line-inverse: #2e2e2e;
+
+  /* Layout */
+  --container-page: 82.5rem;
+
   /* Typography */
   --font-sans: var(--font-heebo), var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-montserrat), var(--font-heebo), ui-sans-serif, sans-serif;
 
+  /* One step for every navigation label: categories, sub items, sub-sub items */
+  --text-nav: 0.875rem;
+  --text-nav--line-height: 1.55;
+
   /* Radii */
+  --radius-control: 0.3125rem;
   --radius-card: 0.75rem;
 
   /* Elevation */
   --shadow-card: 0 1px 2px rgb(0 0 0 / 0.05), 0 8px 24px rgb(0 0 0 / 0.06);
+  --shadow-menu: 0 0 25px -5px rgb(0 0 0 / 0.3);
+
+  /* Motion */
+  --animate-flash: flash 1.8s ease-in-out infinite;
+
+  @keyframes flash {
+    0%,
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.5;
+      transform: scale(0.88);
+    }
+  }
 }
 
 @layer base {
