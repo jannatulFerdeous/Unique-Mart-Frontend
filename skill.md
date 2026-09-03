@@ -32,6 +32,8 @@ Capabilities available on this project. Add a row when a new one is used.
 | CSS extraction     | Pulled the reference site's compiled CSS and resolved its palette |
 | Token mapping      | Translated their Tailwind v3 theme into our v4 `@theme` tokens  |
 | Font detection     | Read Google Fonts requests and `body` font stack                |
+| DOM measurement    | Playwright walk of the live footer at 1440/768/390, then measured our render back against it |
+| SVG lifting        | Social, phone and mail glyphs traced from the reference's markup |
 
 ## Engineering practice
 
@@ -45,7 +47,8 @@ Capabilities available on this project. Add a row when a new one is used.
 
 ## Planned
 
-- Footer widget
+- Payment-method logos for the footer strip
+- Newsletter subscribe endpoint
 - Cart and checkout state management
 - Product data layer / API integration
 - Search and filtering

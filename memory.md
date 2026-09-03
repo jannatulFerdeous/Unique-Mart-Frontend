@@ -147,8 +147,15 @@ client asked for structure only.
 
 Built 2026-09-03 in `src/common/widgets/Header/`, mounted in the root layout
 above `<main id="main">`. Layout mirrors the reference site: a dark top row
-(logo · search · Offers · Store Locator · cart · account) over a black category
-strip with hover mega-menus.
+(logo · search · Offers · Store Locator · wishlist · cart · account) over a
+black category strip with hover mega-menus.
+
+- The **wishlist** heart is ours, added 2026-09-03 by client request — the
+  reference site has no wishlist anywhere, so there was nothing to measure
+  against. It reuses the existing `iconButton` recipe unchanged and sits before
+  the cart, the usual wishlist → cart → account order. Verified at 390px: the
+  third icon adds no horizontal overflow and the header keeps its 104/112px
+  heights.
 
 - `Header.tsx` (server) — shell, skip link, and `Organization` + `WebSite`
   JSON-LD carrying the `SearchAction` for the site search box.
@@ -176,6 +183,77 @@ strip with hover mega-menus.
   from the reference site because no lucide glyph matches it. Its `viewBox` is
   `-6 -2 24 24`; that offset is the reference's own framing, not a mistake.
   Local icons take `SVGProps` and are sized by the caller's `className`.
+
+## Footer
+
+Built 2026-09-03 in `src/common/widgets/Footer/`, mounted in the root layout
+below `<main>`. Server components throughout — no client JS.
+
+Layout mirrors the reference: three link columns on the left, newsletter block
+on the right, a call button above the first column, and a copyright / payment
+row underneath.
+
+### Metrics (measured off the live reference, 2026-09-03)
+
+Taken with Playwright against gadgetandgear.com at 1440/768/390px. Our render
+was measured back and matches at 1440: footer 369px, top 254px, lists 128px,
+bottom 59px. Re-measure rather than guess.
+
+| Piece                | Value                                              |
+| -------------------- | -------------------------------------------------- |
+| Footer               | `bg-inverse-deep`, `pt-10 pb-4` — 369px tall total |
+| Top block            | `lg:flex lg:flex-row-reverse lg:justify-between`   |
+| Link columns         | `grid gap-4 md:grid-cols-3 lg:flex-1`              |
+| Newsletter column    | content-sized (`0 1 auto`), sits right of the grid |
+| Column title         | `text-xl font-medium` (20/28), `mb-4`              |
+| Link item            | `text-sm` (14/20), `mb-4` on every `li`            |
+| Call button          | `w-min p-2 rounded-lg border`, `xl:px-4 xl:py-2`   |
+| Call button label    | `text-base xl:text-2xl font-bold`; icon 20 → 32    |
+| Newsletter form      | `mt-3 mb-6 flex gap-2`, controls `h-10`            |
+| Subscribe button     | `px-4 py-2.5 text-sm font-medium`                  |
+| Contact row          | `gap-4`, icon→label `gap-3`, icons 20px            |
+| Social row           | `my-6 gap-4`, icons 24px                           |
+| Bottom row           | `pt-6`, `md:flex-row md:justify-between`           |
+| Payment strip        | 400×35 at desktop, full width at mobile            |
+
+Notes:
+
+- **`mb-4` sits on every `li`, with no `last:mb-0`.** The final margin collapses
+  out through the `ul` and adds 16px to the column, which is what makes the
+  block 254px and the footer 369px. Resetting it shortens the footer by 16px.
+- The `li` carries `text-sm`, not the `<a>`. On the anchor alone the list item's
+  own line box stays at the inherited 16px strut and each row renders 24px tall
+  instead of 20px.
+- Below `md` each `ul` becomes `flex flex-wrap justify-center gap-x-4` — the
+  reference lays the links out as one centered wrapping row on phones and only
+  stacks them once the three-column grid kicks in.
+- The newsletter column is deliberately **not** given a width. Both sides use
+  the reference's mechanism (`flex-1` grid, content-sized newsletter,
+  `justify-between`), so its width follows the contact row's text. The
+  reference's 380.52px is just where its own phone and email landed.
+- Footer headings need `font-sans` **and** `text-ink-inverse`. The `@layer base`
+  rule in `globals.css` paints every `h1`–`h6` in `--font-display` and
+  `--color-primary` (black), which is invisible on the dark footer.
+- **Accent colours stay monochrome.** The reference paints the call button,
+  Subscribe and back-to-top in `#f26e21`; here they are greyscale, per the
+  2026-09-02 black-and-white decision.
+- **Subscribe is `bg-inverse-hover` (#3d3d3d) with `text-ink-inverse`**, client
+  request 2026-09-03 — it was white, which read as one block with the white
+  input beside it. Note the token name: the `inverse-*` control family is
+  calibrated for the header's `#1a1a1a` bar, so on the footer's pure-black
+  ground `inverse-raised` (#2b2b2b) is too dark to read as grey at all and the
+  resting state has to borrow the hover step. Hover goes up to `ink-muted`.
+  Add a dedicated control-on-black token if this pattern spreads.
+- Copy fix: the reference's "Sign up for get latest news and update" is
+  rewritten as "Sign up to get the latest news and updates".
+
+### Icons
+
+`lucide-react` v1 dropped the brand glyphs, so Facebook, Instagram, YouTube and
+LinkedIn are local components in `common/components/icons/` (25×24 viewBox).
+`PhoneIcon` and `MailIcon` are local too — lucide's `Phone` and `Mail` are
+outlines and the reference uses solid fills (21×20 viewBox). All take
+`SVGProps`, paint with `currentColor` and are sized by the caller.
 
 ## Conventions
 
@@ -212,8 +290,17 @@ strip with hover mega-menus.
 ## Open items
 
 - Header links point at routes that do not exist yet (`/shop/*`, `/search`,
-  `/offers`, `/store-locator`, `/cart`, `/account`).
-- No footer, product or cart routes yet.
+  `/offers`, `/store-locator`, `/wishlist`, `/cart`, `/account`). The footer adds
+  `/brands`, `/careers`, `/blogs`, `/about`, `/faq`, `/terms`, `/loyalty`,
+  `/privacy`, `/cookies` and `/newsletter` to that list.
+- Footer contact details and social URLs in `shared/config/site.ts` and
+  `shared/config/footer.ts` are placeholders — swap for the client's real ones.
+- The payment-method strip is an empty slot held at the artwork's 640×56 ratio.
+  Drop the logos into `src/images/` and render them with `next/image`.
+- The newsletter form posts to `site.newsletterPath` with no route behind it.
+- The copyright year comes from `new Date().getFullYear()` in a statically
+  prerendered layout, so it is fixed at build time until the next deploy.
+- No product or cart routes yet.
 - No data layer or CMS chosen; nav categories are static config.
-- Cart shows no item-count badge — the reference has none either. Add one when
-  cart state lands.
+- Cart and wishlist show no item-count badge — the reference has none either.
+  Add them when cart / wishlist state lands.
