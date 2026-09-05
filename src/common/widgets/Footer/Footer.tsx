@@ -7,7 +7,7 @@ import { Newsletter } from "./components/Newsletter";
 export function Footer() {
   return (
     <footer className="bg-inverse-deep pt-10 pb-4 text-ink-inverse">
-      <div className="mx-auto w-[95%] max-w-page lg:w-[85%]">
+      <div className="container-page">
         {/* Newsletter leads the DOM so it stacks first on mobile, and
             row-reverse floats it to the right edge from lg up. */}
         <div className="lg:flex lg:flex-row-reverse lg:justify-between lg:gap-4">

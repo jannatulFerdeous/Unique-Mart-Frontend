@@ -43,9 +43,14 @@
   --text-nav: 0.875rem;
   --text-nav--line-height: 1.55;
 
+  /* One step for every home-page section heading */
+  --text-section: 1.6rem;
+  --text-section--line-height: 1.55;
+
   /* Radii */
   --radius-control: 0.3125rem;
   --radius-card: 0.75rem;
+  --radius-banner: 1rem;
 
   /* Elevation */
   --shadow-card: 0 1px 2px rgb(0 0 0 / 0.05), 0 8px 24px rgb(0 0 0 / 0.06);
@@ -64,6 +69,43 @@
       opacity: 0.5;
       transform: scale(0.88);
     }
+  }
+}
+
+/* The page gutter is percentage-based, not fixed padding: it grows with the
+   viewport until --container-page caps it. Both utilities below are lifted from
+   the reference site and verified against it — see memory.md. */
+
+/* Header, footer and every content section. */
+@utility container-page {
+  margin-inline: auto;
+  width: 95%;
+  max-width: var(--container-page);
+
+  @variant lg {
+    width: 85%;
+  }
+}
+
+/* Same container, but edge to edge on phones. Only full-bleed artwork uses this
+   — the hero banner. It steps to 85% at md, not lg; that is the reference's own
+   behaviour and the breakpoint its artwork swaps on. Do not merge the two. */
+@utility container-page-bleed {
+  margin-inline: auto;
+  width: 100%;
+  max-width: var(--container-page);
+
+  @variant md {
+    width: 85%;
+  }
+}
+
+/* Product rails scroll natively; the bar itself would sit across the cards. */
+@utility no-scrollbar {
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
   }
 }
 
