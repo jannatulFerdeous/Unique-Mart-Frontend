@@ -3,6 +3,7 @@ import { FacebookIcon } from "@/common/components/icons/FacebookIcon";
 import { InstagramIcon } from "@/common/components/icons/InstagramIcon";
 import { LinkedinIcon } from "@/common/components/icons/LinkedinIcon";
 import { YoutubeIcon } from "@/common/components/icons/YoutubeIcon";
+import { brandsPath } from "./brands";
 import type { NavItem } from "./navigation";
 
 export type FooterColumn = {
@@ -14,7 +15,7 @@ export const footerColumns: FooterColumn[] = [
   {
     title: "Company",
     items: [
-      { label: "Our Brands", href: "/brands" },
+      { label: "Our Brands", href: brandsPath },
       { label: "Careers", href: "/careers" },
       { label: "Blogs", href: "/blogs" },
       { label: "About Us", href: "/about" },

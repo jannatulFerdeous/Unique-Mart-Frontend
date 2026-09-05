@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { brandHref } from "@/shared/config/brands";
 import { home_data } from "../config/constants";
 
 export function BrandWall() {
@@ -36,7 +37,7 @@ export function BrandWall() {
                     ratios, and a flow image tall enough to beat the card grows
                     the whole grid row — Meta's wordmark did exactly that. */}
                 <Link
-                  href={`/brands/${brand.slug}`}
+                  href={brandHref(brand.slug)}
                   className="relative block aspect-3/2 bg-surface transition-shadow hover:shadow-card"
                 >
                   <Image

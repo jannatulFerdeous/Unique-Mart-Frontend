@@ -1,6 +1,7 @@
 import type { ImgHTMLAttributes } from "react";
 import type { LucideIcon } from "lucide-react";
 import type { StaticImageData } from "next/image";
+import type { BrandMark } from "@/shared/config/brands";
 import type { Product, ProductRailData } from "@/shared/config/catalog";
 
 // hero banner
@@ -42,15 +43,6 @@ export type FeaturedCategory = {
   href: string;
   /** 132×132 PNG, product cut out on a transparent ground. */
   image: StaticImageData;
-};
-
-// brand wall
-
-export type BrandMark = {
-  slug: string;
-  /** The logo's accessible name — each mark is a link, so it carries the alt. */
-  label: string;
-  logo: StaticImageData;
 };
 
 // promo banners

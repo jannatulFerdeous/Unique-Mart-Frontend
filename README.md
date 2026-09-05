@@ -24,14 +24,15 @@ The app runs at <http://localhost:3000>.
 
 Feature-module architecture. `app/` only routes; the UI lives in `modules/`.
 
-The `Header` and `Footer` widgets and the `Home` module are built; the remaining
-folders are scaffolded and empty.
+The `Header` and `Footer` widgets and the `Home` and `Brands` modules are built;
+the remaining folders are scaffolded and empty.
 
 ```
 src/
   app/                     Routes only — thin files that render a module
     layout.tsx             Root layout: fonts, metadata
     page.tsx               /
+    brands/page.tsx        /brands
   common/                  Shared across modules
     components/            ProductCard, ProductRail, SectionHeader, icons/
     widgets/               Composed layout blocks
@@ -44,6 +45,9 @@ src/
     Home/                  Entry, barrel, then:
       config/              constants.ts (content) + types.ts
       partials/            HeroBanner, TrustStrip, Exclusive
+    Brands/                The /brands directory
+      config/              constants.ts + types.ts
+      partials/            BrandsHeading, BrandDirectory
     Shop/          config/ partials/
     ProductDetails/config/ partials/
     Cart/          config/ partials/
@@ -58,6 +62,7 @@ src/
     config/  site.ts        Site-wide constants
              navigation.ts  Category tree and utility links
              footer.ts      Footer link columns
+             brands.ts      The 36 brand marks + /brands route helpers
              catalog.ts     Product / rail types shared with common/
     libs/    fonts.ts       Third-party wrappers (next/font)
     styles/  globals.css    Tailwind import + @theme tokens
