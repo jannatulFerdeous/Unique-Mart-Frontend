@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { MapPin, ShoppingCart, User } from "lucide-react";
+import { Heart, MapPin, ShoppingCart, User } from "lucide-react";
 import { ThunderIcon } from "@/common/components/icons/ThunderIcon";
 
 const surface =
@@ -24,6 +24,10 @@ export function HeaderActions() {
         >
           <MapPin className="size-4.5" aria-hidden />
           Store Locator
+        </Link>
+
+        <Link href="/wishlist" aria-label="Wishlist" className={iconButton}>
+          <Heart className="size-4.5" aria-hidden />
         </Link>
 
         <Link href="/cart" aria-label="Shopping cart" className={iconButton}>

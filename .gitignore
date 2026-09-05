@@ -39,3 +39,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# markdown — local only, not shared with the repo (README.md stays tracked)
+AGENTS.md
+CLAUDE.md
+memory.md
+skill.md
+

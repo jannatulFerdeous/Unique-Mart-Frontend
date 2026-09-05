@@ -52,7 +52,7 @@ export function Header() {
       </a>
 
       <div className="bg-inverse">
-        <div className="mx-auto w-[95%] max-w-page lg:w-[85%]">
+        <div className="container-page">
           <div className="flex items-center gap-3 py-2 lg:min-h-16.5 lg:gap-4 lg:py-3">
             <MobileNav />
             <Logo />
