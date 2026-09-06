@@ -13,7 +13,7 @@ export function FeaturedCategories() {
             font-sans because the base layer paints every h1–h6 in --font-display. */}
         <h2
           id="categories-heading"
-          className="text-center font-sans text-[1.2rem] font-medium text-ink md:text-section"
+          className="text-center font-sans font-medium text-ink"
         >
           {title}
         </h2>

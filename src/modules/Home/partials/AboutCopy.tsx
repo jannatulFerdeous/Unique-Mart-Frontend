@@ -12,7 +12,7 @@ import { mailHref, site, telHref } from "@/shared/config/site";
 
 /** Underlined in the reference too, just in orange rather than the monochrome. */
 const LINK =
-  "font-medium text-ink underline decoration-line-strong underline-offset-4 transition-colors hover:decoration-ink";
+  "font-medium text-tertiary underline decoration-tertiary/40 underline-offset-4 transition-colors hover:decoration-tertiary";
 
 export function AboutCopy() {
   return (
@@ -22,7 +22,7 @@ export function AboutCopy() {
             only the logo uses Montserrat. Same override SectionHeader needs. */}
         <h2
           id="about-copy-heading"
-          className="font-sans text-[1.45rem] font-bold text-ink md:text-[1.9rem]"
+          className="font-sans font-bold text-ink"
         >
           {site.name} — Your Online Gadget Store in Bangladesh
         </h2>
@@ -55,7 +55,7 @@ export function AboutCopy() {
             nationwide.
           </p>
 
-          <h3 className="pt-4 font-sans text-lg font-bold text-ink md:text-xl">
+          <h3 className="pt-4 font-sans font-bold text-ink">
             Smartphones — iPhone and Android
           </h3>
           <p>
@@ -75,7 +75,7 @@ export function AboutCopy() {
             cost with 0% EMI or trade in what you are already carrying.
           </p>
 
-          <h3 className="pt-4 font-sans text-lg font-bold text-ink md:text-xl">
+          <h3 className="pt-4 font-sans font-bold text-ink">
             Mac, Laptops and Tablets
           </h3>
           <p>
@@ -97,7 +97,7 @@ export function AboutCopy() {
             and you have a desk that actually works.
           </p>
 
-          <h3 className="pt-4 font-sans text-lg font-bold text-ink md:text-xl">
+          <h3 className="pt-4 font-sans font-bold text-ink">
             Smartwatches and Wearables
           </h3>
           <p>
@@ -112,7 +112,7 @@ export function AboutCopy() {
             in the background, then swap the strap whenever the mood changes.
           </p>
 
-          <h3 className="pt-4 font-sans text-lg font-bold text-ink md:text-xl">
+          <h3 className="pt-4 font-sans font-bold text-ink">
             Headphones and Speakers
           </h3>
           <p>
@@ -126,7 +126,7 @@ export function AboutCopy() {
             what arrives is what the manufacturer intended.
           </p>
 
-          <h3 className="pt-4 font-sans text-lg font-bold text-ink md:text-xl">
+          <h3 className="pt-4 font-sans font-bold text-ink">
             Cases, Chargers and Everyday Accessories
           </h3>
           <p>

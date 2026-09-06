@@ -114,7 +114,7 @@ export function ShopByBrands() {
                     // overflow clip and drags the whole document sideways.
                     "relative flex h-12 w-24 shrink-0 items-center justify-center border-b-[3px] px-1 transition-opacity",
                     isActive
-                      ? "border-ink"
+                      ? "border-tertiary"
                       : "border-transparent opacity-70 hover:opacity-100",
                   )}
                 >

@@ -1,7 +1,7 @@
 import type { ImgHTMLAttributes } from "react";
-import type { LucideIcon } from "lucide-react";
 import type { StaticImageData } from "next/image";
 import type { BrandMark } from "@/shared/config/brands";
+import type { TrustClaim } from "@/shared/config/trust";
 import type { Product, ProductRailData } from "@/shared/config/catalog";
 
 // hero banner
@@ -27,13 +27,6 @@ export type HeroSlideImage = {
   desktopSrcSet: string;
   /** Everything the `<img>` fallback needs, below `md`. */
   img: ImgHTMLAttributes<HTMLImageElement>;
-};
-
-// trust strip
-
-export type TrustItem = {
-  icon: LucideIcon;
-  label: string;
 };
 
 // featured categories
@@ -78,7 +71,7 @@ export type BrandTab = {
 };
 
 export type HomeData = {
-  trust: TrustItem[];
+  trust: TrustClaim[];
   exclusive: ProductRailData;
   topSelling: ProductRailData;
   newArrival: ProductRailData;

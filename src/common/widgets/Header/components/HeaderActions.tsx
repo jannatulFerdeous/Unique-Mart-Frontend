@@ -11,7 +11,7 @@ export function HeaderActions() {
     <div className="ml-auto flex items-center">
       <Link
         href="/offers"
-        className="hidden items-center gap-0.5 text-ink-inverse transition-colors hover:text-ink-inverse-muted focus-visible:outline-ink-inverse lg:flex"
+        className="hidden items-center gap-0.5 font-medium text-tertiary transition-colors hover:text-tertiary-contrast focus-visible:outline-ink-inverse lg:flex"
       >
         <ThunderIcon className="size-5 animate-flash motion-reduce:animate-none" />
         Offers

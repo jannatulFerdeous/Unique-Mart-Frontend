@@ -13,6 +13,15 @@
   --color-secondary-soft: #fafafa;
   --color-secondary-contrast: #000000;
 
+  /* Tertiary — the accent. Every role the reference site paints orange:
+     Offers, Show All, prices, Buy Now, the active brand tab, prose links,
+     Subscribe and the footer phone button. Client colour, added 2026-09-06.
+     Black stays for body copy, headings, the category bar and the footer. */
+  --color-tertiary: #0171d0;
+  --color-tertiary-hover: #015aa6;
+  --color-tertiary-soft: #e6f1fb;
+  --color-tertiary-contrast: #ffffff;
+
   /* Neutrals */
   --color-ink: #000000;
   --color-ink-muted: #525252;
@@ -43,9 +52,29 @@
   --text-nav: 0.875rem;
   --text-nav--line-height: 1.55;
 
-  /* One step for every home-page section heading */
+  /* One step for every home-page section heading. Measured off the reference;
+     it is also the `md` value of --text-h2, so section headings and page
+     section headings are the same size. */
   --text-section: 1.6rem;
   --text-section--line-height: 1.55;
+
+  /* The document scale. One size per heading level, site-wide, applied to the
+     bare tags in @layer base — a component only carries a `text-*` class when
+     it is deliberately opting out. Two values each: base, then `md` and up. */
+  --text-h1: 1.6rem;
+  --text-h1-md: 2.1rem;
+  --text-h2: 1.2rem;
+  --text-h2-md: 1.6rem;
+  --text-h3: 1.05rem;
+  --text-h3-md: 1.25rem;
+  --text-h4: 1rem;
+  --text-h4-md: 1.125rem;
+  --text-h5: 0.9375rem;
+  --text-h5-md: 1rem;
+  --text-h6: 0.875rem;
+  --text-h6-md: 0.9375rem;
+  --text-body: 0.875rem;
+  --text-body-md: 1rem;
 
   /* Radii */
   --radius-control: 0.3125rem;
@@ -112,6 +141,41 @@
 @layer base {
   html {
     -webkit-text-size-adjust: 100%;
+
+    /* Lets `auto` take part in a transition, which is what makes the accordion
+       below able to animate to its natural height. */
+    interpolate-size: allow-keywords;
+  }
+
+  /* In-page anchors glide rather than jump — the FAQ topic nav is the main
+     user. Paired with the `scroll-mt-*` on each target, which keeps the
+     landing point clear of the sticky header. */
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+
+  /* Accordions open and close smoothly. `::details-content` is the wrapper the
+     browser generates around a <details> body, so animating it keeps the native
+     element — and its keyboard and find-in-page behaviour — intact. Browsers
+     without `::details-content` simply snap open, which is the old behaviour. */
+  @media (prefers-reduced-motion: no-preference) {
+    details::details-content {
+      block-size: 0;
+      overflow: hidden;
+      /* `allow-discrete` has to ride inside the shorthand. As the standalone
+         `transition-behavior` longhand it is dropped from the compiled sheet —
+         computed value came back `normal`, and the close animation never ran
+         because content-visibility flipped to hidden immediately. */
+      transition:
+        block-size 260ms ease,
+        content-visibility 260ms allow-discrete;
+    }
+
+    details[open]::details-content {
+      block-size: auto;
+    }
   }
 
   body {
@@ -129,6 +193,76 @@
     font-family: var(--font-display);
     color: var(--color-primary);
     text-wrap: balance;
+  }
+
+  /* The document scale. Every heading level and every paragraph gets its size
+     from here, so a component needs no size class at all — and any `text-*` it
+     does carry is a deliberate exception, visible in the diff. The three that
+     opt out on purpose: ProductCard's title (sized to the card), the footer
+     column headings, and BrandWall's display heading. */
+  h1 {
+    font-size: var(--text-h1);
+    line-height: 1.25;
+  }
+
+  h2 {
+    font-size: var(--text-h2);
+    line-height: 1.3;
+  }
+
+  h3 {
+    font-size: var(--text-h3);
+    line-height: 1.35;
+  }
+
+  h4 {
+    font-size: var(--text-h4);
+    line-height: 1.4;
+  }
+
+  h5 {
+    font-size: var(--text-h5);
+    line-height: 1.45;
+  }
+
+  h6 {
+    font-size: var(--text-h6);
+    line-height: 1.5;
+  }
+
+  p {
+    font-size: var(--text-body);
+    line-height: 1.7;
+  }
+
+  @media (width >= 48rem) {
+    h1 {
+      font-size: var(--text-h1-md);
+    }
+
+    h2 {
+      font-size: var(--text-h2-md);
+    }
+
+    h3 {
+      font-size: var(--text-h3-md);
+    }
+
+    h4 {
+      font-size: var(--text-h4-md);
+    }
+
+    h5 {
+      font-size: var(--text-h5-md);
+    }
+
+    h6 {
+      font-size: var(--text-h6-md);
+    }
+
+    p {
+      font-size: var(--text-body-md);
+    }
   }
 
   ::selection {

@@ -34,11 +34,13 @@ export function ProductCard({ product }: { product: Product }) {
             so the cards carry no third-party artwork. Rails that are already
             one brand leave it off and the row collapses. */}
         {brand ? (
-          <p className="mb-2 text-[0.625rem] font-bold tracking-wider uppercase text-ink-subtle md:text-xs">
+          <p className="mb-2 font-bold tracking-wider uppercase text-ink-subtle">
             {brand}
           </p>
         ) : null}
 
+        {/* Sized to the card, not to the document scale — an h3 at the
+            global step does not fit a 5-up rail. Deliberate exception. */}
         <h3 className="line-clamp-2 min-h-[2.6em] text-xs leading-[1.3] font-semibold text-ink md:text-base">
           <Link href={href} className="hover:underline">
             {name}
@@ -46,7 +48,7 @@ export function ProductCard({ product }: { product: Product }) {
         </h3>
 
         <p className="mt-2 flex flex-wrap items-baseline justify-center gap-x-2 gap-y-0.5">
-          <span className="text-[0.9rem] font-bold text-ink md:text-base">
+          <span className="text-[0.9rem] font-bold text-tertiary md:text-base">
             {formatPrice(price)}
           </span>
           {compareAt ? (
@@ -57,7 +59,7 @@ export function ProductCard({ product }: { product: Product }) {
         </p>
 
         {rating ? (
-          <p className="mt-2 flex items-center justify-center gap-1 text-xs text-ink-muted">
+          <p className="mt-2 flex items-center justify-center gap-1 text-ink-muted">
             <span className="flex" aria-hidden>
               {Array.from({ length: 5 }, (_, i) => (
                 <Star
@@ -77,7 +79,7 @@ export function ProductCard({ product }: { product: Product }) {
         <div className="mt-auto pt-4">
           <Link
             href={href}
-            className="block rounded-full border border-ink bg-primary-soft py-1.5 text-xs font-medium text-ink transition-colors md:text-[0.85rem] hover:bg-primary hover:text-primary-contrast"
+            className="block rounded-full border border-tertiary bg-tertiary-soft py-1.5 text-xs font-medium text-tertiary transition-colors md:text-[0.85rem] hover:bg-tertiary hover:text-tertiary-contrast"
           >
             Buy Now
             <span className="sr-only"> — {name}</span>
