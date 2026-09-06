@@ -25,7 +25,7 @@ export function Footer() {
         </div>
 
         <div className="flex flex-col items-center gap-4 pt-6 md:flex-row md:justify-between">
-          <p className="text-sm font-medium">
+          <p className="font-medium">
             Copyright @ {new Date().getFullYear()} {site.name}. All rights
             reserved.
           </p>

@@ -1,0 +1,53 @@
+import { ChevronDown } from "lucide-react";
+import type { FaqItem } from "@/shared/config/faq";
+import { cn } from "@/shared/utils/cn";
+
+type FaqAccordionProps = {
+  items: FaqItem[];
+  className?: string;
+  /** Drives each row's open state. Omit it — as the About page does — and every
+   *  row keeps its own native state, with no JavaScript involved. */
+  isOpen?: (id: string) => boolean;
+  /** Fires on user toggles so a caller tracking state stays in sync. */
+  onToggle?: (id: string, isOpen: boolean) => void;
+};
+
+export function FaqAccordion({
+  items,
+  className,
+  onToggle,
+  isOpen,
+}: FaqAccordionProps) {
+  return (
+    <div className={cn("border-t border-line", className)}>
+      {items.map(({ id, question, answer }) => (
+        // Native <details>: it collapses with no JavaScript, and each is
+        // independent — no shared `name`, so opening one leaves the rest alone.
+        <details
+          key={id}
+          open={isOpen ? isOpen(id) : undefined}
+          onToggle={
+            onToggle
+              ? (event) => onToggle(id, event.currentTarget.open)
+              : undefined
+          }
+          className="group border-b border-line"
+        >
+          {/* list-none kills the marker in Firefox and Chrome; the
+              ::-webkit-details-marker rule is the one Safari reads. */}
+          <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-4 font-sans text-base font-bold text-ink [&::-webkit-details-marker]:hidden md:text-lg">
+            {question}
+            <ChevronDown
+              aria-hidden
+              className="size-5 shrink-0 text-ink-muted transition-transform duration-200 group-open:rotate-180"
+            />
+          </summary>
+
+          <p className="pb-5 leading-[1.85] text-ink-muted">
+            {answer}
+          </p>
+        </details>
+      ))}
+    </div>
+  );
+}

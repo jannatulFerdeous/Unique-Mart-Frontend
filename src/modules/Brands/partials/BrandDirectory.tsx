@@ -7,7 +7,7 @@ import { brandHref } from "@/shared/config/brands";
 import { brands_data } from "../config/constants";
 
 export function BrandDirectory() {
-  const { items, search, empty } = brands_data;
+  const { title, intro, items, search, empty } = brands_data;
   const [query, setQuery] = useState("");
   const inputId = useId();
 
@@ -24,22 +24,38 @@ export function BrandDirectory() {
     : items;
 
   return (
-    // Labelled by the h1 in BrandsHeading — one page, one heading.
-    <section aria-labelledby="brands-heading" className="pb-12">
+    <section aria-labelledby="brands-heading" className="pt-10 pb-12 md:pt-14">
       <div className="container-page">
-        <div className="mt-6">
-          <label htmlFor={inputId} className="sr-only">
-            {search.label}
-          </label>
-          <input
-            id={inputId}
-            type="search"
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            placeholder={search.placeholder}
-            autoComplete="off"
-            className="w-full max-w-[500px] rounded-control border border-line-strong bg-surface p-2 text-base text-ink placeholder:text-ink-subtle md:w-1/2 lg:w-1/3"
-          />
+        {/* Heading and standfirst on the left, the search on the right of the
+            same row from md up; stacked below it. */}
+        <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between md:gap-10">
+          <div className="min-w-0">
+            {/* font-sans because the base layer paints h1–h6 in
+                --font-display. */}
+            <h1
+              id="brands-heading"
+              className="font-sans font-bold text-ink"
+            >
+              {title}
+            </h1>
+
+            <p className="mt-2 text-ink-muted">{intro}</p>
+          </div>
+
+          <div className="w-full shrink-0 md:w-72 lg:w-96 xl:w-125">
+            <label htmlFor={inputId} className="sr-only">
+              {search.label}
+            </label>
+            <input
+              id={inputId}
+              type="search"
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder={search.placeholder}
+              autoComplete="off"
+              className="w-full rounded-control border border-line-strong bg-surface p-2 text-base text-ink placeholder:text-ink-subtle"
+            />
+          </div>
         </div>
 
         {/* The grid changes under a screen reader with no visible cue, so the

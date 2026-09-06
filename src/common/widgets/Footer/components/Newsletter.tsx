@@ -9,11 +9,12 @@ const contactLink =
 export function Newsletter() {
   return (
     <div className="text-center md:text-left">
+      {/* Matches FooterColumn's heading; same deliberate exception. */}
       <h3 className="mb-4 font-sans text-xl font-medium text-ink-inverse">
         Newsletter
       </h3>
 
-      <p className="text-sm font-medium">
+      <p className="font-medium">
         Sign up to get the latest news and updates
       </p>
 
@@ -32,7 +33,7 @@ export function Newsletter() {
         />
         <button
           type="submit"
-          className="h-10 shrink-0 bg-inverse-hover px-4 py-2.5 text-sm font-medium text-ink-inverse transition-colors hover:bg-ink-muted focus-visible:outline-ink-inverse"
+          className="h-10 shrink-0 bg-tertiary px-4 py-2.5 text-sm font-medium text-tertiary-contrast transition-colors hover:bg-tertiary-hover focus-visible:outline-ink-inverse"
         >
           Subscribe
         </button>

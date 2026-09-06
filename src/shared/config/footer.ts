@@ -4,6 +4,7 @@ import { InstagramIcon } from "@/common/components/icons/InstagramIcon";
 import { LinkedinIcon } from "@/common/components/icons/LinkedinIcon";
 import { YoutubeIcon } from "@/common/components/icons/YoutubeIcon";
 import { brandsPath } from "./brands";
+import { faqPath } from "./faq";
 import type { NavItem } from "./navigation";
 
 export type FooterColumn = {
@@ -24,7 +25,7 @@ export const footerColumns: FooterColumn[] = [
   {
     title: "Help",
     items: [
-      { label: "FAQ", href: "/faq" },
+      { label: "FAQ", href: faqPath },
       { label: "Terms & Conditions", href: "/terms" },
       { label: "Loyalty Program", href: "/loyalty" },
     ],

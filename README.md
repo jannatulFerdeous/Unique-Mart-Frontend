@@ -24,8 +24,8 @@ The app runs at <http://localhost:3000>.
 
 Feature-module architecture. `app/` only routes; the UI lives in `modules/`.
 
-The `Header` and `Footer` widgets and the `Home` and `Brands` modules are built;
-the remaining folders are scaffolded and empty.
+The `Header` and `Footer` widgets and the `Home`, `Brands`, `AboutUs` and `Faq`
+modules are built; the remaining folders are scaffolded and empty.
 
 ```
 src/
@@ -33,8 +33,11 @@ src/
     layout.tsx             Root layout: fonts, metadata
     page.tsx               /
     brands/page.tsx        /brands
+    about/page.tsx         /about
+    faq/page.tsx           /faq — plus FAQPage JSON-LD
   common/                  Shared across modules
-    components/            ProductCard, ProductRail, SectionHeader, icons/
+    components/            ProductCard, ProductRail, SectionHeader,
+                           ContactBand, FaqAccordion, icons/
     widgets/               Composed layout blocks
       Header/
       Footer/
@@ -47,7 +50,14 @@ src/
       partials/            HeroBanner, TrustStrip, Exclusive
     Brands/                The /brands directory
       config/              constants.ts + types.ts
-      partials/            BrandsHeading, BrandDirectory
+      partials/            BrandDirectory
+    AboutUs/               The /about page
+      config/              constants.ts + types.ts
+      partials/            AboutIntro, AboutStory, WhyShop, Commitment,
+                           AboutFaq, AboutContact
+    Faq/                   The /faq page
+      config/              constants.ts + types.ts
+      partials/            FaqIntro, FaqBrowser, FaqContact
     Shop/          config/ partials/
     ProductDetails/config/ partials/
     Cart/          config/ partials/
@@ -55,7 +65,6 @@ src/
     Login/         config/ partials/
     Signup/        config/ partials/
     Account/       config/ partials/
-    AboutUs/       config/ partials/
     ContactUs/     config/ partials/
     Blog/          config/ partials/
   shared/                  Framework-agnostic building blocks
@@ -63,6 +72,8 @@ src/
              navigation.ts  Category tree and utility links
              footer.ts      Footer link columns
              brands.ts      The 36 brand marks + /brands route helpers
+             trust.ts       The six confirmed promises, icon + label + detail
+             faq.ts         Every Q&A, grouped; About renders a subset
              catalog.ts     Product / rail types shared with common/
     libs/    fonts.ts       Third-party wrappers (next/font)
     styles/  globals.css    Tailwind import + @theme tokens
@@ -100,6 +111,18 @@ All colors, fonts, radii, shadows and the page width are declared once in the
 [`src/shared/styles/globals.css`](src/shared/styles/globals.css) and consumed as
 Tailwind utilities (`bg-primary`, `text-ink-muted`, `rounded-card`).
 Do not hardcode hex values in components.
+
+The palette is monochrome plus one accent, `tertiary` (`#0171d0`). The accent is
+for **action and wayfinding only** — Offers, Show All, prices, Buy Now, the
+active brand tab, prose links, Subscribe and the footer phone button. Body copy,
+headings, the category bar and the footer ground stay black. See
+[`memory.md`](memory.md) for the full role table.
+
+**Type scale** — `h1`–`h6` and `p` get their size from `@layer base`, driven by
+the `--text-h*` / `--text-body` tokens. Do not put a `text-*` size class on a
+heading or paragraph: if you need one, it is an exception and belongs with a
+comment saying why. There are four today (product card title, the two footer
+headings, the brand wall's display lockup).
 
 Two things are global and should never be re-declared in a component:
 

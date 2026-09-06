@@ -15,7 +15,10 @@ export function BrandWall() {
             text, one logo per link, and a grid that reflows. */}
         <div className="grid gap-8 bg-surface-muted px-5 py-8 md:px-8 lg:grid-cols-[minmax(0,34%)_1fr] lg:items-center lg:gap-10 lg:px-12">
           <div>
-            {/* font-sans because the base layer paints h1–h6 in --font-display. */}
+            {/* Display type, not a section heading: this is the decorative
+                lockup rebuilt from the reference's flat image, so it opts out
+                of the document scale on purpose.
+                font-sans because the base layer paints h1–h6 in --font-display. */}
             <h2
               id="brand-wall-heading"
               className="font-sans text-3xl leading-[1.1] font-light tracking-[0.06em] uppercase text-ink-subtle sm:text-4xl lg:text-5xl"

@@ -3,10 +3,23 @@ import { extendTailwindMerge } from "tailwind-merge";
 
 // Custom `--text-*` steps from globals.css. Without this, tailwind-merge reads
 // `text-nav` as a color and drops it when a `text-<color>` class follows.
+// The document scale (text-h1…text-body) is applied to the bare tags in
+// @layer base, so components rarely name these — they are listed anyway, since
+// the failure mode is silent.
 const twMerge = extendTailwindMerge({
   extend: {
     classGroups: {
-      "font-size": ["text-nav", "text-section"],
+      "font-size": [
+        "text-nav",
+        "text-section",
+        "text-h1",
+        "text-h2",
+        "text-h3",
+        "text-h4",
+        "text-h5",
+        "text-h6",
+        "text-body",
+      ],
     },
   },
 });

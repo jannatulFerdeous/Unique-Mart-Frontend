@@ -10,14 +10,6 @@ import macbookDesktop from "@/images/banners/macbook-neo-desktop.png";
 import macbookMobile from "@/images/banners/macbook-neo-mobile.png";
 import storeDesktop from "@/images/banners/store-locator-desktop.png";
 import storeMobile from "@/images/banners/store-locator-mobile.png";
-import {
-  ArrowRightLeft,
-  BadgeCheck,
-  PackageCheck,
-  ShieldCheck,
-  TicketPercent,
-  Truck,
-} from "lucide-react";
 import appleLogo from "@/images/brands/logos/apple.png";
 import honorLogo from "@/images/brands/logos/honor.png";
 import infinixLogo from "@/images/brands/logos/infinix.png";
@@ -145,6 +137,7 @@ import iphone17ProMax from "@/images/products/iphone-17-pro-max.jpeg";
 import macbook256 from "@/images/products/macbook-neo-256.png";
 import macbook512 from "@/images/products/macbook-neo-512.png";
 import { brandMarks } from "@/shared/config/brands";
+import { trustClaims } from "@/shared/config/trust";
 import type { HomeData } from "./types";
 
 export const home_data: HomeData = {
@@ -437,14 +430,7 @@ export const home_data: HomeData = {
   },
 
   //
-  trust: [
-    { icon: BadgeCheck, label: "100% Authentic" },
-    { icon: PackageCheck, label: "Official Product" },
-    { icon: TicketPercent, label: "0% EMI" },
-    { icon: ArrowRightLeft, label: "Exchange" },
-    { icon: Truck, label: "Fastest Delivery" },
-    { icon: ShieldCheck, label: "100% Secure Payment" },
-  ],
+  trust: trustClaims,
 
   //
   hero: {

@@ -27,7 +27,7 @@ export function SectionHeader({
       <h2
         id={id}
         className={cn(
-          "flex-1 font-sans text-[1.2rem] font-medium text-ink md:text-section",
+          "flex-1 font-sans font-medium text-ink",
           align === "center" ? "text-center" : "text-left",
         )}
       >
@@ -36,7 +36,7 @@ export function SectionHeader({
 
       <Link
         href={href}
-        className="flex shrink-0 items-center gap-1 text-sm text-ink-muted transition-colors hover:text-ink"
+        className="flex shrink-0 items-center gap-1 text-sm font-medium text-tertiary transition-colors hover:text-tertiary-hover"
       >
         Show All
         <ChevronRight className="size-4" aria-hidden />

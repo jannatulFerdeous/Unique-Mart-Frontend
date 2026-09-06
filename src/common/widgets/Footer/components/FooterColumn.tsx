@@ -12,6 +12,8 @@ export function FooterColumn({ title, items, lead }: Props) {
     <div className="text-center md:text-left">
       {lead ? <div className="flex justify-center md:justify-start">{lead}</div> : null}
 
+      {/* Column label, not a document heading — kept at 20px to match the
+          footer's own rhythm. Deliberate exception to the scale. */}
       <h3 className="mb-4 font-sans text-xl font-medium text-ink-inverse">
         {title}
       </h3>
