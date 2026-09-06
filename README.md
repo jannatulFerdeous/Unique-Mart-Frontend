@@ -20,6 +20,11 @@ The app runs at <http://localhost:3000>.
 | `npm run start` | Serve the production build     |
 | `npm run lint`  | Lint with `eslint-config-next` |
 
+One-off: `node scripts/scrape-catalogue.mjs` rebuilds
+`src/shared/config/product-details/` and the gallery artwork under
+`src/images/products/<slug>/` from the source catalogue. Everything in
+`product-details/` is generated — change the script, not the output.
+
 ## Structure
 
 Feature-module architecture. `app/` only routes; the UI lives in `modules/`.
@@ -35,6 +40,7 @@ src/
     brands/page.tsx        /brands
     about/page.tsx         /about
     faq/page.tsx           /faq — plus FAQPage JSON-LD
+    shop/product/[slug]/   93 prerendered product pages
   common/                  Shared across modules
     components/            ProductCard, ProductRail, SectionHeader,
                            ContactBand, FaqAccordion, icons/
@@ -58,8 +64,11 @@ src/
     Faq/                   The /faq page
       config/              constants.ts + types.ts
       partials/            FaqIntro, FaqBrowser, FaqContact
+    ProductDetails/        /shop/product/[slug]
+      config/              constants.ts + types.ts
+      partials/            ProductBreadcrumb, ProductTop, ProductGallery,
+                           ProductTabs, ProductAside
     Shop/          config/ partials/
-    ProductDetails/config/ partials/
     Cart/          config/ partials/
     Checkout/      config/ partials/
     Login/         config/ partials/
@@ -74,6 +83,9 @@ src/
              brands.ts      The 36 brand marks + /brands route helpers
              trust.ts       The six confirmed promises, icon + label + detail
              faq.ts         Every Q&A, grouped; About renders a subset
+             products.ts    All 93 products + findProduct / productHref
+             product-details/    One generated module per product: gallery,
+                                 colours, variants, specs, description
              catalog.ts     Product / rail types shared with common/
     libs/    fonts.ts       Third-party wrappers (next/font)
     styles/  globals.css    Tailwind import + @theme tokens
