@@ -6,7 +6,11 @@ import img1 from "@/images/products/belkin-sheerforce-grip-series-case-for-iphon
 import img2 from "@/images/products/belkin-sheerforce-grip-series-case-for-iphone-17-pro/02-belkin-sheerforce-grip-case-for-iphone-17-pro-1810.jpeg";
 
 export const belkinSheerforceGripSeriesCaseForIphone17Pro: ProductDetail = {
-  breadcrumb: ["Cases & Protectors", "Apple", "iPhone 17 Pro"],
+  breadcrumb: [
+    { label: "Cases & Protectors", slug: "cases-screen-protectors" },
+    { label: "Apple", slug: "apple-cases-accessories" },
+    { label: "iPhone 17 Pro", slug: "iphone-17-pro-cases" },
+  ],
   gallery: [img1, img2],
   inStock: true,
 

@@ -19,7 +19,10 @@ import img14 from "@/images/products/tecno-camon-air/14-tecno-camon-air-blue-4.j
 import img15 from "@/images/products/tecno-camon-air/15-tecno-camon-air-green.jpeg";
 
 export const tecnoCamonAir: ProductDetail = {
-  breadcrumb: ["Phones", "TECNO"],
+  breadcrumb: [
+    { label: "Phones", slug: "phone" },
+    { label: "TECNO", slug: "tecno-mobile-phone" },
+  ],
   gallery: [img1, img2, img3, img4, img5, img6, img7, img8, img9, img10, img11, img12, img13, img14, img15],
   inStock: true,
 

@@ -16,7 +16,10 @@ import img11 from "@/images/products/xiaomi-pad-8/11-xiaomi-pad-8-blue-2.jpeg";
 import img12 from "@/images/products/xiaomi-pad-8/12-xiaomi-pad-8-blue-3.jpeg";
 
 export const xiaomiPad8: ProductDetail = {
-  breadcrumb: ["Tablets", "Xiaomi"],
+  breadcrumb: [
+    { label: "Tablets", slug: "tablets" },
+    { label: "Xiaomi", slug: "xiaomi-tablet-pc" },
+  ],
   gallery: [img1, img2, img3, img4, img5, img6, img7, img8, img9, img10, img11, img12],
   inStock: true,
 

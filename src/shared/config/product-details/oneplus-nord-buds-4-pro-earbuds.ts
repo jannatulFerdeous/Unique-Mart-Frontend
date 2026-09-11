@@ -12,7 +12,11 @@ import img7 from "@/images/products/oneplus-nord-buds-4-pro-earbuds/07-oneplus-n
 import img8 from "@/images/products/oneplus-nord-buds-4-pro-earbuds/08-oneplus-nord-buds-4-pro-upto-55db-nc-earbuds-7.jpeg";
 
 export const oneplusNordBuds4ProEarbuds: ProductDetail = {
-  breadcrumb: ["Headphone & Speaker", "Earbuds", "OnePlus"],
+  breadcrumb: [
+    { label: "Headphone & Speaker", slug: "headphone-speaker" },
+    { label: "Earbuds", slug: "earbuds" },
+    { label: "OnePlus", slug: "oneplus-earbuds" },
+  ],
   gallery: [img1, img2, img3, img4, img5, img6, img7, img8],
   inStock: true,
 

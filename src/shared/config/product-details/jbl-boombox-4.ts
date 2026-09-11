@@ -16,7 +16,11 @@ import img11 from "@/images/products/jbl-boombox-4/11-jbl-boombox-4-squad.jpg-46
 import img12 from "@/images/products/jbl-boombox-4/12-jbl-boombox-4-squad.jpg-5967.jpeg";
 
 export const jblBoombox4: ProductDetail = {
-  breadcrumb: ["Headphone & Speaker", "Speaker", "JBL"],
+  breadcrumb: [
+    { label: "Headphone & Speaker", slug: "headphone-speaker" },
+    { label: "Speaker", slug: "speakers" },
+    { label: "JBL", slug: "jbl-speaker" },
+  ],
   gallery: [img1, img2, img3, img4, img5, img6, img7, img8, img9, img10, img11, img12],
   inStock: true,
 

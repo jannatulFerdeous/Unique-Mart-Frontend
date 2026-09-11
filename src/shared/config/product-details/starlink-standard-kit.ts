@@ -13,7 +13,10 @@ import img8 from "@/images/products/starlink-standard-kit/08-starlink-standard-k
 import img9 from "@/images/products/starlink-standard-kit/09-starlink-standard-kit-4993.jpeg";
 
 export const starlinkStandardKit: ProductDetail = {
-  breadcrumb: ["Networking", "Starlink"],
+  breadcrumb: [
+    { label: "Networking", slug: "networking" },
+    { label: "Starlink", slug: "starlink" },
+  ],
   gallery: [img1, img2, img3, img4, img5, img6, img7, img8, img9],
   inStock: false,
 

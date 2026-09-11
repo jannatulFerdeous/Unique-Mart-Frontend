@@ -21,9 +21,10 @@ The app runs at <http://localhost:3000>.
 | `npm run lint`  | Lint with `eslint-config-next` |
 
 One-off: `node scripts/scrape-catalogue.mjs` rebuilds
-`src/shared/config/product-details/` and the gallery artwork under
-`src/images/products/<slug>/` from the source catalogue. Everything in
-`product-details/` is generated — change the script, not the output.
+`src/shared/config/product-details/`, `src/shared/config/categories.ts` and the
+gallery artwork under `src/images/products/<slug>/` from the source catalogue.
+Everything in `product-details/` and `categories.ts` is generated — change the
+script, not the output.
 
 ## Structure
 
@@ -40,10 +41,11 @@ src/
     brands/page.tsx        /brands
     about/page.tsx         /about
     faq/page.tsx           /faq — plus FAQPage JSON-LD
+    category/[slug]/       342 prerendered category pages
     shop/product/[slug]/   93 prerendered product pages
   common/                  Shared across modules
     components/            ProductCard, ProductRail, SectionHeader,
-                           ContactBand, FaqAccordion, icons/
+                           ContactBand, FaqAccordion, Stars, icons/
     widgets/               Composed layout blocks
       Header/
       Footer/
@@ -64,10 +66,14 @@ src/
     Faq/                   The /faq page
       config/              constants.ts + types.ts
       partials/            FaqIntro, FaqBrowser, FaqContact
+    Category/              /category/[slug]
+      config/              constants.ts + types.ts
+      partials/            CategoryIntro, CategoryBrowser, CategoryFilters,
+                           PriceRange, CategoryPriceTable
     ProductDetails/        /shop/product/[slug]
       config/              constants.ts + types.ts
       partials/            ProductBreadcrumb, ProductTop, ProductGallery,
-                           ProductTabs, ProductAside
+                           ProductTabs, ProductReviews, ProductAside
     Shop/          config/ partials/
     Cart/          config/ partials/
     Checkout/      config/ partials/
@@ -78,7 +84,11 @@ src/
     Blog/          config/ partials/
   shared/                  Framework-agnostic building blocks
     config/  site.ts        Site-wide constants
-             navigation.ts  Category tree and utility links
+             categories.ts  Generated category tree — 342 nodes with slugs,
+                            parents, children and their product slugs
+             facets.ts      Generated filter facets — display size, type,
+                            chipset, RAM, storage, battery, key features
+             navigation.ts  Navbar, built from categories.ts + utility links
              footer.ts      Footer link columns
              brands.ts      The 36 brand marks + /brands route helpers
              trust.ts       The six confirmed promises, icon + label + detail
@@ -88,6 +98,8 @@ src/
                                  colours, variants, specs, description
              catalog.ts     Product / rail types shared with common/
     libs/    fonts.ts       Third-party wrappers (next/font)
+             reviews.ts     Customer reviews, stored in the browser
+             session.ts     Signed-in visitor — stub until auth lands
     styles/  globals.css    Tailwind import + @theme tokens
     utils/   cn.ts          Class-name merger
              price.ts       Taka formatting (lakh grouping)

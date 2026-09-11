@@ -17,7 +17,10 @@ import img12 from "@/images/products/infinix-hot-60-pro/12-infinix-hot-60-pro-bl
 import img13 from "@/images/products/infinix-hot-60-pro/14-infinix-hot-60-pro-blue-3491.jpeg";
 
 export const infinixHot60Pro: ProductDetail = {
-  breadcrumb: ["Phones", "Infinix"],
+  breadcrumb: [
+    { label: "Phones", slug: "phone" },
+    { label: "Infinix", slug: "infinix-mobile-phone" },
+  ],
   gallery: [img1, img2, img3, img4, img5, img6, img7, img8, img9, img10, img11, img12, img13],
   inStock: false,
 

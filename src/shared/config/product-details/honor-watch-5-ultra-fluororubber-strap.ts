@@ -9,7 +9,11 @@ import img4 from "@/images/products/honor-watch-5-ultra-fluororubber-strap/04-ho
 import img5 from "@/images/products/honor-watch-5-ultra-fluororubber-strap/05-honor-watch-5-ultra-fluororubber-strap-4.jpeg";
 
 export const honorWatch5UltraFluororubberStrap: ProductDetail = {
-  breadcrumb: ["Watches", "Smart Watch", "HONOR"],
+  breadcrumb: [
+    { label: "Watches", slug: "watch" },
+    { label: "Smart Watch", slug: "smart-watch" },
+    { label: "HONOR", slug: "honor-smart-watch" },
+  ],
   gallery: [img1, img2, img3, img4, img5],
   inStock: true,
 

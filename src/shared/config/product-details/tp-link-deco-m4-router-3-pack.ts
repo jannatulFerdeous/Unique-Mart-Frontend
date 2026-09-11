@@ -8,7 +8,11 @@ import img3 from "@/images/products/tp-link-deco-m4-router-3-pack/03-tp-link-dec
 import img4 from "@/images/products/tp-link-deco-m4-router-3-pack/04-tp-link-deco-m4-router-2-pack.jpg-3133.jpeg";
 
 export const tpLinkDecoM4Router3Pack: ProductDetail = {
-  breadcrumb: ["Networking", "Router", "Tp-Link"],
+  breadcrumb: [
+    { label: "Networking", slug: "networking" },
+    { label: "Router", slug: "router" },
+    { label: "Tp-Link", slug: "tp-link-router" },
+  ],
   gallery: [img1, img2, img3, img4],
   inStock: true,
 

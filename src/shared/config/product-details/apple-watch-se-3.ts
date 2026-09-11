@@ -8,7 +8,11 @@ import img3 from "@/images/products/apple-watch-se-3/03-apple-watch-se-3-midnigh
 import img4 from "@/images/products/apple-watch-se-3/04-apple-watch-se-3-starlight-1772.jpeg";
 
 export const appleWatchSe3: ProductDetail = {
-  breadcrumb: ["Watches", "Smart Watch", "Apple"],
+  breadcrumb: [
+    { label: "Watches", slug: "watch" },
+    { label: "Smart Watch", slug: "smart-watch" },
+    { label: "Apple", slug: "apple-watch" },
+  ],
   gallery: [img1, img2, img3, img4],
   inStock: true,
 

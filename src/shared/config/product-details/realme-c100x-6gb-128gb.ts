@@ -12,7 +12,10 @@ import img7 from "@/images/products/realme-c100x/07-realme-c100x-golden-2.jpeg";
 import img8 from "@/images/products/realme-c100x/08-realme-c100x-golden-3.jpeg";
 
 export const realmeC100x6gb128gb: ProductDetail = {
-  breadcrumb: ["Phones", "realme"],
+  breadcrumb: [
+    { label: "Phones", slug: "phone" },
+    { label: "realme", slug: "realme-mobile-phone" },
+  ],
   gallery: [img1, img2, img3, img4, img5, img6, img7, img8],
   inStock: true,
 

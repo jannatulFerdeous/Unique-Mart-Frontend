@@ -6,7 +6,10 @@ import img1 from "@/images/brands/oneplus-pad-lite-8gb-128gb.jpeg";
 import img2 from "@/images/products/oneplus-pad-lite-8gb-128gb/02-oneplus-pad-lite-1398.jpeg";
 
 export const oneplusPadLite8gb128gb: ProductDetail = {
-  breadcrumb: ["Tablets", "OnePlus"],
+  breadcrumb: [
+    { label: "Tablets", slug: "tablets" },
+    { label: "OnePlus", slug: "oneplus-tablet-pc" },
+  ],
   gallery: [img1, img2],
   inStock: true,
 

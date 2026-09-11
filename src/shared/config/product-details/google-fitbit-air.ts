@@ -10,7 +10,10 @@ import img5 from "@/images/products/google-fitbit-air/05-google-fitbit-air-berry
 import img6 from "@/images/products/google-fitbit-air/06-google-fitbit-air-berry.jpeg";
 
 export const googleFitbitAir: ProductDetail = {
-  breadcrumb: ["Watches", "Smart Bands"],
+  breadcrumb: [
+    { label: "Watches", slug: "watch" },
+    { label: "Smart Bands", slug: "smart-bands" },
+  ],
   gallery: [img1, img2, img3, img4, img5, img6],
   inStock: true,
 

@@ -13,7 +13,10 @@ import img8 from "@/images/products/realme-c85-pro-8gb-128gb/08-realme-c85.jpg-2
 import img9 from "@/images/products/realme-c85-pro-8gb-128gb/09-realme-c85.jpg-3253.jpeg";
 
 export const realmeC85Pro8gb128gb: ProductDetail = {
-  breadcrumb: ["Phones", "realme"],
+  breadcrumb: [
+    { label: "Phones", slug: "phone" },
+    { label: "realme", slug: "realme-mobile-phone" },
+  ],
   gallery: [img1, img2, img3, img4, img5, img6, img7, img8, img9],
   inStock: true,
 

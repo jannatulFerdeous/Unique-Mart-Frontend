@@ -9,7 +9,10 @@ import img4 from "@/images/products/honor-magic-v3/04-honor-magic-v3-green-3266.
 import img5 from "@/images/products/honor-magic-v3/05-honor-magic-v3-green-4289.jpeg";
 
 export const honorMagicV3: ProductDetail = {
-  breadcrumb: ["Phones", "HONOR"],
+  breadcrumb: [
+    { label: "Phones", slug: "phone" },
+    { label: "HONOR", slug: "honor-mobile-phone" },
+  ],
   gallery: [img1, img2, img3, img4, img5],
   inStock: true,
 

@@ -6,7 +6,11 @@ import img1 from "@/images/products/spigen-ultra-hybrid-case-for-iphone-17-pro-m
 import img2 from "@/images/products/spigen-ultra-hybrid-case-for-iphone-17-pro-max/02-spigen-ultra-hybrid-case-for-iphone-17-pro-max-clear694.jpeg";
 
 export const spigenUltraHybridCaseForIphone17ProMax: ProductDetail = {
-  breadcrumb: ["Cases & Protectors", "Apple", "iPhone 17 Pro Max"],
+  breadcrumb: [
+    { label: "Cases & Protectors", slug: "cases-screen-protectors" },
+    { label: "Apple", slug: "apple-cases-accessories" },
+    { label: "iPhone 17 Pro Max", slug: "iphone-17-pro-max-cases" },
+  ],
   gallery: [img1, img2],
   inStock: true,
 

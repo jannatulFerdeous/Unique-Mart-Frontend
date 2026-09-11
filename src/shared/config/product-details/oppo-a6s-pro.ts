@@ -8,7 +8,10 @@ import img3 from "@/images/products/oppo-a6s-pro/03-oppo-a6s-pro-1.jpeg";
 import img4 from "@/images/products/oppo-a6s-pro/04-oppo-a6s-pro-3.jpeg";
 
 export const oppoA6sPro: ProductDetail = {
-  breadcrumb: ["Phones", "OPPO"],
+  breadcrumb: [
+    { label: "Phones", slug: "phone" },
+    { label: "OPPO", slug: "oppo" },
+  ],
   gallery: [img1, img2, img3, img4],
   inStock: true,
 

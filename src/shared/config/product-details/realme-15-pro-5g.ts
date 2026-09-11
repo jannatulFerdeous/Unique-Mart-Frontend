@@ -10,7 +10,10 @@ import img5 from "@/images/products/realme-15-pro-5g/05-realme-15-pro-5g-1.jpg-4
 import img6 from "@/images/products/realme-15-pro-5g/06-realme-15-pro-5g-1.jpg-5794.jpeg";
 
 export const realme15Pro5g: ProductDetail = {
-  breadcrumb: ["Phones", "realme"],
+  breadcrumb: [
+    { label: "Phones", slug: "phone" },
+    { label: "realme", slug: "realme-mobile-phone" },
+  ],
   gallery: [img1, img2, img3, img4, img5, img6],
   inStock: true,
 

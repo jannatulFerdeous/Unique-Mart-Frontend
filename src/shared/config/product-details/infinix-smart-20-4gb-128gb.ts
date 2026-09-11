@@ -8,7 +8,10 @@ import img3 from "@/images/products/infinix-smart-20-4gb-128gb/03-infinix-smart-
 import img4 from "@/images/products/infinix-smart-20-4gb-128gb/04-infinix-smart-20.jpeg";
 
 export const infinixSmart204gb128gb: ProductDetail = {
-  breadcrumb: ["Phones", "Infinix"],
+  breadcrumb: [
+    { label: "Phones", slug: "phone" },
+    { label: "Infinix", slug: "infinix-mobile-phone" },
+  ],
   gallery: [img1, img2, img3, img4],
   inStock: true,
 

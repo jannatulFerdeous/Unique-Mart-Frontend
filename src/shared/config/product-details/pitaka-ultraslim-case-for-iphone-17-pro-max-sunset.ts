@@ -8,7 +8,11 @@ import img3 from "@/images/products/pitaka-ultraslim-case-for-iphone-17-pro-max-
 import img4 from "@/images/products/pitaka-ultraslim-case-for-iphone-17-pro-max-sunset/04-pitaka-ultra-slim-case-for-iphone-17-pro-max-sunet-1125.jpeg";
 
 export const pitakaUltraslimCaseForIphone17ProMaxSunset: ProductDetail = {
-  breadcrumb: ["Cases & Protectors", "Apple", "iPhone 17 Pro Max"],
+  breadcrumb: [
+    { label: "Cases & Protectors", slug: "cases-screen-protectors" },
+    { label: "Apple", slug: "apple-cases-accessories" },
+    { label: "iPhone 17 Pro Max", slug: "iphone-17-pro-max-cases" },
+  ],
   gallery: [img1, img2, img3, img4],
   inStock: true,
 

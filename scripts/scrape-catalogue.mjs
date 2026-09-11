@@ -179,6 +179,24 @@ const fetchRecords = async (slugs) => {
   return misses;
 };
 
+/** The reference's real category tree, names and slugs — the navbar's source. */
+const fetchMenu = async () => {
+  const file = path.join(CACHE, "menu.json");
+  if (existsSync(file)) return JSON.parse(readFileSync(file, "utf8"));
+
+  const response = await fetch(`${API}/category/storefront/get-menu`, {
+    headers: { "user-agent": UA },
+  });
+  if (!response.ok) throw new Error(`menu → ${response.status}`);
+
+  const payload = await response.json();
+  const menu = payload?.data ?? payload;
+  if (!Array.isArray(menu)) throw new Error("menu: unexpected shape");
+
+  writeFileSync(file, JSON.stringify(menu, null, 1));
+  return menu;
+};
+
 const fetchImages = async (sources) => {
   mkdirSync(DOWNLOADS, { recursive: true });
   const pending = [...sources].filter(
@@ -317,6 +335,232 @@ const parseDescription = (longDescription, name) => {
   return { title: title && !BANNED.test(title) ? title : name, blocks };
 };
 
+/* ------------------------------------------------------------------ facets */
+
+/* The reference's sidebar is spec-driven, and the spec text is inconsistent:
+   "12GB" and "12 GB", "Mediatek" and "MediaTek", bare "T7225" for a UNISOC
+   part, three different ways of writing 7000 mAh. All of the normalising lives
+   here so the UI only ever sees clean buckets. A product contributes to a
+   facet only when its own specs say so — nothing is guessed. */
+
+/** Groups in the order the reference shows them. `values` fixes the order of
+ *  the checkboxes; a value nothing matches simply never renders. */
+const FACET_GROUPS = [
+  {
+    id: "availability",
+    label: "Availability",
+    values: ["In Stock", "Pre Order", "Up Coming", "Out of Stock"],
+  },
+  {
+    id: "display-size",
+    label: "Display Size",
+    values: ["5.5 to 5.9 Inch", "6.0 to 6.4 Inch", "6.5 to 6.9 Inch", "7.0 to Above"],
+  },
+  {
+    id: "display-type",
+    label: "Display Type",
+    values: [
+      "OLED", "Super AMOLED", "AMOLED", "IPS", "TFT",
+      "Super Retina XDR", "Dynamic AMOLED", "LCD", "P-OLED", "Dot Drop",
+    ],
+  },
+  {
+    id: "chipset",
+    label: "Chipset",
+    values: [
+      "Apple A-Series", "Snapdragon", "MediaTek", "Exynos",
+      "UNISOC", "Tensor", "Kirin",
+    ],
+  },
+  {
+    id: "ram",
+    label: "RAM",
+    values: ["2GB", "3GB", "4GB", "6GB", "8GB", "12GB", "16GB"],
+  },
+  {
+    id: "storage",
+    label: "Internal Storage",
+    values: ["32GB", "64GB", "128GB", "256GB", "512GB", "1TB", "2TB"],
+  },
+  {
+    id: "battery",
+    label: "Battery Capacity",
+    values: [
+      "3000 to 3999 mAh", "4000 to 4999 mAh", "5000 to 5999 mAh",
+      "6000 to 7000 mAh", "7000 mAh & Above",
+    ],
+  },
+  {
+    id: "features",
+    label: "Key Features",
+    values: [
+      "Dual Sim", "eSim Supported", "Virtual Memory",
+      "Quick Charging", "VOOC Charging", "Water Resistant",
+    ],
+  },
+];
+
+/** Spec rows by "group::key" and by bare key, lower-cased. */
+const specIndex = (product) => {
+  const index = new Map();
+  let group = "";
+
+  for (const row of product.specifications ?? []) {
+    if (row.isTitle) {
+      group = oneLine(row.value).toLowerCase();
+      continue;
+    }
+    const key = oneLine(row.key).toLowerCase();
+    const value = text(row.value);
+    if (!key || !value || value === "undefined") continue;
+
+    index.set(`${group}::${key}`, value);
+    if (!index.has(key)) index.set(key, value);
+  }
+
+  return index;
+};
+
+const readSpec = (index, ...keys) => {
+  for (const key of keys) {
+    const found = index.get(key);
+    if (found) return found;
+  }
+  return "";
+};
+
+const DISPLAY_TYPES = [
+  [/super retina xdr/i, "Super Retina XDR"],
+  [/dynamic amoled/i, "Dynamic AMOLED"],
+  [/super amoled/i, "Super AMOLED"],
+  [/amoled/i, "AMOLED"],
+  [/p-?oled/i, "P-OLED"],
+  [/oled/i, "OLED"],
+  [/\bips\b/i, "IPS"],
+  [/\btft\b/i, "TFT"],
+  [/\blcd\b/i, "LCD"],
+  [/dot drop/i, "Dot Drop"],
+];
+
+const CHIPSETS = [
+  [/snapdragon/i, "Snapdragon"],
+  [/mediatek|helio|dimensity/i, "MediaTek"],
+  [/exynos/i, "Exynos"],
+  [/unisoc|\bT\d{4}\b/i, "UNISOC"],
+  [/tensor/i, "Tensor"],
+  [/kirin/i, "Kirin"],
+  // Apple stopped printing "Bionic" at A19, so the family is named for the
+  // series rather than copying the reference's "BIONIC" label.
+  [/\bA\d{2}\b.*chip|bionic/i, "Apple A-Series"],
+];
+
+const sizeBucket = (inches) => {
+  if (inches >= 7) return "7.0 to Above";
+  if (inches >= 6.5) return "6.5 to 6.9 Inch";
+  if (inches >= 6) return "6.0 to 6.4 Inch";
+  if (inches >= 5.5) return "5.5 to 5.9 Inch";
+  return null;
+};
+
+const batteryBucket = (mah) => {
+  if (mah >= 7000) return "7000 mAh & Above";
+  if (mah >= 6000) return "6000 to 7000 mAh";
+  if (mah >= 5000) return "5000 to 5999 mAh";
+  if (mah >= 4000) return "4000 to 4999 mAh";
+  if (mah >= 3000) return "3000 to 3999 mAh";
+  return null;
+};
+
+const deriveFacets = (product) => {
+  const index = specIndex(product);
+  const facets = {};
+  const add = (id, ...values) => {
+    for (const value of values) {
+      if (!value) continue;
+      facets[id] ??= [];
+      if (!facets[id].includes(value)) facets[id].push(value);
+    }
+  };
+
+  /* availability — only two of the four states occur in this catalogue, and
+     the other two render nowhere rather than showing an empty box */
+  const skus = product.skus ?? [];
+  if (skus.some((sku) => sku.preOrder)) add("availability", "Pre Order");
+  else if (skus.length && skus.every((sku) => sku.comingSoon)) {
+    add("availability", "Up Coming");
+  } else {
+    add("availability", product.stockStatus === "In Stock" ? "In Stock" : "Out of Stock");
+  }
+
+  /* display size — the largest panel a product has, so a foldable counts by
+     its inner screen */
+  const sizeText = readSpec(index, "display::size", "size", "display::display size");
+  const inches = [...sizeText.matchAll(/(\d+(?:\.\d+)?)\s*[‑–-]?\s*inch/gi)]
+    .map((match) => Number(match[1]))
+    .filter((value) => value > 3 && value < 20);
+  if (inches.length) add("display-size", sizeBucket(Math.max(...inches)));
+
+  /* display type — specific names are consumed before the generic ones, so
+     "LTPS AMOLED" is AMOLED and never also OLED */
+  let typeText = readSpec(index, "display::type", "display::display type");
+  for (const [pattern, label] of DISPLAY_TYPES) {
+    if (pattern.test(typeText)) {
+      add("display-type", label);
+      typeText = typeText.replace(new RegExp(pattern.source, "gi"), " ");
+    }
+  }
+
+  const chipText = readSpec(index, "processor::chipset", "chipset", "processor::cpu type");
+  for (const [pattern, label] of CHIPSETS) {
+    if (pattern.test(chipText)) {
+      add("chipset", label);
+      break;
+    }
+  }
+
+  /* RAM is one number; a "12GB (8+4 virtual)" string must not become three */
+  const ramText = readSpec(index, "memory::ram", "ram");
+  const ram = ramText.match(/(\d+)\s*GB/i);
+  if (ram) add("ram", `${ram[1]}GB`);
+
+  /* storage genuinely is a list — "256GB 512GB 1TB" is three options */
+  const romText = readSpec(
+    index, "memory::rom", "memory::internal storage", "rom", "internal storage", "storage",
+  );
+  for (const match of romText.matchAll(/(\d+)\s*(GB|TB)/gi)) {
+    add("storage", `${match[1]}${match[2].toUpperCase()}`);
+  }
+
+  const batteryText = readSpec(index, "battery::type", "battery::capacity", "battery");
+  const mah = [...batteryText.matchAll(/([\d,]{3,6})\s*mah/gi)]
+    .map((match) => Number(match[1].replace(/,/g, "")))
+    .filter((value) => value >= 1000 && value <= 20000);
+  if (mah.length) add("battery", batteryBucket(Math.max(...mah)));
+
+  /* key features */
+  const sim = `${readSpec(index, "network & connectivity::sim", "sim", "memory::card slot", "card slot")} ${readSpec(index, "network & amp; connectivity::sim")}`;
+  if (/dual\s*-?\s*sim|2 nano|2 sim|two active|nano-sim \+ nano-sim/i.test(sim)) {
+    add("features", "Dual Sim");
+  }
+  if (/e-?sim/i.test(sim)) add("features", "eSim Supported");
+
+  const extras = `${ramText} ${readSpec(index, "features::other features", "other features")}`;
+  if (/virtual (ram|memory)|extended ram|ram expansion|turbo ram/i.test(extras)) {
+    add("features", "Virtual Memory");
+  }
+
+  const charging = readSpec(index, "battery::fast charging", "fast charging", "battery::charging");
+  if (/vooc/i.test(charging)) add("features", "VOOC Charging");
+  if (/\d+\s*W|fast charg|quick charg|supercharge|turbo charg/i.test(charging)) {
+    add("features", "Quick Charging");
+  }
+
+  const ip = readSpec(index, "features::ip rating", "ip rating", "features::protection");
+  if (/ip[x\d]\d/i.test(ip)) add("features", "Water Resistant");
+
+  return facets;
+};
+
 /* ----------------------------------------------------------------- emitting */
 
 const galleryPaths = (product) => {
@@ -376,7 +620,11 @@ const emit = ({ slug, product, gallery, colors, options, emi, specs, highlights,
     .join("\n");
 
   const parts = [
-    breadcrumb.length ? `  breadcrumb: [${breadcrumb.map(q).join(", ")}],` : "",
+    breadcrumb.length
+      ? `  breadcrumb: [\n${breadcrumb
+          .map((crumb) => `    { label: ${q(crumb.label)}, slug: ${q(crumb.slug)} },`)
+          .join("\n")}\n  ],`
+      : "",
     `  gallery: [${gallery.map((spec) => variable.get(spec)).join(", ")}],`,
     `  inStock: ${product.stockStatus === "In Stock"},`,
     highlights.length
@@ -540,8 +788,8 @@ for (const slug of slugs) {
       highlights: parseHighlights(product.shortDescription),
       description: parseDescription(product.longDescription, product.name),
       breadcrumb: (product.breadcrumbs ?? [])
-        .map((crumb) => oneLine(crumb.name))
-        .filter(Boolean),
+        .map((crumb) => ({ label: oneLine(crumb.name), slug: String(crumb.slug ?? "") }))
+        .filter((crumb) => crumb.label && crumb.slug),
     }),
   );
 
@@ -574,3 +822,180 @@ export const findProductDetail = (slug: string): ProductDetail | undefined =>
 console.log(
   `wrote ${modules.length} modules — ${placed} images placed, ${reused} reused from artwork already committed`,
 );
+
+/* ------------------------------------------------------- category tree */
+
+/* Two sources, because neither is complete on its own:
+     · the menu is what the navbar shows, including sections we hold no stock
+       for yet;
+     · a product's breadcrumbs name categories the menu omits (the per-model
+       case categories, for one).
+   Everything a product sits in gets a page, and so does everything the navbar
+   can reach. */
+
+const menu = await fetchMenu();
+const tree = new Map();
+
+const node = (slug, name) => {
+  if (!slug) return null;
+  if (!tree.has(slug)) {
+    tree.set(slug, { slug, name, trail: [], children: [], products: [] });
+  }
+  const found = tree.get(slug);
+  if (name && !found.name) found.name = name;
+  return found;
+};
+
+const link = (parent, child) => {
+  if (!parent || !child || parent.slug === child.slug) return;
+  if (!parent.children.includes(child.slug)) parent.children.push(child.slug);
+};
+
+/* the navbar's shape */
+const walkMenu = (entries, ancestors) => {
+  const top = [];
+
+  for (const entry of entries) {
+    if (entry?.type && entry.type !== "category") continue;
+    const current = node(String(entry.url ?? ""), oneLine(entry.name));
+    if (!current) continue;
+
+    if (!current.trail.length && ancestors.length) {
+      current.trail = ancestors.map((each) => each.slug);
+    }
+    link(ancestors.at(-1), current);
+    top.push(current.slug);
+    walkMenu(entry.submenu ?? [], [...ancestors, current]);
+  }
+
+  return top;
+};
+const navTop = walkMenu(menu, []);
+
+/* what the products say, which also fills in categories the menu skips */
+for (const [slug, product] of records) {
+  const crumbs = (product.breadcrumbs ?? [])
+    .map((crumb) => node(String(crumb.slug ?? ""), oneLine(crumb.name)))
+    .filter(Boolean);
+
+  crumbs.forEach((crumb, index) => {
+    if (!crumb.trail.length && index) {
+      crumb.trail = crumbs.slice(0, index).map((each) => each.slug);
+    }
+    link(crumbs[index - 1], crumb);
+    // A product counts towards its own category and every one above it, so
+    // /category/phone lists everything under Phones rather than nothing.
+    if (!crumb.products.includes(slug)) crumb.products.push(slug);
+  });
+}
+
+const ordered = [...tree.values()].sort((a, b) => a.slug.localeCompare(b.slug));
+
+writeFileSync(
+  path.join(ROOT, "src/shared/config/categories.ts"),
+  `/* The category tree, generated by scripts/scrape-catalogue.mjs from the
+   reference's menu plus our own products' breadcrumbs. Do not edit by hand.
+
+   \`products\` holds every product slug in a category *and its descendants*, so
+   a top-level page lists the whole section. A category with an empty list is
+   one the navbar reaches but we hold no stock for — the page says so. */
+
+export type Category = {
+  slug: string;
+  name: string;
+  /** Ancestor slugs, outermost first. */
+  trail: string[];
+  children: string[];
+  products: string[];
+};
+
+/** Top-level slugs, in the order the navbar shows them. */
+export const rootCategories: string[] = [
+${navTop.map((slug) => `  ${q(slug)},`).join("\n")}
+];
+
+export const categories: Record<string, Category> = {
+${ordered
+  .map(
+    (each) =>
+      `  ${q(each.slug)}: {\n` +
+      `    slug: ${q(each.slug)},\n` +
+      `    name: ${q(each.name || each.slug)},\n` +
+      `    trail: [${each.trail.map(q).join(", ")}],\n` +
+      `    children: [${each.children.map(q).join(", ")}],\n` +
+      `    products: [${each.products.map(q).join(", ")}],\n` +
+      `  },`,
+  )
+  .join("\n")}
+};
+
+export const categoryPath = (slug: string) => \`/category/\${slug}\`;
+
+export const findCategory = (slug: string): Category | undefined =>
+  categories[slug];
+`,
+);
+
+const stocked = ordered.filter((each) => each.products.length).length;
+console.log(
+  `wrote ${ordered.length} categories (${stocked} with products, ${navTop.length} in the navbar)`,
+);
+
+/* ------------------------------------------------------------ facet output */
+
+const facetsBySlug = new Map();
+for (const [slug, product] of records) {
+  const facets = deriveFacets(product);
+  if (Object.keys(facets).length) facetsBySlug.set(slug, facets);
+}
+
+writeFileSync(
+  path.join(ROOT, "src/shared/config/facets.ts"),
+  `/* Filter facets, generated by scripts/scrape-catalogue.mjs. Do not edit.
+
+   Every value here was normalised out of a product's own specification rows —
+   the source text is inconsistent ("12GB" / "12 GB", bare "T7225" for a UNISOC
+   part, three spellings of 7000 mAh), and all of that cleaning happens in the
+   script. A product appears under a facet only when its specs say so, so a
+   category whose products do not record a field simply has no such group. */
+
+export type FacetGroup = {
+  id: string;
+  label: string;
+  /** Fixes checkbox order. A value nothing matches is never rendered. */
+  values: string[];
+};
+
+export const facetGroups: FacetGroup[] = [
+${FACET_GROUPS.map(
+  (group) =>
+    `  {\n    id: ${q(group.id)},\n    label: ${q(group.label)},\n` +
+    `    values: [${group.values.map(q).join(", ")}],\n  },`,
+).join("\n")}
+];
+
+/** Product slug → facet id → the values that product matches. */
+export const productFacets: Record<string, Record<string, string[]>> = {
+${[...facetsBySlug.entries()]
+  .sort((a, b) => a[0].localeCompare(b[0]))
+  .map(
+    ([slug, facets]) =>
+      `  ${q(slug)}: {\n` +
+      Object.entries(facets)
+        .map(([id, values]) => `    ${q(id)}: [${values.map(q).join(", ")}],`)
+        .join("\n") +
+      `\n  },`,
+  )
+  .join("\n")}
+};
+
+export const facetsFor = (slug: string): Record<string, string[]> =>
+  productFacets[slug] ?? {};
+`,
+);
+
+const coverage = FACET_GROUPS.map((group) => {
+  const hits = [...facetsBySlug.values()].filter((each) => each[group.id]?.length).length;
+  return `${group.id} ${hits}`;
+}).join(", ");
+console.log(`wrote facets for ${facetsBySlug.size} products — ${coverage}`);

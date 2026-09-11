@@ -6,7 +6,10 @@ import img1 from "@/images/brands/infinix-xpad-20.jpeg";
 import img2 from "@/images/products/infinix-xpad-20/02-infinix-xpad-20625.jpeg";
 
 export const infinixXpad20: ProductDetail = {
-  breadcrumb: ["Tablets", "Infinix"],
+  breadcrumb: [
+    { label: "Tablets", slug: "tablets" },
+    { label: "Infinix", slug: "infinix-tablet-pc" },
+  ],
   gallery: [img1, img2],
   inStock: true,
 

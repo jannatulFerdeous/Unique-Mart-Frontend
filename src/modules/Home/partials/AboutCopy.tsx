@@ -34,19 +34,19 @@ export function AboutCopy() {
             commute and the watch that counts your evening walk. {site.name}{" "}
             started in {site.since} to make that technology straightforward to
             buy in Bangladesh: one catalogue covering{" "}
-            <Link href="/shop/phones" className={LINK}>
+            <Link href="/category/phone" className={LINK}>
               phones
             </Link>
             ,{" "}
-            <Link href="/shop/mac" className={LINK}>
+            <Link href="/category/apple-store" className={LINK}>
               computers
             </Link>
             ,{" "}
-            <Link href="/shop/watches" className={LINK}>
+            <Link href="/category/watch" className={LINK}>
               wearables
             </Link>
             ,{" "}
-            <Link href="/shop/headphone-speaker" className={LINK}>
+            <Link href="/category/headphone-speaker" className={LINK}>
               audio
             </Link>{" "}
             and the accessories that keep all of it running. Every product we
@@ -61,12 +61,12 @@ export function AboutCopy() {
           <p>
             A phone is the device you touch most, so it is worth buying from
             somewhere that stands behind it.{" "}
-            <Link href="/shop/phones/iphone" className={LINK}>
+            <Link href="/category/iphone" className={LINK}>
               iPhone
             </Link>{" "}
             buyers will find the current generations alongside the previous
             ones, and our{" "}
-            <Link href="/shop/phones/android" className={LINK}>
+            <Link href="/category/phone" className={LINK}>
               Android
             </Link>{" "}
             range runs from flagships to dependable everyday handsets. Whichever
@@ -81,17 +81,17 @@ export function AboutCopy() {
           <p>
             Whether you are editing video, writing code or just want something
             light for the sofa, the right machine matters.{" "}
-            <Link href="/shop/mac" className={LINK}>
+            <Link href="/category/apple-store" className={LINK}>
               Mac
             </Link>{" "}
             covers the latest MacBook Air and MacBook Pro configurations, while{" "}
-            <Link href="/shop/tablets" className={LINK}>
+            <Link href="/category/tablets" className={LINK}>
               tablets
             </Link>{" "}
             span everything from full-size iPad Pro models to compact Android
             slates for reading and study. Pair either with a keyboard, a stand
             or a drive from{" "}
-            <Link href="/shop/pc-accessories" className={LINK}>
+            <Link href="/category/computer-accessories" className={LINK}>
               PC accessories
             </Link>{" "}
             and you have a desk that actually works.
@@ -102,7 +102,7 @@ export function AboutCopy() {
           </h3>
           <p>
             A{" "}
-            <Link href="/shop/watches" className={LINK}>
+            <Link href="/category/watch" className={LINK}>
               smartwatch
             </Link>{" "}
             has become less a gadget than a habit — steps, sleep, heart rate and
@@ -117,7 +117,7 @@ export function AboutCopy() {
           </h3>
           <p>
             Good sound is the cheapest upgrade to a daily commute.{" "}
-            <Link href="/shop/headphone-speaker" className={LINK}>
+            <Link href="/category/headphone-speaker" className={LINK}>
               Headphones and speakers
             </Link>{" "}
             runs from true-wireless earbuds and noise-cancelling over-ears to
@@ -131,17 +131,17 @@ export function AboutCopy() {
           </h3>
           <p>
             The small things decide how long the expensive things last. Our{" "}
-            <Link href="/shop/cases-protectors" className={LINK}>
+            <Link href="/category/cases-screen-protectors" className={LINK}>
               cases and screen protectors
             </Link>{" "}
             cover the current iPhone and Galaxy line-ups with slim, rugged and
             MagSafe-compatible options, and{" "}
-            <Link href="/shop/phone-accessories" className={LINK}>
+            <Link href="/category/mobile-phone-accessories" className={LINK}>
               phone accessories
             </Link>{" "}
             adds the chargers, cables and power banks worth trusting your device
             to. For the rest of the house there is{" "}
-            <Link href="/shop/networking" className={LINK}>
+            <Link href="/category/networking" className={LINK}>
               networking
             </Link>{" "}
             for faster, more reliable Wi-Fi.

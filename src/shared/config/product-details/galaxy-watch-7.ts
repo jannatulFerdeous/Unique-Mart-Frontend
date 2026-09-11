@@ -9,7 +9,11 @@ import img4 from "@/images/products/galaxy-watch-7/04-samsung-galaxy-watch-7-sma
 import img5 from "@/images/products/galaxy-watch-7/07-galaxy-watch-7-cream311.jpeg";
 
 export const galaxyWatch7: ProductDetail = {
-  breadcrumb: ["Watches", "Smart Watch", "Samsung"],
+  breadcrumb: [
+    { label: "Watches", slug: "watch" },
+    { label: "Smart Watch", slug: "smart-watch" },
+    { label: "Samsung", slug: "samsung-watch" },
+  ],
   gallery: [img1, img2, img3, img4, img5],
   inStock: true,
 

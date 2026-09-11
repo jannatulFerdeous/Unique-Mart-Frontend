@@ -1,7 +1,3 @@
-import type { NavItem } from "@/shared/config/navigation";
-
-export type Crumb = NavItem;
-
 export type ProductDetailsData = {
   tabs: { id: string; label: string }[];
   labels: {
@@ -19,5 +15,31 @@ export type ProductDetailsData = {
     similar: string;
     trust: string;
     noSpecs: string;
+  };
+  reviews: {
+    heading: string;
+    empty: string;
+    write: string;
+    cancel: string;
+    /** Shown in place of an author while there is no sign-in. */
+    anonymous: string;
+    on: string;
+    ofFive: string;
+    countOne: string;
+    countMany: string;
+    /** Says plainly where a submitted review actually goes. */
+    storageNote: string;
+    saved: string;
+    form: {
+      rating: string;
+      ratingHint: string;
+      comment: string;
+      commentPlaceholder: string;
+      submit: string;
+    };
+    errors: {
+      rating: string;
+      comment: string;
+    };
   };
 };

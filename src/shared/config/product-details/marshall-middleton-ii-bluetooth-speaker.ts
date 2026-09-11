@@ -10,7 +10,11 @@ import img5 from "@/images/products/marshall-middleton-ii-bluetooth-speaker/05-m
 import img6 from "@/images/products/marshall-middleton-ii-bluetooth-speaker/06-marshall-middleton-ii-bluetooth-speaker-513.jpeg";
 
 export const marshallMiddletonIiBluetoothSpeaker: ProductDetail = {
-  breadcrumb: ["Headphone & Speaker", "Speaker", "Marshall"],
+  breadcrumb: [
+    { label: "Headphone & Speaker", slug: "headphone-speaker" },
+    { label: "Speaker", slug: "speakers" },
+    { label: "Marshall", slug: "marshall-speaker" },
+  ],
   gallery: [img1, img2, img3, img4, img5, img6],
   inStock: true,
 

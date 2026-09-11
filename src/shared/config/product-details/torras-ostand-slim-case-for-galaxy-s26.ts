@@ -8,7 +8,11 @@ import img3 from "@/images/products/torras-ostand-slim-case-for-galaxy-s26/03-to
 import img4 from "@/images/products/torras-ostand-slim-case-for-galaxy-s26/04-torras-ostand-slim-case-for-galaxy-s26-3.jpeg";
 
 export const torrasOstandSlimCaseForGalaxyS26: ProductDetail = {
-  breadcrumb: ["Cases & Protectors", "Samsung", "Galaxy S26"],
+  breadcrumb: [
+    { label: "Cases & Protectors", slug: "cases-screen-protectors" },
+    { label: "Samsung", slug: "samsung-cases-accessories" },
+    { label: "Galaxy S26", slug: "galaxy-s26-cases-screen-protectors" },
+  ],
   gallery: [img1, img2, img3, img4],
   inStock: true,
 

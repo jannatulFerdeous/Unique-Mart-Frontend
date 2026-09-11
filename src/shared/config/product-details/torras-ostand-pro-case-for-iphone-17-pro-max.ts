@@ -16,7 +16,11 @@ import img11 from "@/images/products/torras-ostand-pro-case-for-iphone-17-pro-ma
 import img12 from "@/images/products/torras-ostand-pro-case-for-iphone-17-pro-max/12-torras-ostand-pro-case-for-iphone-17-pro-max--clear.jpg-328.jpeg";
 
 export const torrasOstandProCaseForIphone17ProMax: ProductDetail = {
-  breadcrumb: ["Cases & Protectors", "Apple", "iPhone 17 Pro Max"],
+  breadcrumb: [
+    { label: "Cases & Protectors", slug: "cases-screen-protectors" },
+    { label: "Apple", slug: "apple-cases-accessories" },
+    { label: "iPhone 17 Pro Max", slug: "iphone-17-pro-max-cases" },
+  ],
   gallery: [img1, img2, img3, img4, img5, img6, img7, img8, img9, img10, img11, img12],
   inStock: true,
 

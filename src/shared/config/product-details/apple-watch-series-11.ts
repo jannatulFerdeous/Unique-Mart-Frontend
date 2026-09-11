@@ -12,7 +12,11 @@ import img7 from "@/images/products/apple-watch-series-11/07-apple-watch-series-
 import img8 from "@/images/products/apple-watch-series-11/08-apple-watch-series-11-space-gray817.jpeg";
 
 export const appleWatchSeries11: ProductDetail = {
-  breadcrumb: ["Watches", "Smart Watch", "Apple"],
+  breadcrumb: [
+    { label: "Watches", slug: "watch" },
+    { label: "Smart Watch", slug: "smart-watch" },
+    { label: "Apple", slug: "apple-watch" },
+  ],
   gallery: [img1, img2, img3, img4, img5, img6, img7, img8],
   inStock: true,
 

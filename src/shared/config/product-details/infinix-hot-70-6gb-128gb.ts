@@ -20,7 +20,10 @@ import img15 from "@/images/products/infinix-hot-70-6gb-128gb/15-infinix-hot-70-
 import img16 from "@/images/products/infinix-hot-70-6gb-128gb/16-infinix-hot-70-dive-blue-2.jpeg";
 
 export const infinixHot706gb128gb: ProductDetail = {
-  breadcrumb: ["Phones", "Infinix"],
+  breadcrumb: [
+    { label: "Phones", slug: "phone" },
+    { label: "Infinix", slug: "infinix-mobile-phone" },
+  ],
   gallery: [img1, img2, img3, img4, img5, img6, img7, img8, img9, img10, img11, img12, img13, img14, img15, img16],
   inStock: true,
 

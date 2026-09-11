@@ -6,7 +6,10 @@ import img1 from "@/images/brands/vivo-y05e.jpeg";
 import img2 from "@/images/products/vivo-y05e/02-vivo-y05e-black.jpeg";
 
 export const vivoY05e: ProductDetail = {
-  breadcrumb: ["Phones", "Vivo"],
+  breadcrumb: [
+    { label: "Phones", slug: "phone" },
+    { label: "Vivo", slug: "vivo" },
+  ],
   gallery: [img1, img2],
   inStock: true,
 

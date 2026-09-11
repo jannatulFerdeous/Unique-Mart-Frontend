@@ -10,7 +10,11 @@ import img5 from "@/images/products/jbl-partybox-520-wireless-speaker/05-jbl-par
 import img6 from "@/images/products/jbl-partybox-520-wireless-speaker/06-jbl-partybox-520-wireless-speaker-3727.jpeg";
 
 export const jblPartybox520WirelessSpeaker: ProductDetail = {
-  breadcrumb: ["Headphone & Speaker", "Speaker", "JBL"],
+  breadcrumb: [
+    { label: "Headphone & Speaker", slug: "headphone-speaker" },
+    { label: "Speaker", slug: "speakers" },
+    { label: "JBL", slug: "jbl-speaker" },
+  ],
   gallery: [img1, img2, img3, img4, img5, img6],
   inStock: true,
 

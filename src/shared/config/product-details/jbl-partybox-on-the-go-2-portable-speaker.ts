@@ -8,7 +8,11 @@ import img3 from "@/images/products/jbl-partybox-on-the-go-2-portable-speaker/03
 import img4 from "@/images/products/jbl-partybox-on-the-go-2-portable-speaker/04-jbl-partybox-on-the-go-2-portable-speaker-3.jpeg";
 
 export const jblPartyboxOnTheGo2PortableSpeaker: ProductDetail = {
-  breadcrumb: ["Headphone & Speaker", "Speaker", "JBL"],
+  breadcrumb: [
+    { label: "Headphone & Speaker", slug: "headphone-speaker" },
+    { label: "Speaker", slug: "speakers" },
+    { label: "JBL", slug: "jbl-speaker" },
+  ],
   gallery: [img1, img2, img3, img4],
   inStock: true,
 

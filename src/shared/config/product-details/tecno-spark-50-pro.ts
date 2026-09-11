@@ -8,7 +8,10 @@ import img3 from "@/images/brands/tecno-spark-50-pro-8gb-128gb.jpeg";
 import img4 from "@/images/products/tecno-spark-50-pro/04-tecno-spark-50-pro-blue.jpeg";
 
 export const tecnoSpark50Pro: ProductDetail = {
-  breadcrumb: ["Phones", "TECNO"],
+  breadcrumb: [
+    { label: "Phones", slug: "phone" },
+    { label: "TECNO", slug: "tecno-mobile-phone" },
+  ],
   gallery: [img1, img2, img3, img4],
   inStock: true,
 

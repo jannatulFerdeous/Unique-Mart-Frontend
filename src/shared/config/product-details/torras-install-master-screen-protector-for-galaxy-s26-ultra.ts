@@ -8,7 +8,11 @@ import img3 from "@/images/products/torras-install-master-screen-protector-for-g
 import img4 from "@/images/products/torras-install-master-screen-protector-for-galaxy-s26-ultra/04-torras-install-master-screen-protectors-for-galaxy-s26-2.jpeg";
 
 export const torrasInstallMasterScreenProtectorForGalaxyS26Ultra: ProductDetail = {
-  breadcrumb: ["Cases & Protectors", "Samsung", "Galaxy S26 Ultra"],
+  breadcrumb: [
+    { label: "Cases & Protectors", slug: "cases-screen-protectors" },
+    { label: "Samsung", slug: "samsung-cases-accessories" },
+    { label: "Galaxy S26 Ultra", slug: "galaxy-s26-ultra-cases-screen-protectors" },
+  ],
   gallery: [img1, img2, img3, img4],
   inStock: true,
 

@@ -8,7 +8,11 @@ import img3 from "@/images/products/tecno-watch-3-active-smart-watch/03-tecno-wa
 import img4 from "@/images/products/tecno-watch-3-active-smart-watch/04-tecno-watch-3-active-smart-watch-3-1780986148702.jpeg";
 
 export const tecnoWatch3ActiveSmartWatch: ProductDetail = {
-  breadcrumb: ["Watches", "Smart Watch", "Tecno"],
+  breadcrumb: [
+    { label: "Watches", slug: "watch" },
+    { label: "Smart Watch", slug: "smart-watch" },
+    { label: "Tecno", slug: "tecno-smart-watch" },
+  ],
   gallery: [img1, img2, img3, img4],
   inStock: true,
 

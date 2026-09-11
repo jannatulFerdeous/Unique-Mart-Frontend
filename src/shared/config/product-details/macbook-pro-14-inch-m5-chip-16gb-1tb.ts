@@ -13,7 +13,10 @@ import img8 from "@/images/products/macbook-pro-14-inch-m5-chip-16gb-1tb/09-macb
 import img9 from "@/images/products/macbook-pro-14-inch-m5-chip-16gb-1tb/10-macbook-pro-14-inch-m5-chip-new.jpg-2697.jpeg";
 
 export const macbookPro14InchM5Chip16gb1tb: ProductDetail = {
-  breadcrumb: ["Mac", "MacBook"],
+  breadcrumb: [
+    { label: "Mac", slug: "apple-store" },
+    { label: "MacBook", slug: "macbook" },
+  ],
   gallery: [img1, img2, img3, img4, img5, img6, img7, img8, img9],
   inStock: true,
 

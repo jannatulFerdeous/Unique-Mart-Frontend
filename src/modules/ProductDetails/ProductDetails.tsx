@@ -22,7 +22,7 @@ export function ProductDetails({ product, detail, similar, trail }: Props) {
         <div className="container-page lg:grid lg:grid-cols-[minmax(0,1fr)_19rem] lg:items-start lg:gap-10">
           <div className="min-w-0">
             <ProductTop product={product} detail={detail} />
-            <ProductTabs detail={detail} />
+            <ProductTabs slug={product.slug} detail={detail} />
           </div>
 
           <ProductAside similar={similar} />

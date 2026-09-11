@@ -8,7 +8,10 @@ import img3 from "@/images/products/honor-pad-x7-4gb-128gb/03-honor-pad-x7-2813.
 import img4 from "@/images/products/honor-pad-x7-4gb-128gb/04-honor-pad-x7-3246.jpeg";
 
 export const honorPadX74gb128gb: ProductDetail = {
-  breadcrumb: ["Tablets", "HONOR"],
+  breadcrumb: [
+    { label: "Tablets", slug: "tablets" },
+    { label: "HONOR", slug: "honor-tablet-pc" },
+  ],
   gallery: [img1, img2, img3, img4],
   inStock: true,
 

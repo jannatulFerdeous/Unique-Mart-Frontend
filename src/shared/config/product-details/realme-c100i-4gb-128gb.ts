@@ -6,7 +6,10 @@ import img1 from "@/images/brands/realme-c100i-4gb-128gb.jpeg";
 import img2 from "@/images/products/realme-c100i-4gb-128gb/02-realme-c100i-purple.jpeg";
 
 export const realmeC100i4gb128gb: ProductDetail = {
-  breadcrumb: ["Phones", "realme"],
+  breadcrumb: [
+    { label: "Phones", slug: "phone" },
+    { label: "realme", slug: "realme-mobile-phone" },
+  ],
   gallery: [img1, img2],
   inStock: true,
 

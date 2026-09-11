@@ -8,7 +8,11 @@ import img3 from "@/images/products/galaxy-watch-8/04-samsung-galaxy-watch-8-40m
 import img4 from "@/images/products/galaxy-watch-8/06-galaxy-watch-8-graphite---40mm98.jpeg";
 
 export const galaxyWatch8: ProductDetail = {
-  breadcrumb: ["Watches", "Smart Watch", "Samsung"],
+  breadcrumb: [
+    { label: "Watches", slug: "watch" },
+    { label: "Smart Watch", slug: "smart-watch" },
+    { label: "Samsung", slug: "samsung-watch" },
+  ],
   gallery: [img1, img2, img3, img4],
   inStock: true,
 

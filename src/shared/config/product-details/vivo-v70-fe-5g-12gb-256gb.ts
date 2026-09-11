@@ -6,7 +6,10 @@ import img1 from "@/images/brands/vivo-v70-fe-5g-12gb-256gb.jpeg";
 import img2 from "@/images/products/vivo-v70-fe-5g-12gb-256gb/02-vivo-v70-fe-5g-purple.jpeg";
 
 export const vivoV70Fe5g12gb256gb: ProductDetail = {
-  breadcrumb: ["Phones", "Vivo"],
+  breadcrumb: [
+    { label: "Phones", slug: "phone" },
+    { label: "Vivo", slug: "vivo" },
+  ],
   gallery: [img1, img2],
   inStock: true,
 

@@ -6,7 +6,10 @@ import img1 from "@/images/brands/xiaomi-redmi-pad-2-9-7-inch-4gb-128gb.jpeg";
 import img2 from "@/images/products/redmi-pad-2-9-7-inch-4gb-128gb/02-redmi-pad-2-9-7-inch-4g-gray.jpeg";
 
 export const redmiPad297Inch4gb128gb: ProductDetail = {
-  breadcrumb: ["Tablets", "Xiaomi"],
+  breadcrumb: [
+    { label: "Tablets", slug: "tablets" },
+    { label: "Xiaomi", slug: "xiaomi-tablet-pc" },
+  ],
   gallery: [img1, img2],
   inStock: true,
 

@@ -138,6 +138,46 @@
   }
 }
 
+/* One half of the category page's price slider. Two of these sit on top of
+   each other so a range has both a low and a high handle, which a single
+   `input[type=range]` cannot express.
+
+   The input itself ignores the pointer so the one underneath stays reachable;
+   only the thumb takes events. Thumb styling has to be written per engine —
+   there is no standard selector for it, and Tailwind has no utility that
+   reaches inside a shadow root. */
+@utility range-thumb {
+  pointer-events: none;
+  appearance: none;
+  background: transparent;
+
+  &::-webkit-slider-thumb {
+    pointer-events: auto;
+    appearance: none;
+    block-size: 1.25rem;
+    inline-size: 1.25rem;
+    border-radius: 9999px;
+    border: 2px solid var(--color-tertiary);
+    background: var(--color-surface);
+    cursor: grab;
+  }
+
+  &::-moz-range-thumb {
+    pointer-events: auto;
+    block-size: 1.25rem;
+    inline-size: 1.25rem;
+    border-radius: 9999px;
+    border: 2px solid var(--color-tertiary);
+    background: var(--color-surface);
+    cursor: grab;
+  }
+
+  &:focus-visible::-webkit-slider-thumb {
+    outline: 2px solid var(--color-tertiary);
+    outline-offset: 2px;
+  }
+}
+
 @layer base {
   html {
     -webkit-text-size-adjust: 100%;

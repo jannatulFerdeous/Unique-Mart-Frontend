@@ -10,7 +10,10 @@ import img5 from "@/images/products/oneplus-pad-go-2-5g/05-oneplus-pad-go-2-5g-b
 import img6 from "@/images/products/oneplus-pad-go-2-5g/06-oneplus-pad-go-2-5g-black-3.jpeg";
 
 export const oneplusPadGo25g: ProductDetail = {
-  breadcrumb: ["Tablets", "OnePlus"],
+  breadcrumb: [
+    { label: "Tablets", slug: "tablets" },
+    { label: "OnePlus", slug: "oneplus-tablet-pc" },
+  ],
   gallery: [img1, img2, img3, img4, img5, img6],
   inStock: true,
 

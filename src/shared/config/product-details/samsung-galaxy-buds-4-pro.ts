@@ -12,7 +12,11 @@ import img7 from "@/images/products/samsung-galaxy-buds-4-pro/07-samsung-galaxy-
 import img8 from "@/images/products/samsung-galaxy-buds-4-pro/08-samsung-galaxy-buds-4-pro-7.jpeg";
 
 export const samsungGalaxyBuds4Pro: ProductDetail = {
-  breadcrumb: ["Headphone & Speaker", "Earbuds", "Samsung"],
+  breadcrumb: [
+    { label: "Headphone & Speaker", slug: "headphone-speaker" },
+    { label: "Earbuds", slug: "earbuds" },
+    { label: "Samsung", slug: "samsung-earbuds" },
+  ],
   gallery: [img1, img2, img3, img4, img5, img6, img7, img8],
   inStock: true,
 

@@ -6,7 +6,10 @@ import img1 from "@/images/brands/oppo-a6c.jpeg";
 import img2 from "@/images/products/oppo-a6c/02-oppo-a6c-brown.jpeg";
 
 export const oppoA6c: ProductDetail = {
-  breadcrumb: ["Phones", "OPPO"],
+  breadcrumb: [
+    { label: "Phones", slug: "phone" },
+    { label: "OPPO", slug: "oppo" },
+  ],
   gallery: [img1, img2],
   inStock: true,
 

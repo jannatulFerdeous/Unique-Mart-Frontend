@@ -7,7 +7,11 @@ import img2 from "@/images/products/samsung-galaxy-s26-ultra-clear-magnet-case/0
 import img3 from "@/images/products/samsung-galaxy-s26-ultra-clear-magnet-case/03-samsung-galaxy-s26-ultra-clear-magnet-case-clear-2.jpeg";
 
 export const samsungGalaxyS26UltraClearMagnetCase: ProductDetail = {
-  breadcrumb: ["Cases & Protectors", "Samsung", "Galaxy S26 Ultra"],
+  breadcrumb: [
+    { label: "Cases & Protectors", slug: "cases-screen-protectors" },
+    { label: "Samsung", slug: "samsung-cases-accessories" },
+    { label: "Galaxy S26 Ultra", slug: "galaxy-s26-ultra-cases-screen-protectors" },
+  ],
   gallery: [img1, img2, img3],
   inStock: true,
 

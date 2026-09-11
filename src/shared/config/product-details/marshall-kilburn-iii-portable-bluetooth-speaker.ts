@@ -11,7 +11,11 @@ import img6 from "@/images/products/marshall-kilburn-iii-portable-bluetooth-spea
 import img7 from "@/images/products/marshall-kilburn-iii-portable-bluetooth-speaker/07-marshall-kilburn-iii-portable-bluetooth-speaker-black-brass-33.jpeg";
 
 export const marshallKilburnIiiPortableBluetoothSpeaker: ProductDetail = {
-  breadcrumb: ["Headphone & Speaker", "Speaker", "Marshall"],
+  breadcrumb: [
+    { label: "Headphone & Speaker", slug: "headphone-speaker" },
+    { label: "Speaker", slug: "speakers" },
+    { label: "Marshall", slug: "marshall-speaker" },
+  ],
   gallery: [img1, img2, img3, img4, img5, img6, img7],
   inStock: true,
 

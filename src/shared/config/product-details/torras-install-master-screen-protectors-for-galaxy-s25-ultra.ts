@@ -9,7 +9,11 @@ import img4 from "@/images/products/torras-install-master-screen-protectors-for-
 import img5 from "@/images/products/torras-install-master-screen-protectors-for-galaxy-s25-ultra/05-torras-install-master-case-for-galaxy-s25-ultra146.jpeg";
 
 export const torrasInstallMasterScreenProtectorsForGalaxyS25Ultra: ProductDetail = {
-  breadcrumb: ["Cases & Protectors", "Samsung", "Galaxy S25 Ultra"],
+  breadcrumb: [
+    { label: "Cases & Protectors", slug: "cases-screen-protectors" },
+    { label: "Samsung", slug: "samsung-cases-accessories" },
+    { label: "Galaxy S25 Ultra", slug: "galaxy-s25-ultra-cases-screen-protectors" },
+  ],
   gallery: [img1, img2, img3, img4, img5],
   inStock: true,
 

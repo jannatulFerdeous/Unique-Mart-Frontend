@@ -18,7 +18,11 @@ import img13 from "@/images/products/jbl-go-5-bluetooth-speaker/13-jbl-go-5-blue
 import img14 from "@/images/products/jbl-go-5-bluetooth-speaker/14-jbl-go-5-bluetooth-speaker-white-1.jpeg";
 
 export const jblGo5BluetoothSpeaker: ProductDetail = {
-  breadcrumb: ["Headphone & Speaker", "Speaker", "JBL"],
+  breadcrumb: [
+    { label: "Headphone & Speaker", slug: "headphone-speaker" },
+    { label: "Speaker", slug: "speakers" },
+    { label: "JBL", slug: "jbl-speaker" },
+  ],
   gallery: [img1, img2, img3, img4, img5, img6, img7, img8, img9, img10, img11, img12, img13, img14],
   inStock: true,
 

@@ -8,7 +8,11 @@ import img3 from "@/images/products/apple-magic-keyboard-for-ipad-air-13-inch/03
 import img4 from "@/images/products/apple-magic-keyboard-for-ipad-air-13-inch/04-apple-magic-keyboard-for-ipad-air-11-inch-3.jpeg";
 
 export const appleMagicKeyboardForIpadAir13Inch: ProductDetail = {
-  breadcrumb: ["PC Accessories", "Keyboard", "Apple"],
+  breadcrumb: [
+    { label: "PC Accessories", slug: "computer-accessories" },
+    { label: "Keyboard", slug: "keyboard" },
+    { label: "Apple", slug: "apple-keyboard" },
+  ],
   gallery: [img1, img2, img3, img4],
   inStock: true,
 

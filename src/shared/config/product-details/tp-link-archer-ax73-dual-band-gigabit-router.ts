@@ -8,7 +8,11 @@ import img3 from "@/images/products/tp-link-archer-ax73-dual-band-gigabit-router
 import img4 from "@/images/products/tp-link-archer-ax73-dual-band-gigabit-router/04-tp-link-archer-ax73-dual-band-gigabit-router.jpg-3780.jpeg";
 
 export const tpLinkArcherAx73DualBandGigabitRouter: ProductDetail = {
-  breadcrumb: ["Networking", "Router", "Tp-Link"],
+  breadcrumb: [
+    { label: "Networking", slug: "networking" },
+    { label: "Router", slug: "router" },
+    { label: "Tp-Link", slug: "tp-link-router" },
+  ],
   gallery: [img1, img2, img3, img4],
   inStock: true,
 

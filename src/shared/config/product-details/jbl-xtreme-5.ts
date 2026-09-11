@@ -7,7 +7,11 @@ import img2 from "@/images/products/jbl-xtreme-5/02-jbl-xtreme-5-squad.jpeg";
 import img3 from "@/images/products/jbl-xtreme-5/03-jbl-xtreme-5-blue.jpeg";
 
 export const jblXtreme5: ProductDetail = {
-  breadcrumb: ["Headphone & Speaker", "Speaker", "JBL"],
+  breadcrumb: [
+    { label: "Headphone & Speaker", slug: "headphone-speaker" },
+    { label: "Speaker", slug: "speakers" },
+    { label: "JBL", slug: "jbl-speaker" },
+  ],
   gallery: [img1, img2, img3],
   inStock: true,
 

@@ -9,7 +9,10 @@ import img4 from "@/images/products/vivo-y31d-4gb-128gb/04-vivo-y31d-8gb-128gb-8
 import img5 from "@/images/products/vivo-y31d-4gb-128gb/05-vivo-y31d-8gb-128gb-9.jpeg";
 
 export const vivoY31d4gb128gb: ProductDetail = {
-  breadcrumb: ["Phones", "Vivo"],
+  breadcrumb: [
+    { label: "Phones", slug: "phone" },
+    { label: "Vivo", slug: "vivo" },
+  ],
   gallery: [img1, img2, img3, img4, img5],
   inStock: true,
 

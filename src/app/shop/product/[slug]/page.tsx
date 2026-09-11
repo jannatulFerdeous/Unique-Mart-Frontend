@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { ProductDetails, type Crumb } from "@/modules/ProductDetails";
 import { allProducts, findProduct } from "@/shared/config/products";
 import { findProductDetail } from "@/shared/config/product-details";
+import { categoryPath } from "@/shared/config/categories";
 import { formatPrice } from "@/shared/utils/price";
 
 export function generateStaticParams() {
@@ -23,12 +24,18 @@ export async function generateMetadata({
 }
 
 /** Home → the categories the product's detail data names → the product itself.
- *  Only Home is a link; the categories have no routes yet. A product without
- *  detail data gets the two-step trail rather than an invented category. */
-function buildTrail(name: string, crumbs: string[] = []): Crumb[] {
+ *  Every category links to its own page. A product without detail data gets the
+ *  two-step trail rather than an invented category. */
+function buildTrail(
+  name: string,
+  crumbs: { label: string; slug: string }[] = [],
+): Crumb[] {
   return [
     { label: "Home", href: "/" },
-    ...crumbs.map((label) => ({ label })),
+    ...crumbs.map((crumb) => ({
+      label: crumb.label,
+      href: categoryPath(crumb.slug),
+    })),
     { label: name },
   ];
 }

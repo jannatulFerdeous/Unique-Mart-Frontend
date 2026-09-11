@@ -20,7 +20,10 @@ import img15 from "@/images/products/macbook-neo-8-512/15-macbook-neo-citrus512g
 import img16 from "@/images/products/macbook-neo-8-256/16-macbook-neo-citrus-2.jpeg";
 
 export const macbookNeo8512: ProductDetail = {
-  breadcrumb: ["Mac", "MacBook"],
+  breadcrumb: [
+    { label: "Mac", slug: "apple-store" },
+    { label: "MacBook", slug: "macbook" },
+  ],
   gallery: [img1, img2, img3, img4, img5, img6, img7, img8, img9, img10, img11, img12, img13, img14, img15, img16],
   inStock: true,
 

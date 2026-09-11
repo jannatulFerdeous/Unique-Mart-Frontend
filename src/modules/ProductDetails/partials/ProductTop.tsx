@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { Star } from "lucide-react";
+import { Stars } from "@/common/components/Stars";
 import type { Product, ProductDetail } from "@/shared/config/catalog";
+import { useReviews } from "@/shared/libs/reviews";
 import { cn } from "@/shared/utils/cn";
 import { formatPrice } from "@/shared/utils/price";
 import { product_details_data } from "../config/constants";
@@ -14,7 +15,10 @@ type Props = {
 };
 
 export function ProductTop({ product, detail }: Props) {
-  const { labels } = product_details_data;
+  const { labels, reviews: reviewCopy } = product_details_data;
+  // The score here is what customers actually left, not the number the
+  // catalogue was seeded with — so it agrees with the Reviews tab below.
+  const { summary } = useReviews(product.slug);
   const [color, setColor] = useState(0);
   const [image, setImage] = useState(0);
   // One selected index per variant axis, keyed by the axis label.
@@ -60,18 +64,14 @@ export function ProductTop({ product, detail }: Props) {
             </span>
           </p>
 
-          {product.rating ? (
+          {summary.average !== null ? (
             <p className="flex items-center gap-1 text-ink-muted">
-              <span className="flex" aria-hidden>
-                {Array.from({ length: 5 }, (_, i) => (
-                  <Star
-                    key={i}
-                    className="size-4 fill-ink stroke-none data-dim:fill-line-strong"
-                    data-dim={i < Math.round(product.rating!) ? undefined : ""}
-                  />
-                ))}
-              </span>
-              ({product.rating.toFixed(1)})
+              <Stars value={summary.average} />({summary.average.toFixed(1)}
+              {" · "}
+              {summary.count === 1
+                ? reviewCopy.countOne
+                : reviewCopy.countMany.replace("{n}", String(summary.count))}
+              )
             </p>
           ) : null}
         </div>

@@ -9,7 +9,10 @@ import img4 from "@/images/products/macbook-air-15-inch-m4-chip-display-unit/04-
 import img5 from "@/images/products/macbook-air-15-inch-m4-chip-display-unit/05-macbook-air-13-inch-m4-chip-24gb-512gb-midnight-348.jpeg";
 
 export const macbookAir15InchM4ChipDisplayUnit: ProductDetail = {
-  breadcrumb: ["Mac", "MacBook"],
+  breadcrumb: [
+    { label: "Mac", slug: "apple-store" },
+    { label: "MacBook", slug: "macbook" },
+  ],
   gallery: [img1, img2, img3, img4, img5],
   inStock: false,
 

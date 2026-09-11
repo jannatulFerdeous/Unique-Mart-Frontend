@@ -6,7 +6,11 @@ import img1 from "@/images/brands/xiaomi-67w-usb-charger.jpeg";
 import img2 from "@/images/products/xiaomi-67w-usb-charger/02-xiaomi-67w-usb-charger-white-1.jpeg";
 
 export const xiaomi67wUsbCharger: ProductDetail = {
-  breadcrumb: ["Phone Accessories", "Charger & Adapter", "Cable & Adapter"],
+  breadcrumb: [
+    { label: "Phone Accessories", slug: "mobile-phone-accessories" },
+    { label: "Charger & Adapter", slug: "charger-adapters" },
+    { label: "Cable & Adapter", slug: "cable-adapter" },
+  ],
   gallery: [img1, img2],
   inStock: true,
 

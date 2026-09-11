@@ -19,7 +19,10 @@ import img14 from "@/images/products/vivo-y05-4gb-128gb/14-vivo-y05-4gb-128gb-bl
 import img15 from "@/images/products/vivo-y05-4gb-128gb/15-vivo-y05-4gb-128gb-blue-4.jpeg";
 
 export const vivoY054gb128gb: ProductDetail = {
-  breadcrumb: ["Phones", "Vivo"],
+  breadcrumb: [
+    { label: "Phones", slug: "phone" },
+    { label: "Vivo", slug: "vivo" },
+  ],
   gallery: [img1, img2, img3, img4, img5, img6, img7, img8, img9, img10, img11, img12, img13, img14, img15],
   inStock: true,
 

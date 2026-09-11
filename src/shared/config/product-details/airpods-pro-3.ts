@@ -8,7 +8,10 @@ import img3 from "@/images/products/airpods-pro-3/03-airpods-pro-3-2783.jpeg";
 import img4 from "@/images/products/airpods-pro-3/04-airpods-pro-3-3706.jpeg";
 
 export const airpodsPro3: ProductDetail = {
-  breadcrumb: ["Headphone & Speaker", "AirPods"],
+  breadcrumb: [
+    { label: "Headphone & Speaker", slug: "headphone-speaker" },
+    { label: "AirPods", slug: "airpods" },
+  ],
   gallery: [img1, img2, img3, img4],
   inStock: true,
 

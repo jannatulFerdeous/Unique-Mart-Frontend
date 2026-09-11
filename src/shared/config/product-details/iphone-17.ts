@@ -9,7 +9,10 @@ import img4 from "@/images/products/iphone-17/05-iphone-17-white918.jpeg";
 import img5 from "@/images/products/iphone-17/06-apple-iphone-17-sage807.jpeg";
 
 export const iphone17: ProductDetail = {
-  breadcrumb: ["Phones", "iPhone"],
+  breadcrumb: [
+    { label: "Phones", slug: "phone" },
+    { label: "iPhone", slug: "iphone" },
+  ],
   gallery: [img1, img2, img3, img4, img5],
   inStock: true,
 

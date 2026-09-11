@@ -8,7 +8,10 @@ import img3 from "@/images/products/iphone-air/03-iphone-air-cloud-white642.jpeg
 import img4 from "@/images/products/iphone-air/04-iphone-air-light-gold769.jpeg";
 
 export const iphoneAir: ProductDetail = {
-  breadcrumb: ["Phones", "iPhone"],
+  breadcrumb: [
+    { label: "Phones", slug: "phone" },
+    { label: "iPhone", slug: "iphone" },
+  ],
   gallery: [img1, img2, img3, img4],
   inStock: true,
 

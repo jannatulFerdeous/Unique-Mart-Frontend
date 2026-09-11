@@ -7,7 +7,11 @@ import img2 from "@/images/products/spigen-ultra-hybrid-magfit-case-for-galaxy-s
 import img3 from "@/images/products/spigen-ultra-hybrid-magfit-case-for-galaxy-s26-ultra/03-spigen-ultra-hyrbird-magfit-case-for-galaxy-s26-ultra-6.jpeg";
 
 export const spigenUltraHybridMagfitCaseForGalaxyS26Ultra: ProductDetail = {
-  breadcrumb: ["Cases & Protectors", "Samsung", "Galaxy S26 Ultra"],
+  breadcrumb: [
+    { label: "Cases & Protectors", slug: "cases-screen-protectors" },
+    { label: "Samsung", slug: "samsung-cases-accessories" },
+    { label: "Galaxy S26 Ultra", slug: "galaxy-s26-ultra-cases-screen-protectors" },
+  ],
   gallery: [img1, img2, img3],
   inStock: true,
 

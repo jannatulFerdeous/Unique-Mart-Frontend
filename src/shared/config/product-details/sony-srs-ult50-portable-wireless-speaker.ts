@@ -7,7 +7,11 @@ import img2 from "@/images/products/sony-srs-ult50-portable-wireless-speaker/02-
 import img3 from "@/images/products/sony-srs-ult50-portable-wireless-speaker/03-sony-srs-ult50-portable-wireless-speaker-2666.jpeg";
 
 export const sonySrsUlt50PortableWirelessSpeaker: ProductDetail = {
-  breadcrumb: ["Headphone & Speaker", "Speaker", "Sony"],
+  breadcrumb: [
+    { label: "Headphone & Speaker", slug: "headphone-speaker" },
+    { label: "Speaker", slug: "speakers" },
+    { label: "Sony", slug: "sony-speaker" },
+  ],
   gallery: [img1, img2, img3],
   inStock: true,
 

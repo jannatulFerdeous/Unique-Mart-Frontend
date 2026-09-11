@@ -10,7 +10,11 @@ import img5 from "@/images/products/bearbrick-audio-portable-bluetooth-speaker/0
 import img6 from "@/images/products/bearbrick-audio-portable-bluetooth-speaker/06-bearbrick-audio-portable-bluetooth-speaker-black-2.jpeg";
 
 export const bearbrickAudioPortableBluetoothSpeaker: ProductDetail = {
-  breadcrumb: ["Headphone & Speaker", "Speaker", "BE@RBRICK"],
+  breadcrumb: [
+    { label: "Headphone & Speaker", slug: "headphone-speaker" },
+    { label: "Speaker", slug: "speakers" },
+    { label: "BE@RBRICK", slug: "bearbrick-speaker" },
+  ],
   gallery: [img1, img2, img3, img4, img5, img6],
   inStock: true,
 

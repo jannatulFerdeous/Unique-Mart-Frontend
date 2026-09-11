@@ -8,7 +8,10 @@ import img3 from "@/images/products/ipad-air-13-inch-wifi-m3-chip-display-unit/0
 import img4 from "@/images/products/ipad-air-13-inch-wifi-m3-chip-display-unit/04-ipad-air-13-inch-wifi-m3-chip-2935.jpeg";
 
 export const ipadAir13InchWifiM3ChipDisplayUnit: ProductDetail = {
-  breadcrumb: ["Tablets", "iPad"],
+  breadcrumb: [
+    { label: "Tablets", slug: "tablets" },
+    { label: "iPad", slug: "ipad" },
+  ],
   gallery: [img1, img2, img3, img4],
   inStock: true,
 

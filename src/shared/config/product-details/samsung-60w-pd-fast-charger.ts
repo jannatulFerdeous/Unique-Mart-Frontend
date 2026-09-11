@@ -8,7 +8,11 @@ import img3 from "@/images/products/samsung-60w-pd-fast-charger/03-samsung-60w-p
 import img4 from "@/images/products/samsung-60w-pd-fast-charger/04-samsung-60w-pd-fast-charger-3.jpeg";
 
 export const samsung60wPdFastCharger: ProductDetail = {
-  breadcrumb: ["Phone Accessories", "Charger & Adapter", "Adapter"],
+  breadcrumb: [
+    { label: "Phone Accessories", slug: "mobile-phone-accessories" },
+    { label: "Charger & Adapter", slug: "charger-adapters" },
+    { label: "Adapter", slug: "adapter" },
+  ],
   gallery: [img1, img2, img3, img4],
   inStock: true,
 

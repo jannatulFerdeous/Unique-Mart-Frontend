@@ -7,7 +7,10 @@ import img2 from "@/images/products/iphone-17-pro-max/02-iphone-17-pro-max-deep-
 import img3 from "@/images/products/iphone-17-pro-max/03-iphone-17-pro-max-silver416.jpeg";
 
 export const iphone17ProMax: ProductDetail = {
-  breadcrumb: ["Phones", "iPhone"],
+  breadcrumb: [
+    { label: "Phones", slug: "phone" },
+    { label: "iPhone", slug: "iphone" },
+  ],
   gallery: [img1, img2, img3],
   inStock: true,
 

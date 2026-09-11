@@ -8,7 +8,11 @@ import img3 from "@/images/products/redmi-buds-8-lite-earbuds/03-redmi-buds-8-li
 import img4 from "@/images/products/redmi-buds-8-lite-earbuds/04-redmi-buds-8-lite-earbuds-black-2.jpeg";
 
 export const redmiBuds8LiteEarbuds: ProductDetail = {
-  breadcrumb: ["Headphone & Speaker", "Earbuds", "Xiaomi"],
+  breadcrumb: [
+    { label: "Headphone & Speaker", slug: "headphone-speaker" },
+    { label: "Earbuds", slug: "earbuds" },
+    { label: "Xiaomi", slug: "xiaomi-earbuds" },
+  ],
   gallery: [img1, img2, img3, img4],
   inStock: true,
 

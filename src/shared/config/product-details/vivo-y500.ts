@@ -14,7 +14,10 @@ import img9 from "@/images/products/vivo-y500/09-vivo-y500-pearl-white-3.jpeg";
 import img10 from "@/images/products/vivo-y500/10-vivo-y500-pearl-white-4.jpeg";
 
 export const vivoY500: ProductDetail = {
-  breadcrumb: ["Phones", "Vivo"],
+  breadcrumb: [
+    { label: "Phones", slug: "phone" },
+    { label: "Vivo", slug: "vivo" },
+  ],
   gallery: [img1, img2, img3, img4, img5, img6, img7, img8, img9, img10],
   inStock: true,
 

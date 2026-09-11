@@ -9,7 +9,10 @@ import img4 from "@/images/products/oneplus-pad-4-12gb-512gb/04-oneplus-pad-4-du
 import img5 from "@/images/products/oneplus-pad-4-12gb-512gb/05-oneplus-pad-4-dune-glow-4.jpeg";
 
 export const oneplusPad412gb512gb: ProductDetail = {
-  breadcrumb: ["Tablets", "OnePlus"],
+  breadcrumb: [
+    { label: "Tablets", slug: "tablets" },
+    { label: "OnePlus", slug: "oneplus-tablet-pc" },
+  ],
   gallery: [img1, img2, img3, img4, img5],
   inStock: true,
 

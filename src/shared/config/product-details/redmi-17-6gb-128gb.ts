@@ -16,7 +16,10 @@ import img11 from "@/images/products/redmi-17-6gb-128gb/11-redmi-17-blue-1.jpeg"
 import img12 from "@/images/products/redmi-17-6gb-128gb/12-redmi-17-blue-2.jpeg";
 
 export const redmi176gb128gb: ProductDetail = {
-  breadcrumb: ["Phones", "Xiaomi"],
+  breadcrumb: [
+    { label: "Phones", slug: "phone" },
+    { label: "Xiaomi", slug: "xiaomi-mobile-phone" },
+  ],
   gallery: [img1, img2, img3, img4, img5, img6, img7, img8, img9, img10, img11, img12],
   inStock: true,
 

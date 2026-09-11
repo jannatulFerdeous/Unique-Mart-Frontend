@@ -7,7 +7,10 @@ import img2 from "@/images/products/iphone-17-pro/03-iphone-17-pro-silver389.jpe
 import img3 from "@/images/products/iphone-17-pro/04-iphone-17-pro-cosmic-orange400.jpeg";
 
 export const iphone17Pro: ProductDetail = {
-  breadcrumb: ["Phones", "iPhone"],
+  breadcrumb: [
+    { label: "Phones", slug: "phone" },
+    { label: "iPhone", slug: "iphone" },
+  ],
   gallery: [img1, img2, img3],
   inStock: true,
 

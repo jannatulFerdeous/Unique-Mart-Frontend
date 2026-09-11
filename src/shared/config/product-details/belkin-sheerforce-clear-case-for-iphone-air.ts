@@ -8,7 +8,11 @@ import img3 from "@/images/products/belkin-sheerforce-clear-case-for-iphone-air/
 import img4 from "@/images/products/belkin-sheerforce-clear-case-for-iphone-air/04-belkin-sheerforce-clear-case-for-iphone-air-3615.jpeg";
 
 export const belkinSheerforceClearCaseForIphoneAir: ProductDetail = {
-  breadcrumb: ["Cases & Protectors", "Apple", "iPhone Air"],
+  breadcrumb: [
+    { label: "Cases & Protectors", slug: "cases-screen-protectors" },
+    { label: "Apple", slug: "apple-cases-accessories" },
+    { label: "iPhone Air", slug: "iphone-air-cases" },
+  ],
   gallery: [img1, img2, img3, img4],
   inStock: true,
 

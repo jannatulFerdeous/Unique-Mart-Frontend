@@ -10,7 +10,10 @@ import img5 from "@/images/products/honor-pad-x8b-6gb-128gb/05-honor-pad-x8b-3.j
 import img6 from "@/images/products/honor-pad-x8b-6gb-128gb/06-honor-pad-x8b-4.jpeg";
 
 export const honorPadX8b6gb128gb: ProductDetail = {
-  breadcrumb: ["Tablets", "HONOR"],
+  breadcrumb: [
+    { label: "Tablets", slug: "tablets" },
+    { label: "HONOR", slug: "honor-tablet-pc" },
+  ],
   gallery: [img1, img2, img3, img4, img5, img6],
   inStock: true,
 

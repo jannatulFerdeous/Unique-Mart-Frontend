@@ -8,7 +8,11 @@ import img3 from "@/images/products/uag-exclusive-pathfinder-magsafe-case-for-ip
 import img4 from "@/images/products/uag-exclusive-pathfinder-magsafe-case-for-iphone-17-pro/04-uag-exclusive-pathfinder-magsafe-case-for-iphone-17-pro-3982.jpeg";
 
 export const uagExclusivePathfinderMagsafeCaseForIphone17Pro: ProductDetail = {
-  breadcrumb: ["Cases & Protectors", "Apple", "iPhone 17 Pro"],
+  breadcrumb: [
+    { label: "Cases & Protectors", slug: "cases-screen-protectors" },
+    { label: "Apple", slug: "apple-cases-accessories" },
+    { label: "iPhone 17 Pro", slug: "iphone-17-pro-cases" },
+  ],
   gallery: [img1, img2, img3, img4],
   inStock: true,
 

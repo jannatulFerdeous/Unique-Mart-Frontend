@@ -10,7 +10,10 @@ import img5 from "@/images/products/oneplus-pad-lite-8gb-128gb-with-folio-case/0
 import img6 from "@/images/products/oneplus-pad-lite-8gb-128gb-with-folio-case/06-oneplus-pad-lite-8gb-128gb-with-folio-case-4.jpeg";
 
 export const oneplusPadLite8gb128gbWithFolioCase: ProductDetail = {
-  breadcrumb: ["Tablets", "OnePlus"],
+  breadcrumb: [
+    { label: "Tablets", slug: "tablets" },
+    { label: "OnePlus", slug: "oneplus-tablet-pc" },
+  ],
   gallery: [img1, img2, img3, img4, img5, img6],
   inStock: true,
 

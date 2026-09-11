@@ -58,11 +58,10 @@ export type DescriptionBlock = {
 /** Everything a product needs beyond its card. Every field but the gallery can
  *  come back thin: the page renders the sections it has data for. */
 export type ProductDetail = {
-  /** Category names between Home and the product. Labels only — there are no
-   *  category routes yet, so the breadcrumb renders them as plain text. Kept
-   *  here rather than derived from `brand`, because the Exclusive rail's
-   *  products carry no brand on purpose. */
-  breadcrumb?: string[];
+  /** Categories between Home and the product, outermost first. Each links to
+   *  its own `/category/<slug>` page. Kept here rather than derived from
+   *  `brand`, because the Exclusive rail's products carry no brand on purpose. */
+  breadcrumb?: { label: string; slug: string }[];
   gallery: StaticImageData[];
   inStock: boolean;
   /** The bulleted summary beside the price. */

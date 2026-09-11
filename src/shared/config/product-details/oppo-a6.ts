@@ -9,7 +9,10 @@ import img4 from "@/images/brands/oppo-a6-8gb-256gb.jpeg";
 import img5 from "@/images/products/oppo-a6/05-oppo-a6-gold-1602.jpeg";
 
 export const oppoA6: ProductDetail = {
-  breadcrumb: ["Phones", "OPPO"],
+  breadcrumb: [
+    { label: "Phones", slug: "phone" },
+    { label: "OPPO", slug: "oppo" },
+  ],
   gallery: [img1, img2, img3, img4, img5],
   inStock: true,
 

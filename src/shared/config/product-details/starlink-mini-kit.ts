@@ -11,7 +11,10 @@ import img6 from "@/images/products/starlink-mini-kit/06-starlink-mini-kit-7957.
 import img7 from "@/images/products/starlink-mini-kit/07-starlink-mini-kit-2483.jpeg";
 
 export const starlinkMiniKit: ProductDetail = {
-  breadcrumb: ["Networking", "Starlink"],
+  breadcrumb: [
+    { label: "Networking", slug: "networking" },
+    { label: "Starlink", slug: "starlink" },
+  ],
   gallery: [img1, img2, img3, img4, img5, img6, img7],
   inStock: true,
 

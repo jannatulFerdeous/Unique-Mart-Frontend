@@ -5,7 +5,11 @@ import type { ProductDetail } from "../catalog";
 import img1 from "@/images/products/apple-clear-magsafe-case-for-iphone-17.jpeg";
 
 export const appleClearMagsafeCaseForIphone17: ProductDetail = {
-  breadcrumb: ["Cases & Protectors", "Apple", "iPhone 17"],
+  breadcrumb: [
+    { label: "Cases & Protectors", slug: "cases-screen-protectors" },
+    { label: "Apple", slug: "apple-cases-accessories" },
+    { label: "iPhone 17", slug: "iphone-17-cases" },
+  ],
   gallery: [img1],
   inStock: true,
 

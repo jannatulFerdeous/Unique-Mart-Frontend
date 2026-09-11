@@ -2,25 +2,34 @@
 
 import { Fragment, useState } from "react";
 import type { ProductDetail } from "@/shared/config/catalog";
+import { useReviews } from "@/shared/libs/reviews";
 import { cn } from "@/shared/utils/cn";
 import { product_details_data } from "../config/constants";
+import { ProductReviews } from "./ProductReviews";
 
-export function ProductTabs({ detail }: { detail?: ProductDetail }) {
+type Props = {
+  slug: string;
+  detail?: ProductDetail;
+};
+
+export function ProductTabs({ slug, detail }: Props) {
   const { labels } = product_details_data;
-  // Only offer a tab that has something behind it.
-  const tabs = product_details_data.tabs.filter((tab) =>
-    tab.id === "specification"
-      ? Boolean(detail?.specs?.length)
-      : Boolean(detail?.description?.blocks.length),
-  );
-  const [active, setActive] = useState(tabs[0]?.id ?? "specification");
+  const { reviews, summary, add } = useReviews(slug);
 
-  if (tabs.length === 0) {
-    return <p className="mt-12 text-ink-muted">{labels.noSpecs}</p>;
-  }
+  // Only offer a tab that has something behind it. Reviews is always there —
+  // you can write the first one on any product.
+  const tabs = product_details_data.tabs.filter((tab) => {
+    if (tab.id === "specification") return Boolean(detail?.specs?.length);
+    if (tab.id === "description") return Boolean(detail?.description?.blocks.length);
+    return true;
+  });
+  const [active, setActive] = useState(tabs[0]?.id ?? "reviews");
+
+  const hasFacts = tabs.some((tab) => tab.id !== "reviews");
 
   return (
     <div className="mt-14">
+      {!hasFacts && <p className="mb-6 text-ink-muted">{labels.noSpecs}</p>}
       {/* WAI-ARIA tabs, the same pattern the home page's brand strip uses. */}
       <div
         role="tablist"
@@ -48,6 +57,11 @@ export function ProductTabs({ detail }: { detail?: ProductDetail }) {
               )}
             >
               {tab.label}
+              {/* Absent from the prerendered HTML, since the count lives in
+                  the visitor's browser. It appears on hydration. */}
+              {tab.id === "reviews" && summary.count > 0
+                ? ` (${summary.count})`
+                : ""}
             </button>
           );
         })}
@@ -127,6 +141,20 @@ export function ProductTabs({ detail }: { detail?: ProductDetail }) {
               </div>
             ))}
           </div>
+        </div>
+      ) : null}
+
+      {active === "reviews" ? (
+        <div
+          id="panel-reviews"
+          role="tabpanel"
+          aria-labelledby="tab-reviews"
+        >
+          <ProductReviews
+            reviews={reviews}
+            summary={summary}
+            onSubmit={add}
+          />
         </div>
       ) : null}
     </div>

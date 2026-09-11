@@ -6,7 +6,11 @@ import img1 from "@/images/brands/samsung-galaxy-s26-ultra-anti-reflecting-film.
 import img2 from "@/images/products/samsung-galaxy-s26-ultra-anti-reflecting-film/02-samsung-galaxy-s26-ultra-anti-reflecting-film-1.jpeg";
 
 export const samsungGalaxyS26UltraAntiReflectingFilm: ProductDetail = {
-  breadcrumb: ["Cases & Protectors", "Samsung", "Galaxy S26 Ultra"],
+  breadcrumb: [
+    { label: "Cases & Protectors", slug: "cases-screen-protectors" },
+    { label: "Samsung", slug: "samsung-cases-accessories" },
+    { label: "Galaxy S26 Ultra", slug: "galaxy-s26-ultra-cases-screen-protectors" },
+  ],
   gallery: [img1, img2],
   inStock: true,
 

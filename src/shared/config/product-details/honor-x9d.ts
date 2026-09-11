@@ -13,7 +13,10 @@ import img8 from "@/images/products/honor-x9d/08-honor-x9d-gold-1351.jpeg";
 import img9 from "@/images/products/honor-x9d/09-honor-x9d-gold-2581.jpeg";
 
 export const honorX9d: ProductDetail = {
-  breadcrumb: ["Phones", "HONOR"],
+  breadcrumb: [
+    { label: "Phones", slug: "phone" },
+    { label: "HONOR", slug: "honor-mobile-phone" },
+  ],
   gallery: [img1, img2, img3, img4, img5, img6, img7, img8, img9],
   inStock: true,
 

@@ -6,7 +6,10 @@ import img1 from "@/images/products/ipad-pro-11-inch-wifi-m5-chip.jpeg";
 import img2 from "@/images/products/ipad-pro-11-inch-wifi-m5-chip/03-ipad-pro-11-inch-wifi-m5-chip-silver-1318.jpeg";
 
 export const ipadPro13InchM5Chip: ProductDetail = {
-  breadcrumb: ["Tablets", "iPad"],
+  breadcrumb: [
+    { label: "Tablets", slug: "tablets" },
+    { label: "iPad", slug: "ipad" },
+  ],
   gallery: [img1, img2],
   inStock: true,
 
