@@ -41,11 +41,15 @@ src/
     brands/page.tsx        /brands
     about/page.tsx         /about
     faq/page.tsx           /faq — plus FAQPage JSON-LD
+    offers/page.tsx        /offers — every discounted product
+    auth/login|register|   Sign in, register, password reset
+      forgot-password/     (?back=<base64> returns you where you were)
     category/[slug]/       342 prerendered category pages
     shop/product/[slug]/   93 prerendered product pages
   common/                  Shared across modules
     components/            ProductCard, ProductRail, SectionHeader,
-                           ContactBand, FaqAccordion, Stars, icons/
+                           ContactBand, FaqAccordion, Stars, AccountLink,
+                           icons/
     widgets/               Composed layout blocks
       Header/
       Footer/
@@ -66,6 +70,13 @@ src/
     Faq/                   The /faq page
       config/              constants.ts + types.ts
       partials/            FaqIntro, FaqBrowser, FaqContact
+    Auth/                  The /auth/* screens
+      config/              constants.ts + types.ts
+      partials/            AuthCard, AuthBody, AuthField, AuthNote,
+                           GoogleButton, LoginForm, RegisterForm, ForgotForm
+    Offers/                The /offers page
+      config/              constants.ts + types.ts
+      partials/            OffersHero, OffersBrowser
     Category/              /category/[slug]
       config/              constants.ts + types.ts
       partials/            CategoryIntro, CategoryBrowser, CategoryFilters,
@@ -77,8 +88,6 @@ src/
     Shop/          config/ partials/
     Cart/          config/ partials/
     Checkout/      config/ partials/
-    Login/         config/ partials/
-    Signup/        config/ partials/
     Account/       config/ partials/
     ContactUs/     config/ partials/
     Blog/          config/ partials/
@@ -94,12 +103,14 @@ src/
              trust.ts       The six confirmed promises, icon + label + detail
              faq.ts         Every Q&A, grouped; About renders a subset
              products.ts    All 93 products + findProduct / productHref
+                            + `offers`, the derived discount list
              product-details/    One generated module per product: gallery,
                                  colours, variants, specs, description
              catalog.ts     Product / rail types shared with common/
     libs/    fonts.ts       Third-party wrappers (next/font)
              reviews.ts     Customer reviews, stored in the browser
-             session.ts     Signed-in visitor — stub until auth lands
+             session.ts     Signed-in visitor, kept in the browser; also the
+                            `?back=` encode/decode + open-redirect guard
     styles/  globals.css    Tailwind import + @theme tokens
     utils/   cn.ts          Class-name merger
              price.ts       Taka formatting (lakh grouping)

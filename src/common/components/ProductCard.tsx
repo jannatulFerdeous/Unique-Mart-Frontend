@@ -1,22 +1,42 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Star } from "lucide-react";
+import { WishlistButton } from "@/common/components/WishlistButton";
 import type { Product } from "@/shared/config/catalog";
+import { cn } from "@/shared/utils/cn";
 import { formatPrice } from "@/shared/utils/price";
 
-export function ProductCard({ product }: { product: Product }) {
+type Props = {
+  product: Product;
+  /** Replaces the product's own badge on this card only. The offers grid uses
+   *  it for the saving; four products already carry "NEW ARRIVAL", and one
+   *  corner only fits one ribbon. */
+  ribbon?: string;
+};
+
+export function ProductCard({ product, ribbon }: Props) {
   const { slug, name, image, brand, price, compareAt, rating, badge } = product;
   const href = `/shop/product/${slug}`;
+  const corner = ribbon ?? badge;
 
   return (
     <article className="relative flex h-full flex-col overflow-hidden rounded-banner bg-surface">
-      {badge ? (
+      {corner ? (
         // Diagonal corner ribbon. -rotate-45 across an over-wide bar, clipped by
         // the card's overflow-hidden.
-        <span className="pointer-events-none absolute -left-9 top-5 z-10 w-32 -rotate-45 bg-inverse-deep py-1 text-center text-[0.625rem] font-bold tracking-wide text-ink-inverse">
-          {badge}
+        <span
+          className={cn(
+            "pointer-events-none absolute -left-9 top-5 z-10 w-32 -rotate-45 py-1 text-center text-[0.625rem] font-bold tracking-wide text-ink-inverse",
+            ribbon ? "bg-tertiary" : "bg-inverse-deep",
+          )}
+        >
+          {corner}
         </span>
       ) : null}
+
+      {/* Top right, because the ribbon owns the top left. The only interactive
+          thing on the card besides its two links. */}
+      <WishlistButton slug={slug} name={name} />
 
       <Link href={href} tabIndex={-1} aria-hidden className="block">
         <Image

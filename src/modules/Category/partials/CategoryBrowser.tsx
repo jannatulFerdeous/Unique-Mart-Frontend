@@ -182,10 +182,13 @@ export function CategoryBrowser({ name, items, childLabels }: Props) {
   return (
     <div className="lg:grid lg:grid-cols-[16rem_minmax(0,1fr)] lg:items-start lg:gap-10">
       {/* Sidebar from lg; a sheet below it, because a 260px rail beside a 2-up
-          grid leaves the cards unreadable. */}
-      <aside className="hidden lg:sticky lg:top-32 lg:block lg:max-h-[calc(100vh-9rem)] lg:overflow-y-auto lg:pr-1">
-        {sidebar}
-      </aside>
+          grid leaves the cards unreadable.
+
+          Not sticky and not its own scroller: with ten groups the column is
+          taller than the viewport, so sticking it pinned the bottom groups out
+          of reach and an inner scrollbar put a second scroll gesture next to
+          the page's own. It scrolls with the page instead. */}
+      <aside className="hidden lg:block">{sidebar}</aside>
 
       <div className="min-w-0">
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line pb-4">

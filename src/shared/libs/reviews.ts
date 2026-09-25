@@ -41,7 +41,9 @@ export const REVIEW_LIMITS = {
 } as const;
 
 /** Bumping the version abandons older payloads rather than migrating them. */
-const key = (slug: string) => `unique-mart.reviews.v1.${slug}`;
+const PREFIX = "unique-mart.reviews.v1.";
+
+const key = (slug: string) => `${PREFIX}${slug}`;
 
 /** Fires when this tab writes a review, so every component showing the same
  *  product updates. Cross-tab updates arrive as a native `storage` event. */
@@ -131,6 +133,104 @@ export const append = (slug: string, draft: ReviewDraft): Review[] => {
 
   window.dispatchEvent(new CustomEvent(CHANGED, { detail: slug }));
   return next;
+};
+
+/** Drops one review. Unknown ids are a no-op rather than a throw — the
+ *  moderation screen may be a tab behind, and two admins deleting the same
+ *  review should not be an error the second time.
+ *
+ *  This is what the admin portal calls, which makes it the one place where the
+ *  portal really reaches into what a customer wrote: the product page loses the
+ *  review on its next render, because both are reading this same store. */
+export const remove = (slug: string, id: string): Review[] => {
+  const next = read(slug).filter((review) => review.id !== id);
+
+  try {
+    /* An empty list is removed rather than stored as "[]", so a product that
+       has been fully moderated leaves no key behind for `readAll` to walk. */
+    if (next.length) {
+      window.localStorage.setItem(key(slug), JSON.stringify(next));
+    } else {
+      window.localStorage.removeItem(key(slug));
+    }
+  } catch {
+    cache.set(slug, { raw: stored(slug), reviews: next });
+  }
+
+  window.dispatchEvent(new CustomEvent(CHANGED, { detail: slug }));
+  return next;
+};
+
+/* --------------------------------------------------- every product at once */
+
+/** Product slugs this browser has reviews stored for.
+ *
+ *  Walking `localStorage` by prefix is the only way to ask that question: the
+ *  store is one key per product, with no index, which is right for a product
+ *  page reading one slug and is exactly what a moderation queue lacks. */
+const reviewedSlugs = (): string[] => {
+  try {
+    return Object.keys(window.localStorage)
+      .filter((each) => each.startsWith(PREFIX))
+      .map((each) => each.slice(PREFIX.length))
+      .filter(Boolean)
+      .sort();
+  } catch {
+    return [];
+  }
+};
+
+export type StoredReview = { slug: string; review: Review };
+
+const EMPTY_ALL: StoredReview[] = [];
+
+/* Same identity-cache bargain as `read`, one level up: the fingerprint is every
+   key and its raw payload, so the list is rebuilt only when something changed. */
+let allCache: { fingerprint: string; rows: StoredReview[] } | null = null;
+
+/** Every review in this browser, newest first, tagged with its product.
+ *
+ *  Nothing on the storefront wants this — a product page reads its own slug.
+ *  The admin portal's moderation queue is the caller. */
+export const readAll = (): StoredReview[] => {
+  if (typeof window === "undefined") return EMPTY_ALL;
+
+  const slugs = reviewedSlugs();
+  const fingerprint = slugs.map((slug) => `${slug}:${stored(slug) ?? ""}`).join("\u0000");
+  if (allCache && allCache.fingerprint === fingerprint) return allCache.rows;
+
+  const rows = slugs
+    .flatMap((slug) => read(slug).map((review) => ({ slug, review })))
+    .sort((a, b) => b.review.createdAt.localeCompare(a.review.createdAt));
+
+  allCache = { fingerprint, rows };
+  return rows;
+};
+
+/** Every stored review, kept in step with the browser store.
+ *
+ *  Subscribes to all products rather than one, so a review written on a product
+ *  page in another tab shows up in the queue without a reload. */
+export const useAllReviews = (): StoredReview[] => {
+  const subscribe = useCallback((onStoreChange: () => void) => {
+    const handle = (event: Event) => {
+      // Any product's write matters here, so unlike `useReviews` there is
+      // nothing to filter out — except keys belonging to another store.
+      if (event instanceof StorageEvent && event.key !== null && !event.key.startsWith(PREFIX)) {
+        return;
+      }
+      onStoreChange();
+    };
+
+    window.addEventListener(CHANGED, handle);
+    window.addEventListener("storage", handle);
+    return () => {
+      window.removeEventListener(CHANGED, handle);
+      window.removeEventListener("storage", handle);
+    };
+  }, []);
+
+  return useSyncExternalStore(subscribe, readAll, () => EMPTY_ALL);
 };
 
 export const summarise = (reviews: Review[]): ReviewSummary => {

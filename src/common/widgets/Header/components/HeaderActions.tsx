@@ -1,5 +1,8 @@
 import Link from "next/link";
-import { Heart, MapPin, ShoppingCart, User } from "lucide-react";
+import { MapPin } from "lucide-react";
+import { AccountLink } from "@/common/components/AccountLink";
+import { CartLink } from "@/common/components/CartLink";
+import { WishlistLink } from "@/common/components/WishlistLink";
 import { ThunderIcon } from "@/common/components/icons/ThunderIcon";
 
 const surface =
@@ -26,17 +29,15 @@ export function HeaderActions() {
           Store Locator
         </Link>
 
-        <Link href="/wishlist" aria-label="Wishlist" className={iconButton}>
-          <Heart className="size-4.5" aria-hidden />
-        </Link>
+        {/* Client-side: it carries the count of what has been saved. */}
+        <WishlistLink className={iconButton} />
 
-        <Link href="/cart" aria-label="Shopping cart" className={iconButton}>
-          <ShoppingCart className="size-4.5" aria-hidden />
-        </Link>
+        {/* Client-side: it carries the count of what is in the basket. */}
+        <CartLink className={iconButton} />
 
-        <Link href="/account" aria-label="My account" className={iconButton}>
-          <User className="size-4.5" aria-hidden />
-        </Link>
+        {/* Client-side: it reflects the session and carries the page you
+            were on into `?back=`. */}
+        <AccountLink className={iconButton} />
       </div>
     </div>
   );

@@ -19,6 +19,16 @@ export const product_details_data: ProductDetailsData = {
     // Memory, Dial Size, Strap Size — so there is no constant for it here.
     share: "Share",
     buyNow: "Buy Now",
+    addToCart: "Add To Cart",
+    /* The reference shouts this in red between the swatches and the button.
+       Ours says it once, in the same place, without the asterisks — the colour
+       and the position already carry the urgency. */
+    selectColorFirst: "Choose a colour first.",
+    quantity: "Quantity",
+    decrease: "One fewer",
+    increase: "One more",
+    added: "Added to your basket.",
+    viewCart: "View basket",
     cashPrice: "Cash Discount Price",
     cashNote: "Online / Cash Payment",
     emiPrice: "0% EMI Price",

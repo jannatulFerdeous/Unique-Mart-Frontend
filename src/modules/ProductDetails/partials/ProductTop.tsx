@@ -1,7 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { Minus, Plus } from "lucide-react";
 import { Stars } from "@/common/components/Stars";
+import { WishlistButton } from "@/common/components/WishlistButton";
+import { MAX_QUANTITY, add as addToCart } from "@/shared/libs/cart";
 import type { Product, ProductDetail } from "@/shared/config/catalog";
 import { useReviews } from "@/shared/libs/reviews";
 import { cn } from "@/shared/utils/cn";
@@ -18,9 +23,18 @@ export function ProductTop({ product, detail }: Props) {
   const { labels, reviews: reviewCopy } = product_details_data;
   // The score here is what customers actually left, not the number the
   // catalogue was seeded with — so it agrees with the Reviews tab below.
+  const router = useRouter();
   const { summary } = useReviews(product.slug);
-  const [color, setColor] = useState(0);
+  /* Null, not 0: nothing is chosen until the shopper chooses it. A colour
+     preselected for them is a colour they did not pick, and on a product sold
+     in black and blue that is how the wrong one gets shipped. */
+  const [color, setColor] = useState<number | null>(null);
   const [image, setImage] = useState(0);
+  const [quantity, setQuantity] = useState(1);
+  /* Raised by pressing Buy Now with no colour chosen, and cleared the moment
+     one is. Not shown on load — nobody has done anything wrong yet. */
+  const [nagging, setNagging] = useState(false);
+  const [added, setAdded] = useState(false);
   // One selected index per variant axis, keyed by the axis label.
   const [picks, setPicks] = useState<Record<string, number>>({});
   const [emi, setEmi] = useState(false);
@@ -30,8 +44,16 @@ export function ProductTop({ product, detail }: Props) {
   // A colour owns the first shot of its variant, so picking one scrolls the
   // gallery to that colour's photos. Products whose colours carry no image of
   // their own just leave the stage where it is.
+  const colors = detail?.colors ?? [];
+  /* A product with no colour axis has nothing to choose, so it is never
+     "unchosen" — the basket button is there from the start. */
+  const needsColor = colors.length > 0 && color === null;
+  const chosenColor = color === null ? null : (colors[color]?.name ?? null);
+
   const pickColor = (index: number) => {
     setColor(index);
+    setNagging(false);
+    setAdded(false);
     const shot = detail?.colors?.[index]?.image;
     if (!shot) return;
     const found = gallery.findIndex((each) => each.src === shot.src);
@@ -95,7 +117,14 @@ export function ProductTop({ product, detail }: Props) {
 
         {detail?.colors?.length ? (
           <div className="mt-6 flex flex-wrap items-center gap-3">
-            <span className="text-ink-muted">{labels.color}:</span>
+            <span className="text-ink-muted">
+              {labels.color}:
+              {/* Names the choice once it exists, so the page states what is
+                  about to go in the basket rather than only highlighting it. */}
+              {chosenColor ? (
+                <span className="ml-1 font-medium text-ink">{chosenColor}</span>
+              ) : null}
+            </span>
             <ul className="flex flex-wrap gap-2">
               {detail.colors.map((option, index) => (
                 <li key={option.name}>
@@ -218,13 +247,124 @@ export function ProductTop({ product, detail }: Props) {
           <p className="mt-3 text-sm text-ink-subtle">{labels.emiNote}</p>
         ) : null}
 
-        <button
-          type="button"
-          className="mt-6 w-full rounded-control bg-tertiary px-6 py-3.5 font-bold text-tertiary-contrast transition-colors hover:bg-tertiary-hover sm:w-auto sm:px-16"
-        >
-          {labels.buyNow}
-          <span className="sr-only"> — {product.name}</span>
-        </button>
+        {/* The quantity stepper appears with the basket button, for the same
+            reason: until a colour is chosen there is nothing to count. */}
+        {!needsColor ? (
+          <div className="mt-6 flex items-center gap-3">
+            <span className="text-ink-muted">{labels.quantity}:</span>
+            <div className="flex items-center gap-1">
+              <button
+                type="button"
+                onClick={() => setQuantity((n) => Math.max(1, n - 1))}
+                disabled={quantity <= 1}
+                aria-label={labels.decrease}
+                className="grid size-9 place-items-center rounded-control bg-surface-muted text-ink transition-colors hover:bg-line disabled:opacity-40"
+              >
+                <Minus className="size-4" aria-hidden />
+              </button>
+
+              {/* `aria-live` so a screen reader hears the new count without the
+                  buttons having to announce themselves. */}
+              <span
+                aria-live="polite"
+                className="min-w-10 text-center font-medium text-ink tabular-nums"
+              >
+                {quantity}
+              </span>
+
+              <button
+                type="button"
+                onClick={() => setQuantity((n) => Math.min(MAX_QUANTITY, n + 1))}
+                disabled={quantity >= MAX_QUANTITY}
+                aria-label={labels.increase}
+                className="grid size-9 place-items-center rounded-control bg-surface-muted text-ink transition-colors hover:bg-line disabled:opacity-40"
+              >
+                <Plus className="size-4" aria-hidden />
+              </button>
+            </div>
+          </div>
+        ) : null}
+
+        {/* The nag sits between the swatches and the buttons — where the eye
+            already is after pressing Buy Now, and next to the thing to fix. */}
+        {nagging && needsColor ? (
+          <p role="alert" className="mt-5 font-medium text-danger">
+            {labels.selectColorFirst}
+          </p>
+        ) : null}
+
+        <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+          {!needsColor ? (
+            <button
+              type="button"
+              onClick={() => {
+                addToCart({
+                  slug: product.slug,
+                  name: product.name,
+                  unitPrice: product.price,
+                  color: chosenColor,
+                  // Whatever each other axis is currently showing.
+                  options: Object.fromEntries(
+                    (detail?.options ?? []).map((group) => [
+                      group.label,
+                      group.values[picks[group.label] ?? 0],
+                    ]),
+                  ),
+                  quantity,
+                });
+                setAdded(true);
+              }}
+              className="rounded-control bg-surface-muted px-6 py-3.5 font-bold text-ink transition-colors hover:bg-line sm:px-12"
+            >
+              {labels.addToCart}
+              <span className="sr-only"> — {product.name}</span>
+            </button>
+          ) : null}
+
+          <button
+            type="button"
+            onClick={() => {
+              /* Buy Now is what a shopper reaches for first, so it is the
+                 control that has to explain the missing colour rather than
+                 sitting disabled and saying nothing. */
+              if (needsColor) {
+                setNagging(true);
+                return;
+              }
+              addToCart({
+                slug: product.slug,
+                name: product.name,
+                unitPrice: product.price,
+                color: chosenColor,
+                options: Object.fromEntries(
+                  (detail?.options ?? []).map((group) => [
+                    group.label,
+                    group.values[picks[group.label] ?? 0],
+                  ]),
+                ),
+                quantity,
+              });
+              router.push("/cart");
+            }}
+            className="rounded-control bg-tertiary px-6 py-3.5 font-bold text-tertiary-contrast transition-colors hover:bg-tertiary-hover sm:px-12"
+          >
+            {labels.buyNow}
+            <span className="sr-only"> — {product.name}</span>
+          </button>
+
+          {/* Saving needs no colour — a wishlist holds a product, not a
+              configuration — so this one is here whatever else is. */}
+          <WishlistButton variant="inline" slug={product.slug} name={product.name} />
+        </div>
+
+        {added ? (
+          <p role="status" className="mt-3 text-sm font-medium text-ink">
+            {labels.added}{" "}
+            <Link href="/cart" className="text-tertiary underline">
+              {labels.viewCart}
+            </Link>
+          </p>
+        ) : null}
       </div>
     </div>
   );

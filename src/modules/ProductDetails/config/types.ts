@@ -7,6 +7,14 @@ export type ProductDetailsData = {
     color: string;
     share: string;
     buyNow: string;
+    addToCart: string;
+    /** Shown when Buy Now is pressed before a colour has been chosen. */
+    selectColorFirst: string;
+    quantity: string;
+    decrease: string;
+    increase: string;
+    added: string;
+    viewCart: string;
     cashPrice: string;
     cashNote: string;
     emiPrice: string;

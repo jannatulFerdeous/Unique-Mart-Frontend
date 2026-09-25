@@ -1,6 +1,6 @@
 import { brandMarks, brandsPath } from "@/shared/config/brands";
 import { faqPath, featuredFaqs } from "@/shared/config/faq";
-import { categoryNav } from "@/shared/config/navigation";
+import { rootCategories } from "@/shared/config/categories";
 import { mailHref, site, telHref } from "@/shared/config/site";
 import { trustClaims } from "@/shared/config/trust";
 import type { AboutData } from "./types";
@@ -21,7 +21,7 @@ export const about_data: AboutData = {
     paragraphs: [
       "Technology has folded itself into every part of the day — the phone that wakes you up, the laptop you work on, the earbuds on the commute. Buying it, though, is rarely as simple as it should be: stock of uncertain origin, terms that shift between conversations, and a price that depends on who you ask.",
       `${site.name} is built the other way round. We sell online only. There is no showroom to find and no floor staff working to a target — one catalogue, one price, delivered anywhere in the country. What the product page says is what arrives.`,
-      `The catalogue spans ${categoryNav.length} categories and ${brandMarks.length} brands, from phones, Macs and tablets through to audio, wearables, cameras, networking gear and the accessories that keep all of it running.`,
+      `The catalogue spans ${rootCategories.length} categories and ${brandMarks.length} brands, from phones, Macs and tablets through to audio, wearables, cameras, networking gear and the accessories that keep all of it running.`,
     ],
   },
 

@@ -1,6 +1,10 @@
 import type { Product } from "./catalog";
-import appleIpadAir13InchWifiM3ChipDisplayUnit from "@/images/brands/apple-ipad-air-13-inch-wifi-m3-chip-display-unit.jpeg";
-import appleMacbookAir15InchM4ChipDisplayUnit from "@/images/brands/apple-macbook-air-15-inch-m4-chip-display-unit.jpeg";
+/* These two use the plain product shot rather than the catalogue thumbnail:
+   upstream burns an "UP TO 40% OFF" promo graphic into the thumbnail, which is
+   the reference's campaign, not ours — and on the offers page it collided with
+   our own discount ribbon. See memory.md. */
+import appleIpadAir13InchWifiM3ChipDisplayUnit from "@/images/products/ipad-air-13-inch-wifi-m3-chip-display-unit/02-ipad-air-13-inch-wifi-m3-chip745.jpeg";
+import appleMacbookAir15InchM4ChipDisplayUnit from "@/images/products/macbook-air-15-inch-m4-chip-display-unit/02-macbook-air-13-inch-m4-chip-24gb-512gb-midnight35.jpeg";
 import appleMagicKeyboardForIpadAir13Inch from "@/images/brands/apple-magic-keyboard-for-ipad-air-13-inch.jpeg";
 import appleWatchSe3 from "@/images/brands/apple-watch-se-3.jpeg";
 import appleWatchSeries11 from "@/images/brands/apple-watch-series-11.jpeg";
@@ -252,3 +256,32 @@ export const findProduct = (slug: string): Product | undefined =>
   allProducts.find((product) => product.slug === slug);
 
 export const productHref = (slug: string) => `/shop/product/${slug}`;
+
+/** A product whose price is below what it is normally listed at. */
+export type Offer = {
+  product: Product;
+  /** Taka off. */
+  saving: number;
+  /** Whole per cent off, rounded — what the card's ribbon reads. */
+  percent: number;
+};
+
+/** Every real discount in the catalogue, deepest first.
+ *
+ *  Derived rather than curated on purpose: the offers page cannot then
+ *  advertise a saving the product page does not also show, and a price edit
+ *  here is the only thing needed to add or drop an offer. */
+export const offers: Offer[] = allProducts
+  .flatMap((product) => {
+    const was = product.compareAt;
+    if (!was || was <= product.price) return [];
+
+    return [
+      {
+        product,
+        saving: was - product.price,
+        percent: Math.round((1 - product.price / was) * 100),
+      },
+    ];
+  })
+  .sort((a, b) => b.percent - a.percent || b.saving - a.saving);

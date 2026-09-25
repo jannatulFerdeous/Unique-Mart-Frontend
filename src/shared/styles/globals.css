@@ -32,6 +32,45 @@
   --color-line: #e5e5e5;
   --color-line-strong: #cfcfcf;
 
+  /* Validation. Not part of the monochrome-plus-one-accent palette on
+     purpose: an invalid field has to read as wrong, and the accent already
+     means "do this". Used only for form errors. */
+  --color-danger: #c2260f;
+  --color-danger-soft: #fdecea;
+
+  /* Admin state, and the charts that read it. Storefront screens never touch
+     these — a shop page has a price and a buy button, not a fulfilment state.
+
+     Kept apart from --color-danger above on purpose: danger means "this field
+     is wrong, fix it before submitting", and critical means "this order was
+     cancelled", which is a fact about the shop and not a thing to correct. One
+     token doing both jobs would put form-error red on a table row.
+
+     Values are the reference status palette from the data-viz method, which is
+     fixed rather than themed, so a status colour can never be mistaken for a
+     chart series. Warning and serious sit under 3:1 against a white surface by
+     design: every place they appear carries a text label beside the colour, so
+     nothing is encoded in hue alone. */
+  --color-good: #0ca30c;
+  --color-good-soft: #e7f6e7;
+  --color-warning: #fab219;
+  --color-warning-soft: #fef4dd;
+  --color-serious: #ec835a;
+  --color-serious-soft: #fdeee8;
+  --color-critical: #d03b3b;
+  --color-critical-soft: #fbeaea;
+
+  /* Fulfilment is ordered, not categorical: pending → delivered is a journey,
+     so it gets one hue deepening rather than five unrelated colours. Validated
+     as an ordinal ramp against a white card: monotone lightness, every adjacent
+     gap over 0.06, and the lightest step still clears 2:1 against the surface.
+     Do not re-pick these by eye — re-run the validator. */
+  --color-flow-1: #86b6ef;
+  --color-flow-2: #5598e7;
+  --color-flow-3: #2a78d6;
+  --color-flow-4: #1c5cab;
+  --color-flow-5: #0d366b;
+
   /* Inverted surfaces — dark bars, footer */
   --color-inverse: #1a1a1a;
   --color-inverse-deep: #000000;

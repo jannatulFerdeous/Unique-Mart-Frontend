@@ -6,21 +6,29 @@ import type { Product, ProductRailData } from "@/shared/config/catalog";
 
 // hero banner
 
+/** Artwork uploaded through the portal: a URL rather than an import, with the
+ *  nominal size of its frame so the optimiser can build a srcSet for it. */
+export type HeroArt = { src: string; width: number; height: number };
+
 export type HeroSlide = {
+  /** Uploaded slides carry their id. Built-in ones are keyed by `href`, which
+   *  is unique among them. */
+  id?: string;
   /** Ground the artwork sits on. Drives the pagination dot colour. */
   theme: "dark" | "light";
   alt: string;
   href: string;
   /** 1920×570 — shown from `md` up. */
-  desktop: StaticImageData;
+  desktop: StaticImageData | HeroArt;
   /** 1000×700 — shown below `md`. */
-  mobile: StaticImageData;
+  mobile: StaticImageData | HeroArt;
 };
 
 /** A slide after `HeroBanner` has run both artworks through `getImageProps`.
  *  The carousel is a client component, so the optimiser work happens on the
  *  server and only the finished attributes cross the boundary. */
 export type HeroSlideImage = {
+  key: string;
   theme: HeroSlide["theme"];
   href: string;
   /** srcSet for the `md`-and-up `<source>`, already optimised. */
@@ -103,6 +111,8 @@ export type HomeData = {
     /** Dwell per slide in ms. The 300ms slide itself is `duration-300` on the
      *  track in `HeroBanner`. */
     interval: number;
+    /** The built-in slides, shown until the portal publishes its own — see
+     *  `heroSlides`. */
     slides: HeroSlide[];
   };
 };

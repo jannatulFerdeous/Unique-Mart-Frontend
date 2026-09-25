@@ -1,4 +1,5 @@
 import { site } from "@/shared/config/site";
+import { getCategoryNav } from "@/shared/libs/categories/storage";
 import { CategoryBar } from "./components/CategoryBar";
 import { HeaderActions } from "./components/HeaderActions";
 import { Logo } from "./components/Logo";
@@ -34,7 +35,10 @@ const structuredData = {
   ],
 };
 
-export function Header() {
+export async function Header() {
+  // Read on the server: the menu is the category tree the portal edits.
+  const nav = await getCategoryNav();
+
   return (
     <header className="sticky top-0 z-50">
       <script
@@ -54,7 +58,7 @@ export function Header() {
       <div className="bg-inverse">
         <div className="container-page">
           <div className="flex items-center gap-3 py-2 lg:min-h-16.5 lg:gap-4 lg:py-3">
-            <MobileNav />
+            <MobileNav nav={nav} />
             <Logo />
             <SearchBar className="hidden flex-1 lg:flex" />
             <HeaderActions />
@@ -63,7 +67,7 @@ export function Header() {
         </div>
       </div>
 
-      <CategoryBar />
+      <CategoryBar nav={nav} />
     </header>
   );
 }

@@ -1,3 +1,5 @@
+import { home_data } from "./config/constants";
+import { heroSlides } from "./config/hero";
 import { AboutCopy } from "./partials/AboutCopy";
 import { BrandWall } from "./partials/BrandWall";
 import { CasesAndProtectors } from "./partials/CasesAndProtectors";
@@ -12,10 +14,13 @@ import { StrapBanner } from "./partials/StrapBanner";
 import { TopSelling } from "./partials/TopSelling";
 import { TrustStrip } from "./partials/TrustStrip";
 
-export function Home() {
+export async function Home() {
+  // Read on the server: the portal's slides live on disk, not in the bundle.
+  const slides = await heroSlides();
+
   return (
     <>
-      <HeroBanner />
+      <HeroBanner slides={slides} interval={home_data.hero.interval} />
       <TrustStrip />
       <Exclusive />
       <FeaturedCategories />

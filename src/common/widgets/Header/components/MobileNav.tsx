@@ -3,14 +3,15 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ChevronDown, Menu, X } from "lucide-react";
-import { categoryNav, utilityNav } from "@/shared/config/navigation";
+import { utilityNav } from "@/shared/config/navigation";
 import type { NavItem } from "@/shared/config/navigation";
 import { site } from "@/shared/config/site";
 import { cn } from "@/shared/utils/cn";
 
 const depthPadding = ["px-5", "pr-5 pl-8", "pr-5 pl-11"];
 
-export function MobileNav() {
+/** `nav` is read on the server — the tree the admin portal edits. */
+export function MobileNav({ nav: categoryNav }: { nav: NavItem[] }) {
   const [isOpen, setIsOpen] = useState(false);
   const close = () => setIsOpen(false);
 

@@ -4,13 +4,13 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { getImageProps } from "next/image";
 import Link from "next/link";
 import { cn } from "@/shared/utils/cn";
-import type { HeroSlideImage } from "../config/types";
-import { home_data } from "../config/constants";
+import type { HeroSlide, HeroSlideImage } from "../config/types";
 
 const SWIPE_THRESHOLD = 44;
 
-export function HeroBanner() {
-  const { interval, slides: source } = home_data.hero;
+/** `slides` are read on the server — the portal's uploads, or the built-in set
+ *  — so this component never knows which it was handed. */
+export function HeroBanner({ slides: source, interval }: { slides: HeroSlide[]; interval: number }) {
 
   // The two artworks per slide are different compositions, not two sizes of
   // one, so `<picture>` art-directs them. getImageProps keeps the md-and-up
@@ -36,6 +36,7 @@ export function HeroBanner() {
         });
 
         return {
+          key: slide.id ?? slide.href,
           theme: slide.theme,
           href: slide.href,
           desktopSrcSet: desktopSrcSet ?? "",
@@ -123,7 +124,7 @@ export function HeroBanner() {
             >
               {slides.map((slide, position) => (
                 <div
-                  key={slide.href}
+                  key={slide.key}
                   role="group"
                   aria-roledescription="slide"
                   aria-label={`${position + 1} of ${count}`}
@@ -152,7 +153,7 @@ export function HeroBanner() {
             <div className="absolute inset-x-0 bottom-2 flex justify-center">
               {slides.map((slide, position) => (
                 <button
-                  key={slide.href}
+                  key={slide.key}
                   type="button"
                   onClick={() => go(position)}
                   aria-label={`Go to slide ${position + 1}`}
