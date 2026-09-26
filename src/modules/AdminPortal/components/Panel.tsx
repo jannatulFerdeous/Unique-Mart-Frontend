@@ -1,8 +1,6 @@
 import type { ReactNode } from "react";
 import { cn } from "@/shared/utils/cn";
 
-/** A titled card. The portal's only container, so every screen is built from
- *  the same box and nothing needs its own spacing decisions. */
 export function Panel({
   title,
   description,
@@ -13,7 +11,6 @@ export function Panel({
 }: {
   title?: string;
   description?: string;
-  /** Controls in the header — a filter, a link, a button. */
   actions?: ReactNode;
   children: ReactNode;
   className?: string;
@@ -22,12 +19,6 @@ export function Panel({
   return (
     <section
       className={cn(
-        /* `min-w-0` is load-bearing, not tidiness. A grid or flex item defaults to
-           `min-width: auto`, which means it refuses to shrink below its content's
-           min-content width — and a panel holding a table with a min-width pushes
-           its whole column open, taking every sibling panel with it and scrolling
-           the page sideways on a phone. Zeroing it lets the table's own
-           `overflow-x-auto` do the scrolling, which is where it belongs. */
         "min-w-0 rounded-card border border-line bg-surface shadow-card",
         className,
       )}
@@ -48,8 +39,6 @@ export function Panel({
   );
 }
 
-/** The heading every screen opens with. Separate from Panel because it sits
- *  above the cards rather than inside one. */
 export function ScreenHeader({
   title,
   blurb,
@@ -70,8 +59,6 @@ export function ScreenHeader({
   );
 }
 
-/** Shown in place of a table that has no rows. Says why it is empty and, where
- *  there is one, offers the action that would fill it. */
 export function EmptyState({
   title,
   body,

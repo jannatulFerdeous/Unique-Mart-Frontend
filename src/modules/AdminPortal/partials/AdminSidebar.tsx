@@ -65,12 +65,8 @@ export function AdminSidebar({ onNavigate }: { onNavigate?: () => void }) {
   );
 }
 
-/** The blurb for whichever screen is open, so a heading can say what it is for
- *  without every screen repeating the string. */
 export const blurbFor = (pathname: string): string | undefined => {
   const items = admin_data.nav.flatMap((group) => group.items);
-  /* Longest href first, so `/admin/products` wins over `/admin` on a product
-     page — otherwise the dashboard's blurb would answer for everything. */
   const sorted = [...items].sort((a, b) => b.href.length - a.href.length);
   return sorted.find((item) => isCurrent(pathname, item.href, item.exact))
     ?.blurb;

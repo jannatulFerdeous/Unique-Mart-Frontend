@@ -8,7 +8,6 @@ export function SoundSurround() {
   return (
     <section aria-labelledby="sound-surround-heading" className="pt-5">
       <div className="container-page">
-        {/* Left-aligned, like every rail after Exclusive. */}
         <SectionHeader
           id="sound-surround-heading"
           title={title}

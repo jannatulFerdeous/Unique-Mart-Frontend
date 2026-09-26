@@ -8,13 +8,6 @@ import { useWishlist } from "@/shared/libs/wishlist";
 import { wishlist_data } from "./config/constants";
 import { WishlistRow } from "./partials/WishlistRow";
 
-/* Saved products.
- *
- * A client component all the way down, because the wishlist lives in this
- * browser — there is nothing for the server to render but the empty state. The
- * page is still prerendered and still has its metadata; `useWishlist` hands
- * back an empty list during prerender and React swaps in the stored one on
- * hydration. */
 export function Wishlist() {
   const { items, count, clear } = useWishlist();
   const [confirming, setConfirming] = useState(false);
@@ -64,8 +57,6 @@ export function Wishlist() {
 
         {count > 0 && (
           <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
-            {/* Two clicks rather than a native `confirm()`, matching the basket:
-                a blocking browser dialog looks like the page has hung. */}
             {confirming ? (
               <p className="flex flex-wrap items-center gap-3 text-sm">
                 <span className="text-ink">{wishlist_data.clearConfirm}</span>

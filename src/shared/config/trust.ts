@@ -11,14 +11,9 @@ import {
 export type TrustClaim = {
   icon: LucideIcon;
   label: string;
-  /** One sentence expanding the label. The home strip renders the label alone;
-   *  the About page renders both. */
   detail: string;
 };
 
-/** The six promises the client confirmed on 2026-09-05, and the only ones the
- *  site is allowed to make — no authorization claim, no superlative. Shared so
- *  the home strip and the About page cannot drift apart. See memory.md. */
 export const trustClaims: TrustClaim[] = [
   {
     icon: BadgeCheck,

@@ -10,15 +10,11 @@ import { findProductDetail } from "@/shared/config/product-details";
 import { formatPrice } from "@/shared/utils/price";
 import { wishlist_data } from "../config/constants";
 
-/** One saved product: what it is, what it costs, and the two things you can do
- *  with it — move it along, or let it go. */
 export function WishlistRow({ slug }: { slug: string }) {
   const product = findProduct(slug);
   const detail = findProductDetail(slug);
   const { lines } = useCart();
 
-  /* A product can outlive the catalogue entry it was saved from. Say so and
-     offer the only useful action rather than rendering a broken row. */
   if (!product) {
     return (
       <li className="flex flex-wrap items-center justify-between gap-3 border-b border-line py-5 last:border-0">
@@ -34,8 +30,6 @@ export function WishlistRow({ slug }: { slug: string }) {
     );
   }
 
-  /* Colours are the one axis the product page refuses to choose for anyone, so
-     a saved product that has them cannot go straight into the basket. */
   const needsChoice = (detail?.colors?.length ?? 0) > 0;
   const alreadyInCart = lines.some((line) => line.slug === slug);
 
@@ -94,9 +88,6 @@ export function WishlistRow({ slug }: { slug: string }) {
               options: {},
               quantity: 1,
             });
-            /* The product moves rather than being copied: a wishlist is things
-               you have not bought, and leaving it in both lists means removing
-               it twice. */
             remove(slug);
           }}
           className="rounded-control bg-tertiary px-5 py-2.5 text-sm font-bold text-tertiary-contrast transition-colors hover:bg-tertiary-hover"

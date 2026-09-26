@@ -23,9 +23,6 @@ export async function generateMetadata({
   };
 }
 
-/** Home → the categories the product's detail data names → the product itself.
- *  Every category links to its own page. A product without detail data gets the
- *  two-step trail rather than an invented category. */
 function buildTrail(
   name: string,
   crumbs: { label: string; slug: string }[] = [],
@@ -48,7 +45,6 @@ export default async function ProductPage({
   if (!product) notFound();
 
   const detail = findProductDetail(slug);
-  // Same brand first, then anything else, so the rail is never empty.
   const similar = [
     ...allProducts.filter(
       (each) => each.slug !== slug && each.brand && each.brand === product.brand,

@@ -2,13 +2,6 @@ import { ProductBreadcrumb } from "@/modules/ProductDetails";
 import { site, mailHref } from "@/shared/config/site";
 import { careers_data } from "./config/constants";
 
-/* Careers.
- *
- * `openings` is deliberately empty. Inventing a vacancy is not a placeholder
- * like lorem ipsum is — a careers page is read by people who will spend an
- * afternoon writing an application for a job that does not exist. So the page
- * renders a real empty state and is built to fill: add an entry to `openings`
- * in the config and the listing appears with no code change. */
 export function Careers() {
   const data = careers_data;
 

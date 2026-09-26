@@ -1,8 +1,5 @@
 import { site } from "@/shared/config/site";
 
-/* The programme's terms as the shop intends to run them. Every number here is a
-   business decision, not a technical one — the client sets the earn rate and the
-   tier thresholds, and this file is the one place to change them. */
 export const loyalty_data = {
   title: "Loyalty Program",
   heading: `The ${site.name} Loyalty Program`,

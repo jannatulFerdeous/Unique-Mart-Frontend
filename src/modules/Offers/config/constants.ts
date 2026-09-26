@@ -1,9 +1,6 @@
 import type { OffersData } from "./types";
 
 export const offers_data: OffersData = {
-  // Every number in the hero is filled from the catalogue at render, so the
-  // panel cannot overclaim or go stale. No borrowed artwork: the reference's
-  // offers banner sells in-store demo units, and we are online only.
   heroEyebrow: "Offers",
   heroTitle: "Save up to {percent}%",
   heroBody:

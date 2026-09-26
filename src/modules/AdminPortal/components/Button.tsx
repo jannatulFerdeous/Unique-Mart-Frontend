@@ -5,9 +5,6 @@ import { cn } from "@/shared/utils/cn";
 type Variant = "primary" | "secondary" | "ghost" | "danger";
 type Size = "sm" | "md";
 
-/* `danger` uses the critical status colour rather than --color-danger, which is
-   reserved for "this form field is wrong". Deleting a product is not a
-   validation error. */
 const VARIANT: Record<Variant, string> = {
   primary: "bg-tertiary text-tertiary-contrast hover:bg-tertiary-hover",
   secondary: "border border-line-strong bg-surface text-ink hover:bg-surface-muted",
@@ -40,8 +37,6 @@ export function Button({
   );
 }
 
-/** A link that looks like a button. Kept as a `Link` rather than a button with
- *  an onClick so it still opens in a new tab and prefetches. */
 export function ButtonLink({
   variant = "secondary",
   size = "md",

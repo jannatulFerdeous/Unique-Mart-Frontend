@@ -1,29 +1,14 @@
-/* Everything the dashboard shows, derived rather than stored.
- *
- * No metric has its own store. A "total revenue" field that has to be kept in
- * step with the orders it came from is a field that will eventually disagree
- * with them, and the disagreement is invisible — the number still looks like a
- * number. So every figure in this file is arithmetic over the order rows, run on
- * render. The catalogue is a hundred products and the history is a few hundred
- * orders; this is cheap, and it cannot go stale. */
-
 import { isRevenue } from "./orders";
 import { cartValue, isAbandoned } from "./carts";
 import { isLowStock, isOutOfStock } from "./products";
 import type { AdminProduct, Cart, Customer, Order, OrderStatus, PaymentMethod } from "./types";
 
-/** A day on the revenue chart. */
 export type DayPoint = {
-  /** `YYYY-MM-DD`, local. The key the chart groups on. */
   date: string;
   revenue: number;
   orders: number;
 };
 
-/** Local calendar day for an ISO timestamp.
- *
- *  Local, not UTC: a shop in Dhaka closes at midnight Dhaka time, and slicing
- *  on UTC would file the evening's orders under tomorrow. */
 const dayKey = (iso: string): string => {
   const date = new Date(iso);
   const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -31,11 +16,6 @@ const dayKey = (iso: string): string => {
   return `${date.getFullYear()}-${month}-${day}`;
 };
 
-/** Revenue and order count per day for the last `days` days, oldest first.
- *
- *  Every day in the window is present, including the quiet ones. A chart that
- *  silently drops empty days compresses the gaps and draws a busier shop than
- *  the one that exists. */
 export const revenueSeries = (rows: Order[], days = 30): DayPoint[] => {
   const now = new Date();
   const start = new Date(now.getFullYear(), now.getMonth(), now.getDate() - (days - 1));
@@ -58,13 +38,11 @@ export const revenueSeries = (rows: Order[], days = 30): DayPoint[] => {
   return [...buckets.values()];
 };
 
-/** Orders placed within the last `days` days. */
 export const within = (rows: Order[], days: number): Order[] => {
   const cutoff = Date.now() - days * 86_400_000;
   return rows.filter((order) => new Date(order.placedAt).getTime() >= cutoff);
 };
 
-/** The window before the one `within` returns, for a like-for-like comparison. */
 export const previous = (rows: Order[], days: number): Order[] => {
   const end = Date.now() - days * 86_400_000;
   const start = end - days * 86_400_000;
@@ -74,10 +52,6 @@ export const previous = (rows: Order[], days: number): Order[] => {
   });
 };
 
-/** Per-cent change, or null when there is no baseline to compare against.
- *
- *  Null rather than 100%: going from nothing to something is not a percentage,
- *  and "+∞%" on a dashboard is a bug that looks like a triumph. */
 export const delta = (current: number, before: number): number | null => {
   if (before <= 0) return null;
   return ((current - before) / before) * 100;
@@ -88,18 +62,14 @@ export type Kpis = {
   revenueDelta: number | null;
   orders: number;
   ordersDelta: number | null;
-  /** Average order value across revenue-bearing orders in the window. */
   average: number;
-  /** Orders that have not shipped yet — the work waiting on the shop today. */
   openOrders: number;
-  /** Money owed: confirmed orders whose payment has not landed. */
   unpaid: number;
   newCustomers: number;
   abandonedCarts: number;
   abandonedValue: number;
   lowStock: number;
   outOfStock: number;
-  /** Stock on hand at cost of sale, i.e. what the shelves are worth. */
   inventoryValue: number;
 };
 
@@ -147,8 +117,6 @@ export const kpis = (
   };
 };
 
-/** How many orders sit at each status. Every status is present, so the bar list
- *  does not change shape as the shop empties. */
 export const statusCounts = (rows: Order[]): Record<OrderStatus, number> => {
   const counts: Record<OrderStatus, number> = {
     pending: 0,
@@ -170,8 +138,6 @@ export type SoldProduct = {
   revenue: number;
 };
 
-/** Best sellers by money, not by units: twenty phone cases are not a better
- *  week than one MacBook, and a shop ordering stock needs to know which. */
 export const topProducts = (rows: Order[], limit = 6): SoldProduct[] => {
   const totals = new Map<string, SoldProduct>();
 
@@ -199,8 +165,6 @@ export type MethodSplit = {
   amount: number;
 };
 
-/** Which methods the money actually comes in through. Paid and refunded only —
- *  an unpaid cash-on-delivery order has not told us anything yet. */
 export const methodSplit = (rows: Order[]): MethodSplit[] => {
   const totals = new Map<PaymentMethod, MethodSplit>();
 
@@ -219,7 +183,6 @@ export const methodSplit = (rows: Order[]): MethodSplit[] => {
   return [...totals.values()].sort((a, b) => b.amount - a.amount);
 };
 
-/** Products at or below their reorder point, emptiest first. */
 export const reorderList = (products: AdminProduct[], limit = 8): AdminProduct[] =>
   products
     .filter((product) => product.status !== "archived" && product.stock <= product.reorderAt)

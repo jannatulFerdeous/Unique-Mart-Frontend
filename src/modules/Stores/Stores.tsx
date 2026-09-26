@@ -3,15 +3,6 @@ import { ProductBreadcrumb } from "@/modules/ProductDetails";
 import { site, mailHref, telHref } from "@/shared/config/site";
 import { stores_data } from "./config/constants";
 
-/* Store locator.
- *
- * The reference lists seventeen shops. This shop is online only — the offers
- * page says so — so the page answers the question the header link asks without
- * inventing addresses. A made-up shop address is not placeholder copy: someone
- * drives to it.
- *
- * `stores` is empty and the page is built to fill. Add a branch to the config
- * and the list renders instead of the online-only panel, with no code change. */
 export function Stores() {
   const data = stores_data;
   const branches = data.stores;

@@ -7,18 +7,12 @@ export function PromoBanners() {
   const { brands, offers } = home_data.promos;
 
   return (
-    // The reference's banner blocks carry no heading. Ours gets a hidden one so
-    // the section still lands in the heading outline beside Exclusive and Top
-    // Selling — and so it does not collide with the hero, which already
-    // announces itself as "Featured offers".
     <section aria-labelledby="promos-heading" className="pt-5">
       <div className="container-page">
         <h2 id="promos-heading" className="sr-only">
           Brand highlights and offers
         </h2>
 
-        {/* Two-up then four-up. The reference steps through three columns at md,
-            which leaves the fourth tile alone on its own row. */}
         <ul className="grid grid-cols-2 gap-2.5 lg:grid-cols-4">
           {brands.map((banner) => (
             <Tile
@@ -30,8 +24,6 @@ export function PromoBanners() {
           ))}
         </ul>
 
-        {/* 16px between the two blocks, 10px within each — the reference's own
-            split, which comes from a padding-bottom on the first block. */}
         <ul className="mt-4 grid gap-2.5 md:grid-cols-2">
           {offers.map((banner) => (
             <Tile
@@ -49,7 +41,6 @@ export function PromoBanners() {
 
 type TileProps = {
   banner: PromoBanner;
-  /** The artwork's own ratio, so the cell never letterboxes. */
   className: string;
   sizes: string;
 };

@@ -8,7 +8,6 @@ export function CasesAndProtectors() {
   return (
     <section aria-labelledby="cases-and-protectors-heading" className="pt-5">
       <div className="container-page">
-        {/* Left-aligned, like every rail after Exclusive. */}
         <SectionHeader
           id="cases-and-protectors-heading"
           title={title}

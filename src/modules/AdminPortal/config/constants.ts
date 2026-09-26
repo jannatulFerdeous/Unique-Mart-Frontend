@@ -8,7 +8,7 @@ export const admin_data: AdminData = {
     body: "Manage the catalogue, orders, payments, reviews and customers.",
 
     warning:
-      "This is a demo gate, not security. The passcode is in the page's own JavaScript, and everything below is stored in this browser. Do not put real customer data behind it.",
+      "This is a demo gate, not security. The passcode is in the page's own JavaScript, and everything below is demo data held in memory — a reload starts it over. Do not put real customer data behind it.",
     nameLabel: "Your name",
     namePlaceholder: "Store owner",
     codeLabel: "Passcode",
@@ -69,9 +69,6 @@ export const admin_data: AdminData = {
     },
   ],
 
-  /* Fulfilment reads as one journey deepening, so the five in-flow states take
-     the ordinal ramp in order. The two exits take reserved status colours: a
-     cancellation is not a later stage of delivery. */
   orderStatus: {
     pending: { label: "Pending", tone: "flow-1" },
     confirmed: { label: "Confirmed", tone: "flow-2" },
@@ -110,9 +107,6 @@ export const admin_data: AdminData = {
     close: "Close",
     selected: "{n} selected",
     noResults: "Nothing matches that.",
-    resetData: "Reset demo data",
-    resetHint:
-      "Throws away every change made in this browser and starts again from the shipped catalogue.",
     rowsShown: "{shown} of {total}",
     previous: "Previous",
     next: "Next",
@@ -122,11 +116,8 @@ export const admin_data: AdminData = {
   },
 };
 
-/** How many rows a table shows before it pages. */
 export const PAGE_SIZE = 12;
 
-/** Date-range presets. One row above the dashboard, widest last, and the same
- *  window scopes every figure below it. */
 export const RANGES: { days: number; label: string }[] = [
   { days: 7, label: "Last 7 days" },
   { days: 30, label: "Last 30 days" },

@@ -1,14 +1,6 @@
 import type { ComponentProps, ReactNode } from "react";
 import { cn } from "@/shared/utils/cn";
 
-/* Plain table elements with the portal's spacing baked in, rather than a generic
-   column-config component. Every admin table here wants a different cell — a
-   thumbnail, a pill, a stepper, three buttons — and a `columns` API ends up
-   either passing `render` functions for all of them or quietly limiting what a
-   cell can be. Semantics stay real, so screen readers and copy-paste both work. */
-
-/** Wraps a table so it scrolls sideways on a narrow screen instead of pushing
- *  the whole layout wide. */
 export function TableScroll({ children }: { children: ReactNode }) {
   return <div className="-mx-4 overflow-x-auto md:-mx-5">{children}</div>;
 }
@@ -47,9 +39,6 @@ export function Td({ className, children, ...rest }: ComponentProps<"td">) {
   );
 }
 
-/** A cell of figures. `tabular-nums` only here: a column of numbers has to line
- *  up, and a headline figure should not (every digit as wide as a zero reads
- *  loose at display size). */
 export function TdNum({ className, children, ...rest }: ComponentProps<"td">) {
   return (
     <Td className={cn("text-right tabular-nums", className)} {...rest}>

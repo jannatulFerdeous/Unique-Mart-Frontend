@@ -9,12 +9,6 @@ import { cart_data } from "./config/constants";
 import { CartRow } from "./partials/CartRow";
 import { OrderSummary } from "./partials/OrderSummary";
 
-/* The basket.
- *
- * A client component all the way down, because the basket lives in this
- * browser — there is nothing for the server to render but the empty state. The
- * page is still prerendered and still has its metadata; `useCart` hands back an
- * empty basket during prerender and React swaps in the real one on hydration. */
 export function Cart() {
   const { lines, selected, setAllSelected, clear } = useCart();
   const [confirming, setConfirming] = useState(false);
@@ -70,9 +64,6 @@ export function Cart() {
                 ))}
               </ul>
 
-              {/* Two clicks rather than a native `confirm()`: a blocking
-                  browser dialog looks like the page has hung, and it cannot be
-                  styled or read out with the rest of the page. */}
               {confirming ? (
                 <p className="mt-5 flex flex-wrap items-center gap-3 text-sm">
                   <span className="text-ink">{cart_data.clearConfirm}</span>

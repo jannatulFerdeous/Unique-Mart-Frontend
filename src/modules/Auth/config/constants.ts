@@ -36,7 +36,6 @@ export const auth_data: AuthData = {
   },
 
   google: {
-    // Google's approved wording for each context.
     signIn: "Sign in with Google",
     signUp: "Sign up with Google",
     divider: "or",
@@ -46,8 +45,6 @@ export const auth_data: AuthData = {
   showPassword: "Show password",
   hidePassword: "Hide password",
 
-  // There is no auth backend. The card says so rather than implying an
-  // account was created somewhere. See memory.md.
   note: "Accounts are kept in this browser on this device. Nothing is sent anywhere, no password is stored, and the Google button is a placeholder that does not contact Google — all of it until sign-in is connected to the store.",
   signedInAs: "Signed in as",
   signOut: "Sign out",

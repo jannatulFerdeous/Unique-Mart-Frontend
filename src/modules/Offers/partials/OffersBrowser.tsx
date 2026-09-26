@@ -15,8 +15,6 @@ export function OffersBrowser({ offers }: { offers: Offer[] }) {
   const [tier, setTier] = useState("all");
   const [sort, setSort] = useState<OfferSortId>("saving");
 
-  // A tier with nothing in it is not offered — the chips describe the
-  // catalogue as it stands rather than a fixed ladder.
   const live = useMemo(
     () =>
       tiers.filter(
@@ -100,8 +98,6 @@ export function OffersBrowser({ offers }: { offers: Offer[] }) {
                   product={offer.product}
                   ribbon={`-${offer.percent}%`}
                 />
-                {/* The taka figure in words, under the card: the ribbon gives
-                    the percentage and this gives what it is actually worth. */}
                 <p className="mt-2 text-center text-sm font-medium text-tertiary">
                   {saveLabel} {formatPrice(offer.saving)}
                 </p>

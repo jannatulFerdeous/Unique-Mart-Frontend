@@ -2,13 +2,10 @@ import { TicketPercent } from "lucide-react";
 import { offers_data } from "../config/constants";
 
 type Props = {
-  /** The deepest discount in the catalogue. */
   topPercent: number;
   count: number;
 };
 
-/** Typeset, not artwork. Both numbers come from the catalogue, so the panel is
- *  true by construction and needs no replacing before launch. */
 export function OffersHero({ topPercent, count }: Props) {
   const { heroEyebrow, heroTitle, heroBody, heroNote } = offers_data;
 
@@ -21,8 +18,6 @@ export function OffersHero({ topPercent, count }: Props) {
             {heroEyebrow}
           </p>
 
-          {/* The base layer paints every heading `--color-primary`, which is
-              black — it has to be overridden to sit on the accent panel. */}
           <h1 className="mt-3 font-sans font-bold text-tertiary-contrast">
             {heroTitle.replace("{percent}", String(topPercent))}
           </h1>

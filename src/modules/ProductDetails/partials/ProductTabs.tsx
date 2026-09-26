@@ -16,8 +16,6 @@ export function ProductTabs({ slug, detail }: Props) {
   const { labels } = product_details_data;
   const { reviews, summary, add } = useReviews(slug);
 
-  // Only offer a tab that has something behind it. Reviews is always there —
-  // you can write the first one on any product.
   const tabs = product_details_data.tabs.filter((tab) => {
     if (tab.id === "specification") return Boolean(detail?.specs?.length);
     if (tab.id === "description") return Boolean(detail?.description?.blocks.length);
@@ -30,7 +28,6 @@ export function ProductTabs({ slug, detail }: Props) {
   return (
     <div className="mt-14">
       {!hasFacts && <p className="mb-6 text-ink-muted">{labels.noSpecs}</p>}
-      {/* WAI-ARIA tabs, the same pattern the home page's brand strip uses. */}
       <div
         role="tablist"
         aria-label="Product information"
@@ -57,8 +54,6 @@ export function ProductTabs({ slug, detail }: Props) {
               )}
             >
               {tab.label}
-              {/* Absent from the prerendered HTML, since the count lives in
-                  the visitor's browser. It appears on hydration. */}
               {tab.id === "reviews" && summary.count > 0
                 ? ` (${summary.count})`
                 : ""}
@@ -77,8 +72,6 @@ export function ProductTabs({ slug, detail }: Props) {
           <table className="w-full border-collapse text-left">
             <tbody>
               {detail.specs.map((group) => (
-                // Each group is its own <tbody>-worth of rows headed by a
-                // tinted band, matching the reference's grouped table.
                 <Fragment key={group.title}>
                   <tr>
                     <th

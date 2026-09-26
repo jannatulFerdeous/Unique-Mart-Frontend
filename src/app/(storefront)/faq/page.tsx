@@ -7,8 +7,6 @@ export const metadata: Metadata = {
   description: faq_data.lede,
 };
 
-/** FAQPage structured data, so the answers can surface as rich results. Same
- *  shape and escaping as the Organization/WebSite blocks in the Header. */
 const structuredData = {
   "@context": "https://schema.org",
   "@type": "FAQPage",

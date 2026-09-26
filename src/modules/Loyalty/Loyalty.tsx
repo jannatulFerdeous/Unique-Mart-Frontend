@@ -2,11 +2,6 @@ import Link from "next/link";
 import { ProductBreadcrumb } from "@/modules/ProductDetails";
 import { loyalty_data } from "./config/constants";
 
-/* The loyalty programme.
- *
- * Written as what the shop intends to run, with one line saying it starts when
- * ordering does. A page describing points a customer cannot yet earn, with no
- * such caveat, is an offer the shop is not in a position to honour. */
 export function Loyalty() {
   const data = loyalty_data;
 
@@ -28,7 +23,6 @@ export function Loyalty() {
             {data.howTitle}
           </h2>
 
-          {/* Numbered because it is a sequence, not a list of features. */}
           <ol className="mt-5 grid gap-5 md:grid-cols-3">
             {data.steps.map((step, index) => (
               <li key={step.title} className="rounded-card border border-line bg-surface p-5">

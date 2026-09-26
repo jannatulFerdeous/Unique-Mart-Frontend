@@ -3,7 +3,6 @@ import { site } from "@/shared/config/site";
 export type Opening = {
   title: string;
   location: string;
-  /** Full time, part time, contract. */
   type: string;
   summary: string;
   responsibilities: string[];
@@ -33,9 +32,6 @@ export const careers_data = {
   ],
 
   openingsTitle: "Open positions",
-  /* Empty on purpose. Add a role here and the page lists it — no code change.
-     A vacancy invented to fill the page costs a real applicant a real
-     afternoon, which is a different thing from placeholder copy. */
   openings: [] as Opening[],
 
   noOpeningsTitle: "No open positions right now",

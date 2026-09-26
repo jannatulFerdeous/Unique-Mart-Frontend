@@ -4,10 +4,6 @@ import Link from "next/link";
 import { Heart } from "lucide-react";
 import { useWishlistCount } from "@/shared/libs/wishlist";
 
-/** The header's wishlist control, with how many are saved.
- *
- *  Absent rather than zero when nothing is saved — the same call the basket
- *  badge makes, for the same reason: a "0" is a number to read and dismiss. */
 export function WishlistLink({ className }: { className: string }) {
   const count = useWishlistCount();
 

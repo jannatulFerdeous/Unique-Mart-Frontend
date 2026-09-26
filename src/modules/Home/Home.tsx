@@ -1,5 +1,4 @@
 import { home_data } from "./config/constants";
-import { heroSlides } from "./config/hero";
 import { AboutCopy } from "./partials/AboutCopy";
 import { BrandWall } from "./partials/BrandWall";
 import { CasesAndProtectors } from "./partials/CasesAndProtectors";
@@ -14,13 +13,10 @@ import { StrapBanner } from "./partials/StrapBanner";
 import { TopSelling } from "./partials/TopSelling";
 import { TrustStrip } from "./partials/TrustStrip";
 
-export async function Home() {
-  // Read on the server: the portal's slides live on disk, not in the bundle.
-  const slides = await heroSlides();
-
+export function Home() {
   return (
     <>
-      <HeroBanner slides={slides} interval={home_data.hero.interval} />
+      <HeroBanner slides={home_data.hero.slides} interval={home_data.hero.interval} />
       <TrustStrip />
       <Exclusive />
       <FeaturedCategories />
@@ -30,10 +26,8 @@ export async function Home() {
       <BrandWall />
       <NewArrival />
       <StrapBanner />
-      {/* The reference runs Gaming Mania between the strap banner and this. */}
       <SoundSurround />
       <CasesAndProtectors />
-      {/* SEO copy closes the page, as it does on the reference. */}
       <AboutCopy />
     </>
   );

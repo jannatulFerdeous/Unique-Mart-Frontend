@@ -29,8 +29,6 @@ export function RegisterForm({ back }: { back?: string }) {
 
     const found: Record<string, string> = {};
     if (!name.trim()) found.name = errors.name;
-    // Deliberately loose: something@something. Anything stricter rejects
-    // addresses that are perfectly valid.
     if (!/^\S+@\S+\.\S+$/.test(email.trim())) found.email = errors.email;
     if (!phone.trim()) found.phone = errors.phone;
     if (!password) found.password = errors.password;
@@ -40,8 +38,6 @@ export function RegisterForm({ back }: { back?: string }) {
     setShown(found);
     if (Object.keys(found).length) return;
 
-    // The password is validated and then dropped — there is nowhere to send
-    // it, and storing one in a browser would be worse than not having it.
     signIn({ name: name.trim(), email: email.trim(), phone: phone.trim() });
 
     router.replace(decodeBack(back));

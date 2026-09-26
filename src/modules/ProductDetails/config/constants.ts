@@ -1,9 +1,6 @@
 import type { ProductDetailsData } from "./types";
 
 export const product_details_data: ProductDetailsData = {
-  // The reference has four. Questions still needs a backend; Reviews is ours,
-  // stored in the visitor's browser until there is somewhere to send it.
-  // See memory.md.
   tabs: [
     { id: "specification", label: "Specification" },
     { id: "description", label: "Description" },
@@ -15,14 +12,9 @@ export const product_details_data: ProductDetailsData = {
     inStock: "In Stock",
     outOfStock: "Out of Stock",
     color: "Colour",
-    // Every other variant axis labels itself from the catalogue — Storage,
-    // Memory, Dial Size, Strap Size — so there is no constant for it here.
     share: "Share",
     buyNow: "Buy Now",
     addToCart: "Add To Cart",
-    /* The reference shouts this in red between the swatches and the button.
-       Ours says it once, in the same place, without the asterisks — the colour
-       and the position already carry the urgency. */
     selectColorFirst: "Choose a colour first.",
     quantity: "Quantity",
     decrease: "One fewer",
@@ -49,7 +41,6 @@ export const product_details_data: ProductDetailsData = {
     ofFive: "out of 5",
     countOne: "1 review",
     countMany: "{n} reviews",
-    // Says exactly what happens, because nothing is published yet.
     storageNote:
       "Reviews are saved in your browser on this device. They will publish under your account name once sign-in and the review store are connected.",
     saved: "Thanks — your review is saved on this device.",

@@ -8,9 +8,7 @@ import { category_data } from "../config/constants";
 type Props = {
   name: string;
   trail: { slug: string; name: string }[];
-  /** Lowest price in the category, or null when it holds nothing. */
   from: number | null;
-  /** Sub-categories with stock, shown as the chip row the reference has. */
   links: { slug: string; name: string }[];
   activeSlug: string;
 };

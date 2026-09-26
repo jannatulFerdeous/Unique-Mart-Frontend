@@ -9,10 +9,7 @@ export type AboutSection = {
 
 export type AboutData = {
   title: string;
-  /** For `<title>`, which the root layout already suffixes with the site name —
-   *  the h1's "About Unique Mart" would otherwise say it twice. */
   metaTitle: string;
-  /** The one-paragraph standfirst under the h1. */
   lede: string;
   story: AboutSection;
   why: {
@@ -23,7 +20,6 @@ export type AboutData = {
   commitment: AboutSection;
   faq: {
     title: string;
-    /** A subset of the shared set; the rest live on /faq. */
     items: FaqItem[];
     linkLabel: string;
     href: string;

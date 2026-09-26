@@ -1,28 +1,21 @@
 @import "tailwindcss";
 
 @theme {
-  /* Primary — black */
   --color-primary: #000000;
   --color-primary-hover: #2e2e2e;
   --color-primary-soft: #f2f2f2;
   --color-primary-contrast: #ffffff;
 
-  /* Secondary — white */
   --color-secondary: #ffffff;
   --color-secondary-hover: #f2f2f2;
   --color-secondary-soft: #fafafa;
   --color-secondary-contrast: #000000;
 
-  /* Tertiary — the accent. Every role the reference site paints orange:
-     Offers, Show All, prices, Buy Now, the active brand tab, prose links,
-     Subscribe and the footer phone button. Client colour, added 2026-09-06.
-     Black stays for body copy, headings, the category bar and the footer. */
   --color-tertiary: #0171d0;
   --color-tertiary-hover: #015aa6;
   --color-tertiary-soft: #e6f1fb;
   --color-tertiary-contrast: #ffffff;
 
-  /* Neutrals */
   --color-ink: #000000;
   --color-ink-muted: #525252;
   --color-ink-subtle: #8a8a8a;
@@ -32,25 +25,9 @@
   --color-line: #e5e5e5;
   --color-line-strong: #cfcfcf;
 
-  /* Validation. Not part of the monochrome-plus-one-accent palette on
-     purpose: an invalid field has to read as wrong, and the accent already
-     means "do this". Used only for form errors. */
   --color-danger: #c2260f;
   --color-danger-soft: #fdecea;
 
-  /* Admin state, and the charts that read it. Storefront screens never touch
-     these — a shop page has a price and a buy button, not a fulfilment state.
-
-     Kept apart from --color-danger above on purpose: danger means "this field
-     is wrong, fix it before submitting", and critical means "this order was
-     cancelled", which is a fact about the shop and not a thing to correct. One
-     token doing both jobs would put form-error red on a table row.
-
-     Values are the reference status palette from the data-viz method, which is
-     fixed rather than themed, so a status colour can never be mistaken for a
-     chart series. Warning and serious sit under 3:1 against a white surface by
-     design: every place they appear carries a text label beside the colour, so
-     nothing is encoded in hue alone. */
   --color-good: #0ca30c;
   --color-good-soft: #e7f6e7;
   --color-warning: #fab219;
@@ -60,18 +37,12 @@
   --color-critical: #d03b3b;
   --color-critical-soft: #fbeaea;
 
-  /* Fulfilment is ordered, not categorical: pending → delivered is a journey,
-     so it gets one hue deepening rather than five unrelated colours. Validated
-     as an ordinal ramp against a white card: monotone lightness, every adjacent
-     gap over 0.06, and the lightest step still clears 2:1 against the surface.
-     Do not re-pick these by eye — re-run the validator. */
   --color-flow-1: #86b6ef;
   --color-flow-2: #5598e7;
   --color-flow-3: #2a78d6;
   --color-flow-4: #1c5cab;
   --color-flow-5: #0d366b;
 
-  /* Inverted surfaces — dark bars, footer */
   --color-inverse: #1a1a1a;
   --color-inverse-deep: #000000;
   --color-inverse-raised: #2b2b2b;
@@ -80,26 +51,17 @@
   --color-ink-inverse-muted: #b3b3b3;
   --color-line-inverse: #2e2e2e;
 
-  /* Layout */
   --container-page: 82.5rem;
 
-  /* Typography */
   --font-sans: var(--font-heebo), var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-montserrat), var(--font-heebo), ui-sans-serif, sans-serif;
 
-  /* One step for every navigation label: categories, sub items, sub-sub items */
   --text-nav: 0.875rem;
   --text-nav--line-height: 1.55;
 
-  /* One step for every home-page section heading. Measured off the reference;
-     it is also the `md` value of --text-h2, so section headings and page
-     section headings are the same size. */
   --text-section: 1.6rem;
   --text-section--line-height: 1.55;
 
-  /* The document scale. One size per heading level, site-wide, applied to the
-     bare tags in @layer base — a component only carries a `text-*` class when
-     it is deliberately opting out. Two values each: base, then `md` and up. */
   --text-h1: 1.6rem;
   --text-h1-md: 2.1rem;
   --text-h2: 1.2rem;
@@ -115,16 +77,13 @@
   --text-body: 0.875rem;
   --text-body-md: 1rem;
 
-  /* Radii */
   --radius-control: 0.3125rem;
   --radius-card: 0.75rem;
   --radius-banner: 1rem;
 
-  /* Elevation */
   --shadow-card: 0 1px 2px rgb(0 0 0 / 0.05), 0 8px 24px rgb(0 0 0 / 0.06);
   --shadow-menu: 0 0 25px -5px rgb(0 0 0 / 0.3);
 
-  /* Motion */
   --animate-flash: flash 1.8s ease-in-out infinite;
 
   @keyframes flash {
@@ -140,11 +99,6 @@
   }
 }
 
-/* The page gutter is percentage-based, not fixed padding: it grows with the
-   viewport until --container-page caps it. Both utilities below are lifted from
-   the reference site and verified against it — see memory.md. */
-
-/* Header, footer and every content section. */
 @utility container-page {
   margin-inline: auto;
   width: 95%;
@@ -155,9 +109,6 @@
   }
 }
 
-/* Same container, but edge to edge on phones. Only full-bleed artwork uses this
-   — the hero banner. It steps to 85% at md, not lg; that is the reference's own
-   behaviour and the breakpoint its artwork swaps on. Do not merge the two. */
 @utility container-page-bleed {
   margin-inline: auto;
   width: 100%;
@@ -168,7 +119,6 @@
   }
 }
 
-/* Product rails scroll natively; the bar itself would sit across the cards. */
 @utility no-scrollbar {
   scrollbar-width: none;
 
@@ -177,14 +127,6 @@
   }
 }
 
-/* One half of the category page's price slider. Two of these sit on top of
-   each other so a range has both a low and a high handle, which a single
-   `input[type=range]` cannot express.
-
-   The input itself ignores the pointer so the one underneath stays reachable;
-   only the thumb takes events. Thumb styling has to be written per engine —
-   there is no standard selector for it, and Tailwind has no utility that
-   reaches inside a shadow root. */
 @utility range-thumb {
   pointer-events: none;
   appearance: none;
@@ -221,32 +163,19 @@
   html {
     -webkit-text-size-adjust: 100%;
 
-    /* Lets `auto` take part in a transition, which is what makes the accordion
-       below able to animate to its natural height. */
     interpolate-size: allow-keywords;
   }
 
-  /* In-page anchors glide rather than jump — the FAQ topic nav is the main
-     user. Paired with the `scroll-mt-*` on each target, which keeps the
-     landing point clear of the sticky header. */
   @media (prefers-reduced-motion: no-preference) {
     html {
       scroll-behavior: smooth;
     }
   }
 
-  /* Accordions open and close smoothly. `::details-content` is the wrapper the
-     browser generates around a <details> body, so animating it keeps the native
-     element — and its keyboard and find-in-page behaviour — intact. Browsers
-     without `::details-content` simply snap open, which is the old behaviour. */
   @media (prefers-reduced-motion: no-preference) {
     details::details-content {
       block-size: 0;
       overflow: hidden;
-      /* `allow-discrete` has to ride inside the shorthand. As the standalone
-         `transition-behavior` longhand it is dropped from the compiled sheet —
-         computed value came back `normal`, and the close animation never ran
-         because content-visibility flipped to hidden immediately. */
       transition:
         block-size 260ms ease,
         content-visibility 260ms allow-discrete;
@@ -274,11 +203,6 @@
     text-wrap: balance;
   }
 
-  /* The document scale. Every heading level and every paragraph gets its size
-     from here, so a component needs no size class at all — and any `text-*` it
-     does carry is a deliberate exception, visible in the diff. The three that
-     opt out on purpose: ProductCard's title (sized to the card), the footer
-     column headings, and BrandWall's display heading. */
   h1 {
     font-size: var(--text-h1);
     line-height: 1.25;

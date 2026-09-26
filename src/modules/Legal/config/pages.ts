@@ -3,27 +3,6 @@ import { FREE_SHIPPING_FROM, SHIPPING_FLAT } from "@/shared/config/shipping";
 import { formatPrice } from "@/shared/utils/price";
 import type { ProsePage } from "./types";
 
-/* The policy pages, as data.
- *
- * WHY THIS IS WRITTEN AND NOT COPIED. The reference site has a privacy policy, a
- * cookie policy and a terms document, and it would have been quicker to lift
- * them. Two reasons not to. The first is that they are someone else's writing.
- * The second matters more: a privacy policy is a binding statement about how one
- * particular company handles data, and this site's answer is unusual — there is
- * no server, nothing is transmitted, and everything a visitor does is kept in
- * their own browser. Borrowed text would describe collection, transfer and
- * third-party processing that do not happen here, which is a false statement
- * about data handling dressed up as a legal document.
- *
- * So the shape follows the reference's — the same sections a shopper expects to
- * find, in roughly the same order — and every sentence describes what this
- * codebase actually does. The storage table in the cookie policy is checkable:
- * open dev tools and the keys are there.
- *
- * BEFORE LAUNCH. These are accurate, not lawyered. Once real orders, payments
- * and a customer database exist, every one of these pages describes a different
- * system and must be rewritten and reviewed by someone qualified. */
-
 const UPDATED = "2026-09-20";
 
 const CONTACT = `Questions about this page can go to ${site.email} or ${site.phone}.`;

@@ -29,14 +29,10 @@ export function HeaderActions() {
           Store Locator
         </Link>
 
-        {/* Client-side: it carries the count of what has been saved. */}
         <WishlistLink className={iconButton} />
 
-        {/* Client-side: it carries the count of what is in the basket. */}
         <CartLink className={iconButton} />
 
-        {/* Client-side: it reflects the session and carries the page you
-            were on into `?back=`. */}
         <AccountLink className={iconButton} />
       </div>
     </div>

@@ -5,10 +5,7 @@ import { cn } from "@/shared/utils/cn";
 type FaqAccordionProps = {
   items: FaqItem[];
   className?: string;
-  /** Drives each row's open state. Omit it — as the About page does — and every
-   *  row keeps its own native state, with no JavaScript involved. */
   isOpen?: (id: string) => boolean;
-  /** Fires on user toggles so a caller tracking state stays in sync. */
   onToggle?: (id: string, isOpen: boolean) => void;
 };
 
@@ -21,8 +18,6 @@ export function FaqAccordion({
   return (
     <div className={cn("border-t border-line", className)}>
       {items.map(({ id, question, answer }) => (
-        // Native <details>: it collapses with no JavaScript, and each is
-        // independent — no shared `name`, so opening one leaves the rest alone.
         <details
           key={id}
           open={isOpen ? isOpen(id) : undefined}
@@ -33,8 +28,6 @@ export function FaqAccordion({
           }
           className="group border-b border-line"
         >
-          {/* list-none kills the marker in Firefox and Chrome; the
-              ::-webkit-details-marker rule is the one Safari reads. */}
           <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-4 font-sans text-base font-bold text-ink [&::-webkit-details-marker]:hidden md:text-lg">
             {question}
             <ChevronDown

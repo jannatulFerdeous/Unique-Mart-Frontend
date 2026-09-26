@@ -12,14 +12,11 @@ import { CategoryFilters } from "./CategoryFilters";
 type Props = {
   name: string;
   items: ListingProduct[];
-  /** Direct children that hold stock, in tree order, for the Category group. */
   childLabels: { value: string; label: string }[];
 };
 
 const EMPTY: Record<string, string[]> = {};
 
-/** Brand and sub-category live on the product, not in the spec sheet, so they
- *  are matched here rather than through `facets`. */
 const own = (item: ListingProduct, id: string): string[] => {
   if (id === "brand") return item.product.brand ? [item.product.brand] : [];
   if (id === "child") return item.child ? [item.child] : [];
@@ -67,8 +64,6 @@ export function CategoryBrowser({ name, items, childLabels }: Props) {
     setPage(1);
   };
 
-  /* Counts describe the whole category rather than the current selection, so a
-     box never reads (0) just because a different box is ticked. */
   const count = (id: string, value: string) =>
     items.filter((item) => own(item, id).includes(value)).length;
 
@@ -91,10 +86,6 @@ export function CategoryBrowser({ name, items, childLabels }: Props) {
     [childLabels, items],
   );
 
-  /* In most phone and speaker sections the sub-categories *are* the brands, so
-     showing both repeats the same checkboxes twice. Where they largely
-     coincide, Category wins: it is the more precise of the two, and it catches
-     products whose `brand` is deliberately unset. */
   const brandsAreCategories = useMemo(() => {
     if (subCategories.length < 2 || brands.length === 0) return false;
     const names = new Set(subCategories.map((each) => each.label.toLowerCase()));
@@ -105,9 +96,6 @@ export function CategoryBrowser({ name, items, childLabels }: Props) {
     );
   }, [brands, subCategories]);
 
-  /* The sidebar, in the reference's order: availability, brand, category, then
-     every spec-derived group these products actually record. A group with
-     fewer than two live values would filter nothing, so it is left out. */
   const groups: FacetGroupView[] = useMemo(() => {
     const built: FacetGroupView[] = [];
 
@@ -118,7 +106,6 @@ export function CategoryBrowser({ name, items, childLabels }: Props) {
 
       if (options.length > 1) built.push({ ...group, options });
 
-      // Brand and Category follow Availability, as on the reference.
       if (group.id === "availability") {
         if (!brandsAreCategories && brands.length > 1) {
           built.push({ id: "brand", label: labels.brand, options: brands });
@@ -141,8 +128,6 @@ export function CategoryBrowser({ name, items, childLabels }: Props) {
         return false;
       }
 
-      // A hidden group must not keep filtering by a value that is no longer
-      // on screen — Brand disappears on phone sections, for instance.
       for (const [id, values] of Object.entries(selected)) {
         if (!values.length || !live.has(id)) continue;
         const mine = own(item, id);
@@ -181,13 +166,6 @@ export function CategoryBrowser({ name, items, childLabels }: Props) {
 
   return (
     <div className="lg:grid lg:grid-cols-[16rem_minmax(0,1fr)] lg:items-start lg:gap-10">
-      {/* Sidebar from lg; a sheet below it, because a 260px rail beside a 2-up
-          grid leaves the cards unreadable.
-
-          Not sticky and not its own scroller: with ten groups the column is
-          taller than the viewport, so sticking it pinned the bottom groups out
-          of reach and an inner scrollbar put a second scroll gesture next to
-          the page's own. It scrolls with the page instead. */}
       <aside className="hidden lg:block">{sidebar}</aside>
 
       <div className="min-w-0">

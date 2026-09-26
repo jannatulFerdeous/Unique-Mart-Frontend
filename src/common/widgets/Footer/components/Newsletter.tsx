@@ -9,7 +9,6 @@ const contactLink =
 export function Newsletter() {
   return (
     <div className="text-center md:text-left">
-      {/* Matches FooterColumn's heading; same deliberate exception. */}
       <h3 className="mb-4 font-sans text-xl font-medium text-ink-inverse">
         Newsletter
       </h3>

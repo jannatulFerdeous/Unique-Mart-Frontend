@@ -51,8 +51,6 @@ export function ForgotForm({ back }: { back?: string }) {
         {forgot.submit}
       </button>
 
-      {/* Says outright that nothing was sent, rather than the usual
-          "check your inbox" that would be untrue here. */}
       {done && (
         <p
           role="status"

@@ -17,8 +17,6 @@ export function ProductDetails({ product, detail, similar, trail }: Props) {
       <ProductBreadcrumb trail={trail} />
 
       <section className="pt-6 pb-16">
-        {/* Content left, the trust panel and Similar Products in a rail on the
-            right — the reference's arrangement, minus its gift promo. */}
         <div className="container-page lg:grid lg:grid-cols-[minmax(0,1fr)_19rem] lg:items-start lg:gap-10">
           <div className="min-w-0">
             <ProductTop product={product} detail={detail} />

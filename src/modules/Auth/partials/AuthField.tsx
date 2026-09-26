@@ -15,9 +15,6 @@ type Props = {
   error?: string;
 };
 
-/** One rounded field: a leading glyph, and the placeholder doubling as the
- *  label the way the mockup has it. The real `<label>` is still there for
- *  screen readers — a placeholder alone is not a label. */
 export function AuthField({
   Icon,
   label,

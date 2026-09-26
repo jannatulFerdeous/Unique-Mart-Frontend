@@ -4,8 +4,6 @@ import { productHref } from "@/shared/config/products";
 import { formatPrice } from "@/shared/utils/price";
 import { category_data } from "../config/constants";
 
-/** The reference's "Latest price list" block. Ours is built straight from the
- *  catalogue, so it cannot drift from the prices on the cards above it. */
 export function CategoryPriceTable({
   name,
   products,

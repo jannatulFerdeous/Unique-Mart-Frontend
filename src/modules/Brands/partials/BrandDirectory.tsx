@@ -11,9 +11,6 @@ export function BrandDirectory() {
   const [query, setQuery] = useState("");
   const inputId = useId();
 
-  // The reference debounces this into a `?search=` API call. We hold all 36
-  // marks already, so the filter is local and instant — no request, no spinner.
-  // Slug as well as label, so a hyphenated guess ("harman-kardon") still hits.
   const needle = query.trim().toLowerCase();
   const matches = needle
     ? items.filter(
@@ -26,12 +23,8 @@ export function BrandDirectory() {
   return (
     <section aria-labelledby="brands-heading" className="pt-10 pb-12 md:pt-14">
       <div className="container-page">
-        {/* Heading and standfirst on the left, the search on the right of the
-            same row from md up; stacked below it. */}
         <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between md:gap-10">
           <div className="min-w-0">
-            {/* font-sans because the base layer paints h1–h6 in
-                --font-display. */}
             <h1
               id="brands-heading"
               className="font-sans font-bold text-ink"
@@ -58,16 +51,11 @@ export function BrandDirectory() {
           </div>
         </div>
 
-        {/* The grid changes under a screen reader with no visible cue, so the
-            result count is announced instead. */}
         <p role="status" className="sr-only">
           {matches.length} of {items.length} brands shown
         </p>
 
         {matches.length > 0 ? (
-          // 36 divides by 2, 3, 4 and 6, so no step leaves a short last row.
-          // Six at xl rather than the reference's five, which strands one card
-          // alone on a ninth row.
           <ul className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
             {matches.map((brand) => (
               <li key={brand.slug}>
@@ -75,8 +63,6 @@ export function BrandDirectory() {
                   href={brandHref(brand.slug)}
                   className="flex h-full flex-col items-center bg-surface p-4 transition-shadow hover:shadow-card"
                 >
-                  {/* fill, not a flow image: the logos have assorted intrinsic
-                      ratios and a tall one would grow the whole grid row. */}
                   <div className="relative size-24 md:size-28 lg:size-32">
                     <Image
                       src={brand.logo}
@@ -87,7 +73,6 @@ export function BrandDirectory() {
                     />
                   </div>
 
-                  {/* The link's accessible name, so the logo stays decorative. */}
                   <span className="mt-2 text-center text-sm font-bold text-ink md:mt-4">
                     {brand.label}
                   </span>

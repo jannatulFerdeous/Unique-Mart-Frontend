@@ -11,15 +11,12 @@ export function FaqBrowser() {
 
   const [query, setQuery] = useState("");
   const [openIds, setOpenIds] = useState<string[]>([]);
-  // Only meaningful while searching, where every match starts open.
   const [collapsed, setCollapsed] = useState<string[]>([]);
   const [active, setActive] = useState(groups[0]?.id ?? "");
 
   const needle = query.trim().toLowerCase();
   const searching = needle.length > 0;
 
-  // Answers are searched as well as questions — people look for "EMI" or
-  // "courier", which are words in the answer more often than in the question.
   const visible = groups
     .map((group) => ({
       ...group,
@@ -38,9 +35,6 @@ export function FaqBrowser() {
   const allOpen = allIds.every((id) => openIds.includes(id));
   const visibleIds = visible.map((group) => group.id).join(",");
 
-  // Highlights the topic you are actually reading. The band is the strip just
-  // below the sticky header, so a section becomes current once its heading
-  // clears the header rather than when it first peeks into view.
   useEffect(() => {
     const sections = visibleIds
       .split(",")
@@ -75,10 +69,6 @@ export function FaqBrowser() {
       );
       return;
     }
-    // Must dedupe: "Expand all" sets `open` on every row, each of which fires
-    // its own native toggle event back through here. Appending blindly stored
-    // all 23 ids twice, so `allOpen` never became true and the button kept
-    // saying "Expand all".
     setOpenIds((prev) => {
       if (!next) return prev.filter((each) => each !== id);
       return prev.includes(id) ? prev : [...prev, id];
@@ -98,7 +88,6 @@ export function FaqBrowser() {
             value={query}
             onChange={(event) => {
               setQuery(event.target.value);
-              // A new search starts from every match open again.
               setCollapsed([]);
             }}
             placeholder={search.placeholder}
@@ -115,7 +104,6 @@ export function FaqBrowser() {
           <p className="py-14 text-center text-ink-muted">{empty}</p>
         ) : (
           <div className="mt-10 lg:grid lg:grid-cols-[15rem_minmax(0,1fr)] lg:items-start lg:gap-14">
-            {/* top-32 clears the sticky header: 112px at md and up, 104 below. */}
             <nav
               aria-label={navLabel}
               className="lg:sticky lg:top-32 lg:self-start"
@@ -124,8 +112,6 @@ export function FaqBrowser() {
                 {navLabel}
               </p>
 
-              {/* Chips in a centred wrapping row below lg; from lg a ruled list
-                  with an accent bar that follows the section you are reading. */}
               <ul className="flex flex-wrap justify-center gap-2 lg:mt-4 lg:block lg:space-y-0.5 lg:border-l lg:border-line">
                 {visible.map((group) => {
                   const current = group.id === active;
@@ -138,8 +124,6 @@ export function FaqBrowser() {
                         className={cn(
                           "flex items-center gap-2 text-sm transition-colors",
                           "max-lg:rounded-control max-lg:border max-lg:bg-surface max-lg:px-3 max-lg:py-1.5",
-                          // -ml-px lays the bar over the list's own rule, so the
-                          // active item replaces it rather than doubling it.
                           "lg:-ml-px lg:border-l-2 lg:py-2 lg:pl-4",
                           current
                             ? "font-medium text-tertiary max-lg:border-tertiary lg:border-l-tertiary"
@@ -163,7 +147,6 @@ export function FaqBrowser() {
             </nav>
 
             <div className="mt-10 lg:mt-0">
-              {/* Pointless mid-search, where everything is already open. */}
               {!searching && (
                 <div className="flex justify-end">
                   <button
@@ -184,9 +167,6 @@ export function FaqBrowser() {
                     aria-labelledby={`${group.id}-heading`}
                     className="scroll-mt-32"
                   >
-                    {/* Black at rest, accent while this is the section being
-                        read — the same `active` the sidebar bar follows, so the
-                        two highlights always agree. */}
                     <h2
                       id={`${group.id}-heading`}
                       className={cn(

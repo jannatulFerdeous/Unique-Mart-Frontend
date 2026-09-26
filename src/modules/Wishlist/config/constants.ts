@@ -8,10 +8,6 @@ export const wishlist_data: WishlistData = {
   countMany: "{n} products saved",
 
   addToCart: "Add to basket",
-  /* A saved product with colours has no colour chosen yet — a wishlist holds
-     the product, not a configuration. Dropping it into the basket would pick
-     one on the shopper's behalf, which is the exact thing the product page
-     refuses to do. So this sends them there to choose. */
   chooseOptions: "Choose a colour",
   inCart: "In your basket",
   remove: "Remove",

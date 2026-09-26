@@ -8,8 +8,6 @@ export function TopSelling() {
   return (
     <section aria-labelledby="top-selling-heading" className="pt-5">
       <div className="container-page">
-        {/* Left, not centred. Exclusive is the only rail the reference centres;
-            every one after it aligns the title left in the same row. */}
         <SectionHeader
           id="top-selling-heading"
           title={title}

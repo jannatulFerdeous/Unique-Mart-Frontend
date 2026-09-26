@@ -8,8 +8,6 @@ export function Footer() {
   return (
     <footer className="bg-inverse-deep pt-10 pb-4 text-ink-inverse">
       <div className="container-page">
-        {/* Newsletter leads the DOM so it stacks first on mobile, and
-            row-reverse floats it to the right edge from lg up. */}
         <div className="lg:flex lg:flex-row-reverse lg:justify-between lg:gap-4">
           <Newsletter />
 
@@ -30,8 +28,6 @@ export function Footer() {
             reserved.
           </p>
 
-          {/* Payment-method strip. Slot held at the artwork's 640×56 ratio so
-              the row keeps its height until the logos are added. */}
           <div className="aspect-[640/56] w-100 max-w-full" aria-hidden />
         </div>
       </div>

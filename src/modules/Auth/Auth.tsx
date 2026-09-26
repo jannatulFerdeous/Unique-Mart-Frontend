@@ -3,7 +3,6 @@ import { AuthCard } from "./partials/AuthCard";
 
 type Props = {
   view: "login" | "register";
-  /** Base64 return path from `?back=`, passed straight through. */
   back?: string;
 };
 

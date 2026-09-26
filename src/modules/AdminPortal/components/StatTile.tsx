@@ -3,12 +3,6 @@ import { formatDelta } from "@/shared/libs/admin/format";
 import { cn } from "@/shared/utils/cn";
 import { Sparkline } from "./Sparkline";
 
-/* label · value · delta · trend. One contract, so a row of these reads as a row
-   rather than six small decisions.
-
-   The delta's colour is direction times whether up is good, which is not the
-   same question: revenue rising is green, abandoned baskets rising is not. Every
-   caller states `upIsGood` rather than inheriting a default that flatters. */
 export function StatTile({
   label,
   value,
@@ -23,14 +17,11 @@ export function StatTile({
 }: {
   label: string;
   value: string;
-  /** Per cent change, or null when there is no baseline to compare with. */
   delta?: number | null;
-  /** Names the period the delta is against. Without it a delta means nothing. */
   deltaLabel?: string;
   upIsGood?: boolean;
   trend?: number[];
   note?: string;
-  /** The one figure the screen leads with. Exactly one per view. */
   hero?: boolean;
   action?: ReactNode;
   className?: string;
@@ -52,13 +43,8 @@ export function StatTile({
       </div>
 
       <div className="flex items-end justify-between gap-3">
-        {/* Proportional figures, not tabular: at this size `tabular-nums` makes
-            every digit as wide as a zero and the number reads loose. */}
         <p
           className={cn(
-            /* `whitespace-nowrap`, because a compact figure like "Tk 79.7 L"
-               holds spaces and will break across three lines in a narrow tile.
-               The hero spans two columns so it has the room. */
             "font-sans leading-none font-bold whitespace-nowrap text-ink",
             hero ? "text-4xl md:text-5xl" : "text-2xl",
           )}

@@ -8,14 +8,8 @@ import type { HeroSlide, HeroSlideImage } from "../config/types";
 
 const SWIPE_THRESHOLD = 44;
 
-/** `slides` are read on the server — the portal's uploads, or the built-in set
- *  — so this component never knows which it was handed. */
 export function HeroBanner({ slides: source, interval }: { slides: HeroSlide[]; interval: number }) {
 
-  // The two artworks per slide are different compositions, not two sizes of
-  // one, so `<picture>` art-directs them. getImageProps keeps the md-and-up
-  // <source> on the optimiser — a bare `slide.desktop.src` would ship the
-  // original PNG, and one of these is 2MB.
   const slides = useMemo<HeroSlideImage[]>(
     () =>
       source.map((slide, position) => {
@@ -24,7 +18,6 @@ export function HeroBanner({ slides: source, interval }: { slides: HeroSlide[]; 
           loading: position === 0 ? ("eager" as const) : ("lazy" as const),
         };
 
-        // Each variant gets the sizes of the viewport it renders in.
         const {
           props: { srcSet: desktopSrcSet },
         } = getImageProps({ ...common, src: slide.desktop, sizes: "85vw" });
@@ -63,7 +56,6 @@ export function HeroBanner({ slides: source, interval }: { slides: HeroSlide[]; 
     return () => query.removeEventListener("change", sync);
   }, []);
 
-  // Keyed on `index`, so a dot press or a swipe restarts the dwell.
   useEffect(() => {
     if (paused || reduced || count < 2) return;
 
@@ -74,7 +66,6 @@ export function HeroBanner({ slides: source, interval }: { slides: HeroSlide[]; 
     return () => window.clearTimeout(timer);
   }, [index, paused, reduced, count, interval]);
 
-  // Wraps, so -1 lands on the last slide and `count` on the first.
   const go = useCallback(
     (next: number) => setIndex(((next % count) + count) % count),
     [count],
@@ -109,7 +100,6 @@ export function HeroBanner({ slides: source, interval }: { slides: HeroSlide[]; 
               swiped.current = true;
               go(index + (distance < 0 ? 1 : -1));
             }}
-            // A swipe that starts on a slide would otherwise follow its link.
             onClickCapture={(event) => {
               if (!swiped.current) return;
               event.preventDefault();
@@ -134,8 +124,6 @@ export function HeroBanner({ slides: source, interval }: { slides: HeroSlide[]; 
                   <Link href={slide.href} className="block h-full w-full" draggable={false}>
                     <picture className="block h-full w-full">
                       <source media="(min-width: 768px)" srcSet={slide.desktopSrcSet} />
-                      {/* `alt` is repeated out of the spread only so the
-                          jsx-a11y rule can see it. */}
                       <img
                         {...slide.img}
                         alt={slide.img.alt ?? ""}
@@ -148,8 +136,6 @@ export function HeroBanner({ slides: source, interval }: { slides: HeroSlide[]; 
               ))}
             </div>
 
-            {/* Dots take their contrast from the slide underneath — a black dot
-                vanishes on a black banner. */}
             <div className="absolute inset-x-0 bottom-2 flex justify-center">
               {slides.map((slide, position) => (
                 <button
@@ -159,7 +145,6 @@ export function HeroBanner({ slides: source, interval }: { slides: HeroSlide[]; 
                   aria-label={`Go to slide ${position + 1}`}
                   aria-current={position === index}
                   className={cn(
-                    // 24px target, pulled back to the reference's 16px pitch.
                     "-mx-1 grid size-6 cursor-pointer place-items-center",
                     onDark && "focus-visible:outline-ink-inverse",
                   )}

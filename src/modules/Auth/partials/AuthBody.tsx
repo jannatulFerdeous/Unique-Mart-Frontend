@@ -11,9 +11,6 @@ type Props = {
   back?: string;
 };
 
-/** Which of the three states the card is in. Signed in, the forms would be
- *  nonsense, so the card becomes the place you sign out from instead — there
- *  is nowhere else in the site to do it. */
 export function AuthBody({ view, back }: Props) {
   const { user, signOut } = useSession();
 

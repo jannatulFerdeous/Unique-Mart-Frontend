@@ -3,35 +3,22 @@
 import { useState, type ReactNode } from "react";
 import Link from "next/link";
 import { ExternalLink, LogOut, Menu, X } from "lucide-react";
-import { useAdmin } from "@/shared/libs/admin/gate";
-import { initials } from "@/shared/libs/session";
+import { initials } from "@/shared/utils/initials";
 import { admin_data } from "../config/constants";
 import { Button } from "../components/Button";
-import { AdminGate } from "./AdminGate";
+import { AdminGate, type AdminIdentity } from "./AdminGate";
 import { AdminSidebar } from "./AdminSidebar";
-
-/* The portal's frame: gate, sidebar and top bar.
- *
- * A client component all the way down, because everything it shows lives in this
- * browser. That is the honest consequence of having no backend — the moment an
- * API exists, the shell becomes a server component that reads a session cookie
- * and only the sidebar's active-link state needs the client. */
 
 export function AdminShell({ children }: { children: ReactNode }) {
   const { shell } = admin_data;
-  const { admin, signOut } = useAdmin();
+  const [admin, setAdmin] = useState<AdminIdentity | null>(null);
 
-  /* The drawer closes from the nav's own `onNavigate` below rather than from an
-     effect watching the pathname: the click is the event, and syncing off the
-     route afterwards is a second render that does the same job later. */
   const [menuOpen, setMenuOpen] = useState(false);
 
-  if (!admin) return <AdminGate />;
+  if (!admin) return <AdminGate onSignIn={setAdmin} />;
 
   return (
     <div className="flex flex-1 bg-canvas">
-      {/* Fixed rail on desktop, drawer on a phone. One component, two shells,
-          so the nav itself has no idea which it is in. */}
       <div className="hidden w-60 shrink-0 bg-inverse px-3 lg:block">
         <div className="sticky top-0 flex h-dvh flex-col overflow-y-auto">
           <Brand />
@@ -55,8 +42,6 @@ export function AdminShell({ children }: { children: ReactNode }) {
             </div>
             <AdminSidebar onNavigate={() => setMenuOpen(false)} />
           </div>
-          {/* The scrim closes the drawer. Labelled, because it is a real control
-              and not only a dimming effect. */}
           <button
             type="button"
             aria-label={shell.closeMenu}
@@ -102,7 +87,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
             </span>
           </span>
 
-          <Button size="sm" variant="ghost" onClick={signOut} aria-label={shell.signOut}>
+          <Button size="sm" variant="ghost" onClick={() => setAdmin(null)} aria-label={shell.signOut}>
             <LogOut className="size-4" aria-hidden />
             <span className="hidden sm:inline">{shell.signOut}</span>
           </Button>

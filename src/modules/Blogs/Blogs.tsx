@@ -7,14 +7,6 @@ import { newArrivalProducts } from "@/shared/config/products";
 import { formatDate } from "@/shared/libs/admin/format";
 import { blogs_data } from "./config/constants";
 
-/* The blog index.
- *
- * `posts` is empty, and the page says so rather than shipping three invented
- * articles with invented bylines. The reference's own blog index is nearly
- * empty too, so this is not a gap against it.
- *
- * Built to fill: add a post to the config and the grid renders it. The trending
- * rail below is real either way — those are products that exist. */
 export function Blogs() {
   const data = blogs_data;
   const posts = data.posts;
@@ -73,9 +65,6 @@ export function Blogs() {
         </section>
       </div>
 
-      {/* The reference's blog index carries a trending rail beside its posts.
-          Ours shows real catalogue products, so the page is useful even while
-          it has nothing written on it. */}
       <section aria-labelledby="trending" className="pb-16">
         <div className="container-page">
           <SectionHeader

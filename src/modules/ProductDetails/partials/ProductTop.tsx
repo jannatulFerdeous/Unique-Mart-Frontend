@@ -21,32 +21,19 @@ type Props = {
 
 export function ProductTop({ product, detail }: Props) {
   const { labels, reviews: reviewCopy } = product_details_data;
-  // The score here is what customers actually left, not the number the
-  // catalogue was seeded with — so it agrees with the Reviews tab below.
   const router = useRouter();
   const { summary } = useReviews(product.slug);
-  /* Null, not 0: nothing is chosen until the shopper chooses it. A colour
-     preselected for them is a colour they did not pick, and on a product sold
-     in black and blue that is how the wrong one gets shipped. */
   const [color, setColor] = useState<number | null>(null);
   const [image, setImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
-  /* Raised by pressing Buy Now with no colour chosen, and cleared the moment
-     one is. Not shown on load — nobody has done anything wrong yet. */
   const [nagging, setNagging] = useState(false);
   const [added, setAdded] = useState(false);
-  // One selected index per variant axis, keyed by the axis label.
   const [picks, setPicks] = useState<Record<string, number>>({});
   const [emi, setEmi] = useState(false);
 
   const gallery = detail?.gallery?.length ? detail.gallery : [product.image];
 
-  // A colour owns the first shot of its variant, so picking one scrolls the
-  // gallery to that colour's photos. Products whose colours carry no image of
-  // their own just leave the stage where it is.
   const colors = detail?.colors ?? [];
-  /* A product with no colour axis has nothing to choose, so it is never
-     "unchosen" — the basket button is there from the start. */
   const needsColor = colors.length > 0 && color === null;
   const chosenColor = color === null ? null : (colors[color]?.name ?? null);
 
@@ -119,8 +106,6 @@ export function ProductTop({ product, detail }: Props) {
           <div className="mt-6 flex flex-wrap items-center gap-3">
             <span className="text-ink-muted">
               {labels.color}:
-              {/* Names the choice once it exists, so the page states what is
-                  about to go in the basket rather than only highlighting it. */}
               {chosenColor ? (
                 <span className="ml-1 font-medium text-ink">{chosenColor}</span>
               ) : null}
@@ -150,8 +135,6 @@ export function ProductTop({ product, detail }: Props) {
           </div>
         ) : null}
 
-        {/* Storage, memory, dial size, strap size — one row per axis the
-            catalogue actually records for this product. */}
         {detail?.options?.map((group) => {
           const chosen = picks[group.label] ?? 0;
 
@@ -186,8 +169,6 @@ export function ProductTop({ product, detail }: Props) {
           );
         })}
 
-        {/* Two payment options, as the reference has — but ours assert only
-            what the trust strip already does. No warranty row and no gift. */}
         <fieldset className="mt-7">
           <legend className="sr-only">Payment option</legend>
           <div className="grid gap-3 sm:grid-cols-2">
@@ -247,8 +228,6 @@ export function ProductTop({ product, detail }: Props) {
           <p className="mt-3 text-sm text-ink-subtle">{labels.emiNote}</p>
         ) : null}
 
-        {/* The quantity stepper appears with the basket button, for the same
-            reason: until a colour is chosen there is nothing to count. */}
         {!needsColor ? (
           <div className="mt-6 flex items-center gap-3">
             <span className="text-ink-muted">{labels.quantity}:</span>
@@ -263,8 +242,6 @@ export function ProductTop({ product, detail }: Props) {
                 <Minus className="size-4" aria-hidden />
               </button>
 
-              {/* `aria-live` so a screen reader hears the new count without the
-                  buttons having to announce themselves. */}
               <span
                 aria-live="polite"
                 className="min-w-10 text-center font-medium text-ink tabular-nums"
@@ -285,8 +262,6 @@ export function ProductTop({ product, detail }: Props) {
           </div>
         ) : null}
 
-        {/* The nag sits between the swatches and the buttons — where the eye
-            already is after pressing Buy Now, and next to the thing to fix. */}
         {nagging && needsColor ? (
           <p role="alert" className="mt-5 font-medium text-danger">
             {labels.selectColorFirst}
@@ -303,7 +278,6 @@ export function ProductTop({ product, detail }: Props) {
                   name: product.name,
                   unitPrice: product.price,
                   color: chosenColor,
-                  // Whatever each other axis is currently showing.
                   options: Object.fromEntries(
                     (detail?.options ?? []).map((group) => [
                       group.label,
@@ -324,9 +298,6 @@ export function ProductTop({ product, detail }: Props) {
           <button
             type="button"
             onClick={() => {
-              /* Buy Now is what a shopper reaches for first, so it is the
-                 control that has to explain the missing colour rather than
-                 sitting disabled and saying nothing. */
               if (needsColor) {
                 setNagging(true);
                 return;
@@ -352,8 +323,6 @@ export function ProductTop({ product, detail }: Props) {
             <span className="sr-only"> — {product.name}</span>
           </button>
 
-          {/* Saving needs no colour — a wishlist holds a product, not a
-              configuration — so this one is here whatever else is. */}
           <WishlistButton variant="inline" slug={product.slug} name={product.name} />
         </div>
 

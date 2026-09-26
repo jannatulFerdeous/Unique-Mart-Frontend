@@ -5,11 +5,6 @@ import { mailHref, site, telHref } from "@/shared/config/site";
 import { trustClaims } from "@/shared/config/trust";
 import type { AboutData } from "./types";
 
-/* Every claim here is one the client confirmed on 2026-09-05: founded 2026,
-   online only, nationwide delivery, and the six trust promises. Nothing else.
-   The reference page's outlet count, Apple authorization and 2011 founding are
-   Gadget & Gear's and must not reappear — see memory.md. */
-
 export const about_data: AboutData = {
   title: `About ${site.name}`,
   metaTitle: "About Us",
@@ -40,8 +35,6 @@ export const about_data: AboutData = {
     ],
   },
 
-  // Five of the shared set; the rest are on /faq. Editing an answer in
-  // shared/config/faq.ts corrects it in both places at once.
   faq: {
     title: "Frequently asked questions",
     items: featuredFaqs,

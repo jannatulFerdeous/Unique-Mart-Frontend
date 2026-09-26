@@ -57,26 +57,17 @@ import type { HomeData } from "./types";
 
 export const home_data: HomeData = {
 
-  //
   exclusive: {
     title: "Exclusive",
     href: "/shop/exclusive",
-    // Products, prices and ratings are the reference site's — placeholders
-    // until a real catalogue exists. See memory.md.
     products: exclusiveProducts,
   },
 
-  //
-  // The 36 marks the reference bakes into one flat 1320×330 banner. Pulled
-  // individually from its /brand page 2026-09-05 — see memory.md.
   brandWall: {
     title: "Exclusively Available",
     brands: brandMarks,
   },
 
-  //
-  // Reference-site artwork, pulled 2026-09-04 — see memory.md. The two offer
-  // banners carry Gadget & Gear's own EMI and discount terms inside the image.
   promos: {
     brands: [
       { href: "/brands/spigen", image: promoSpigen, alt: "Spigen — Protected In Every Way. Rugged, clear and carbon-weave phone cases." },
@@ -96,43 +87,30 @@ export const home_data: HomeData = {
     },
   },
 
-  //
-  // The reference site’s own Sound Surround rail, pulled 2026-09-05 — see memory.md.
   soundSurround: {
     title: "Sound Surround",
     href: "/shop/sound-surround",
     products: soundSurroundProducts,
   },
 
-  //
-  // The reference site’s own New Arrival rail, pulled 2026-09-05 — see memory.md.
   newArrival: {
     title: "New Arrival",
     href: "/shop/new-arrival",
     products: newArrivalProducts,
   },
 
-  //
-  // The reference site’s own Cases & Screen Protector rail, pulled 2026-09-05 —
-  // see memory.md. Every product here has `review: 0` upstream, so none carry a
-  // rating and the star row collapses on every card.
   casesAndProtectors: {
     title: "Cases & Screen Protector",
     href: "/category/cases-screen-protectors",
     products: casesProducts,
   },
 
-  //
-  // The reference site’s own Top Selling rail, pulled 2026-09-04 — see memory.md.
   topSelling: {
     title: "Top Selling",
     href: "/shop/top-selling",
     products: topSellingProducts,
   },
 
-  //
-  // Ten brands, five products each, all pulled from the reference site on
-  // 2026-09-04 — see memory.md. Tabs are wordmarks as text, not logos.
   brands: {
     title: "Shop By Brands",
     href: "/brands",
@@ -210,12 +188,8 @@ export const home_data: HomeData = {
     ],
   },
 
-  //
   categories: {
     title: "Featured Categories",
-    // The reference site's own fifteen, in its order. Artwork is theirs too —
-    // see memory.md. Every tile points at a real category page; the ones we
-    // hold no stock for say so rather than 404.
     items: [
       { label: "Phones", href: "/category/phone", image: phones },
       { label: "MacBook", href: "/category/macbook", image: macbook },
@@ -235,16 +209,11 @@ export const home_data: HomeData = {
     ],
   },
 
-  //
   trust: trustClaims,
 
-  //
   hero: {
     interval: 5000,
 
-    // Artwork is the reference site's own, pulled 2026-09-04 — see memory.md.
-    // Every slide reads `light`: all six carry a pale bottom edge, which is why
-    // the reference can hardcode one dark bullet.
     slides: [
       {
         theme: "light",

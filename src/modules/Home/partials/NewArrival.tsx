@@ -8,7 +8,6 @@ export function NewArrival() {
   return (
     <section aria-labelledby="new-arrival-heading" className="pt-5">
       <div className="container-page">
-        {/* Left-aligned, like every rail after Exclusive. */}
         <SectionHeader
           id="new-arrival-heading"
           title={title}

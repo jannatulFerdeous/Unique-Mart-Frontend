@@ -18,15 +18,9 @@ import { cn } from "@/shared/utils/cn";
 import { cart_data } from "../config/constants";
 import { lineImage } from "../lineImage";
 
-/** One line of the basket: tick, picture, what it is, what it costs, how many,
- *  and a way to get rid of it. */
 export function CartRow({ line }: { line: CartLine }) {
   const key = lineKey(line);
 
-  /* The thumbnail follows the colour that was chosen — see `lineImage`. The
-     reference site shows the blue power bank on a line labelled Black, and a
-     basket that pictures the wrong variant is how the wrong one gets confirmed
-     and returned. */
   const image = lineImage(line);
 
   return (
@@ -70,8 +64,6 @@ export function CartRow({ line }: { line: CartLine }) {
           {line.name}
         </Link>
 
-        {/* Every axis the shopper chose, so a line is unambiguous about which
-            of a product's variants it is. */}
         {(line.color || Object.keys(line.options).length > 0) && (
           <dl className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
             {line.color && (
@@ -98,8 +90,6 @@ export function CartRow({ line }: { line: CartLine }) {
         <p className="font-bold text-tertiary">
           {formatPrice(lineTotal(line))}
         </p>
-        {/* The unit price, but only when it is not simply the line total —
-            "Tk 3,999 each" under a quantity of one is noise. */}
         {line.quantity > 1 && (
           <p className="mt-0.5 text-sm text-ink-subtle">
             {formatPrice(line.unitPrice)} {cart_data.each}

@@ -20,8 +20,6 @@ const PAD = { top: 16, right: 16, bottom: 28, left: 58 };
 const PLOT_W = VIEW_W - PAD.left - PAD.right;
 const PLOT_H = VIEW_H - PAD.top - PAD.bottom;
 
-/** Horizontal gridlines, including the baseline. Four bands is enough to read a
- *  value off; more turns the plot into graph paper. */
 const BANDS = 4;
 
 export function RevenueChart({ series }: { series: DayPoint[] }) {
@@ -50,9 +48,6 @@ export function RevenueChart({ series }: { series: DayPoint[] }) {
 
     const baseline = PAD.top + PLOT_H;
 
-    /* The line, closed down to the baseline at both ends. Written out rather
-       than string-patched from `line`, so the two shapes stay obviously the
-       same shape. */
     const area = points.length
       ? [
           `M ${points[0].x.toFixed(1)} ${baseline}`,
@@ -64,9 +59,6 @@ export function RevenueChart({ series }: { series: DayPoint[] }) {
         ].join(" ")
       : "";
 
-    /* The peak gets the one direct label. Labelling every point is unreadable,
-       and labelling the last point fights the crosshair, which lands there most
-       often while the pointer is on its way in from the right. */
     const peak = points.reduce(
       (best, point) => (point.revenue > best.revenue ? point : best),
       points[0],
@@ -75,14 +67,11 @@ export function RevenueChart({ series }: { series: DayPoint[] }) {
     return { points, line, area, baseline, peak };
   }, [series, max]);
 
-  /* Roughly five x labels, whatever the range: 30 daily ticks collide and 90
-     is a solid grey bar. */
   const tickEvery = Math.max(1, Math.ceil(series.length / 5));
 
   const total = series.reduce((sum, point) => sum + point.revenue, 0);
   const shown = active === null ? null : geometry.points[active];
 
-  /** Nearest day to wherever the pointer is, in the SVG's own coordinates. */
   const track = (clientX: number, target: SVGSVGElement) => {
     const box = target.getBoundingClientRect();
     if (!box.width) return;
@@ -165,8 +154,6 @@ export function RevenueChart({ series }: { series: DayPoint[] }) {
             if (event.key === "Escape") setActive(null);
           }}
         >
-          {/* Gridlines: hairline, solid, one step off the surface. Recessive on
-              purpose — they are a ruler, not data. */}
           {Array.from({ length: BANDS + 1 }, (_, band) => {
             const value = (max / BANDS) * band;
             const y = PAD.top + PLOT_H * (1 - band / BANDS);
@@ -197,8 +184,6 @@ export function RevenueChart({ series }: { series: DayPoint[] }) {
             );
           })}
 
-          {/* A wash at ~10% rather than a saturated block: the line carries the
-              shape and the fill only says "this is the area under it". */}
           <path
             d={geometry.area}
             fill="var(--color-tertiary)"
@@ -233,7 +218,6 @@ export function RevenueChart({ series }: { series: DayPoint[] }) {
             ) : null,
           )}
 
-          {/* The one direct label: the peak. */}
           {geometry.peak && geometry.peak.revenue > 0 && (
             <text
               x={Math.min(
@@ -258,8 +242,6 @@ export function RevenueChart({ series }: { series: DayPoint[] }) {
                 stroke="var(--color-line-strong)"
                 strokeWidth="1"
               />
-              {/* Ringed in the surface colour so the dot stays a dot where it
-                  sits on top of the line. */}
               <circle
                 cx={shown.x}
                 cy={shown.y}
@@ -275,8 +257,6 @@ export function RevenueChart({ series }: { series: DayPoint[] }) {
         {shown && (
           <div
             role="status"
-            /* Rides the crosshair, and past two thirds across it flips to the
-               left of the line so the readout never leaves the card. */
             className="pointer-events-none absolute top-2 min-w-36 rounded-control border border-line bg-surface px-3 py-2 shadow-menu"
             style={{
               left: `${(shown.x / VIEW_W) * 100}%`,
@@ -286,8 +266,6 @@ export function RevenueChart({ series }: { series: DayPoint[] }) {
                   : "translateX(10px)",
             }}
           >
-            {/* Value leads, label follows: the reader already has the date from
-                the crosshair and came here for the number. */}
             <p className="font-sans text-sm font-bold text-ink tabular-nums">
               {formatMoney(shown.revenue)}
             </p>

@@ -8,9 +8,6 @@ import { formatPrice } from "@/shared/utils/price";
 
 type Props = {
   product: Product;
-  /** Replaces the product's own badge on this card only. The offers grid uses
-   *  it for the saving; four products already carry "NEW ARRIVAL", and one
-   *  corner only fits one ribbon. */
   ribbon?: string;
 };
 
@@ -22,8 +19,6 @@ export function ProductCard({ product, ribbon }: Props) {
   return (
     <article className="relative flex h-full flex-col overflow-hidden rounded-banner bg-surface">
       {corner ? (
-        // Diagonal corner ribbon. -rotate-45 across an over-wide bar, clipped by
-        // the card's overflow-hidden.
         <span
           className={cn(
             "pointer-events-none absolute -left-9 top-5 z-10 w-32 -rotate-45 py-1 text-center text-[0.625rem] font-bold tracking-wide text-ink-inverse",
@@ -34,8 +29,6 @@ export function ProductCard({ product, ribbon }: Props) {
         </span>
       ) : null}
 
-      {/* Top right, because the ribbon owns the top left. The only interactive
-          thing on the card besides its two links. */}
       <WishlistButton slug={slug} name={name} />
 
       <Link href={href} tabIndex={-1} aria-hidden className="block">
@@ -47,20 +40,13 @@ export function ProductCard({ product, ribbon }: Props) {
         />
       </Link>
 
-      {/* Type steps at 768, matching the reference: 12/14.4/10/12 below,
-          16/16/12/13.6 above. */}
       <div className="flex flex-1 flex-col p-2 text-center md:p-4">
-        {/* The reference sets a brand logo here; ours is the wordmark as text,
-            so the cards carry no third-party artwork. Rails that are already
-            one brand leave it off and the row collapses. */}
         {brand ? (
           <p className="mb-2 font-bold tracking-wider uppercase text-ink-subtle">
             {brand}
           </p>
         ) : null}
 
-        {/* Sized to the card, not to the document scale — an h3 at the
-            global step does not fit a 5-up rail. Deliberate exception. */}
         <h3 className="line-clamp-2 min-h-[2.6em] text-xs leading-[1.3] font-semibold text-ink md:text-base">
           <Link href={href} className="hover:underline">
             {name}
@@ -93,9 +79,6 @@ export function ProductCard({ product, ribbon }: Props) {
           </p>
         ) : null}
 
-        {/* mt-auto pins Buy Now to the foot of the card. Without it a card that
-            has no rating pulls its button up and the row stops lining up — the
-            rating is the one optional row above it. */}
         <div className="mt-auto pt-4">
           <Link
             href={href}

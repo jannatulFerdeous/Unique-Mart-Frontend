@@ -1,24 +1,16 @@
 import { site } from "./site";
 
 export type FaqItem = {
-  /** Stable key, the React key and the search index's handle. */
   id: string;
   question: string;
   answer: string;
 };
 
 export type FaqGroup = {
-  /** Doubles as the anchor the jump nav targets. */
   id: string;
   title: string;
   items: FaqItem[];
 };
-
-/* Answers are held to the same rule as the rest of the site: they may restate
-   the six promises in `trust.ts`, online-only, nationwide delivery and
-   `site.since`, and nothing more. Where a real answer needs a number we do not
-   have — delivery windows, charges, a return period, warranty lengths — the
-   answer points at support rather than inventing one. See memory.md. */
 
 export const faqGroups: FaqGroup[] = [
   {
@@ -187,15 +179,12 @@ export const faqGroups: FaqGroup[] = [
 
 export const faqPath = "/faq";
 
-/** Flat view for search, JSON-LD and id lookups. */
 export const faqItems: FaqItem[] = faqGroups.flatMap((group) => group.items);
 
-/** The handful the About page repeats out of the full set. */
 const featuredIds = ["showroom", "delivery-where", "genuine", "emi", "exchange"];
 
 export const featuredFaqs: FaqItem[] = featuredIds.map((id) => {
   const item = faqItems.find((faq) => faq.id === id);
-  // Throwing here fails the build rather than silently dropping a question.
   if (!item) throw new Error(`featuredFaqs: no FAQ with id "${id}"`);
   return item;
 });

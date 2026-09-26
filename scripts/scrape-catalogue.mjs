@@ -1,24 +1,3 @@
-/* Rebuilds `src/shared/config/product-details/` and the gallery artwork under
-   `src/images/products/<slug>/` from the reference catalogue.
-
-       node scripts/scrape-catalogue.mjs
-
-   Three steps, each cached under `.cache/catalogue/` so a re-run costs nothing:
-     1. fetch  — one JSON record per product, from the reference's own data
-                 route plus its description endpoint
-     2. images — every gallery shot the records name
-     3. emit   — one generated TypeScript module per product
-
-   The product list comes from `src/shared/config/products.ts`, so a product
-   added there is picked up here. Detail data is derived, never hand-edited:
-   fix this script and re-run.
-
-   What is deliberately dropped on the way through — none of it is a claim this
-   business is allowed to make. See memory.md.
-     · the reference's shop-selling description blocks (BANNED)
-     · warranty rows and the whole "Warranty Information" spec group
-     · the Apple Authorized Reseller badge and the gift panel (never read) */
-
 import {
   copyFileSync,
   existsSync,
@@ -46,16 +25,12 @@ const ASSETS = "https://assets.gadgetandgear.com/upload/";
 const UA =
   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36";
 
-/** Ours on the left, the reference's on the right. Two products it renamed,
- *  and one whose slug it misspells ("hyrbird"). */
 const UPSTREAM_SLUG = {
   "macbook-neo-8-256": "macbook-neo",
   "macbook-neo-8-512": "macbook-neo-8gb-512gb",
   "spigen-ultra-hybrid-magfit-case-for-galaxy-s26-ultra":
     "spigen-ultra-hyrbird-magfit-case-for-galaxy-s26-ultra",
 };
-
-/* ------------------------------------------------------------------ text */
 
 const list = (value) =>
   String(value ?? "")
@@ -100,16 +75,10 @@ const camel = (slug) =>
 
 const q = (value) => JSON.stringify(value);
 
-/** Copy the reference's trading claims and we would be asserting things this
- *  business cannot. A description block matching this is dropped whole. */
 const BANNED =
   /gadget\s*(?:&|and)\s*gear|gadgetandgear|\bg&g\b|authoriz|authoris|warrant|showroom|outlet|best price|cheapest|lowest price|official (?:store|reseller|retailer)|genuine|after-?sales/i;
 
-/** The reference's spec table ends in a "Warranty Information" group. We make
- *  no warranty claim, so the group and any stray warranty row are dropped. */
 const SPEC_BANNED = /warrant|guarantee/i;
-
-/* --------------------------------------------------------------- fetching */
 
 const slugsFromCatalogue = () => {
   const source = readFileSync(
@@ -128,7 +97,6 @@ const buildId = async () => {
   return id;
 };
 
-/** Runs `worker` over `items`, `limit` at a time. */
 const pool = async (items, limit, worker) => {
   const queue = [...items];
   await Promise.all(
@@ -179,7 +147,6 @@ const fetchRecords = async (slugs) => {
   return misses;
 };
 
-/** The reference's real category tree, names and slugs — the navbar's source. */
 const fetchMenu = async () => {
   const file = path.join(CACHE, "menu.json");
   if (existsSync(file)) return JSON.parse(readFileSync(file, "utf8"));
@@ -221,8 +188,6 @@ const fetchImages = async (sources) => {
   return misses;
 };
 
-/* ---------------------------------------------------------------- parsing */
-
 const parseSpecs = (specifications = []) => {
   const groups = [];
 
@@ -238,7 +203,6 @@ const parseSpecs = (specifications = []) => {
     if (SPEC_BANNED.test(label) || SPEC_BANNED.test(value)) continue;
     if (BANNED.test(value)) continue;
 
-    // One cell can hold several lines; the reference stacks them.
     const lines = value
       .split(/\n|;\s+/)
       .map((line) => line.trim())
@@ -287,8 +251,6 @@ const parseEmi = (gift, price) => {
   return { months, perMonth: Math.round(price / months) };
 };
 
-/** The reference's long description is HTML. Keep the product facts, drop the
- *  blocks that sell the reference's own shop, and close with ours. */
 const parseDescription = (longDescription, name) => {
   const blocks = [];
   let title = "";
@@ -309,7 +271,6 @@ const parseDescription = (longDescription, name) => {
 
     if (tag.toLowerCase().startsWith("h")) {
       flush();
-      // The first heading is the description's own title.
       if (!title) {
         title = value;
         continue;
@@ -324,7 +285,6 @@ const parseDescription = (longDescription, name) => {
   }
   flush();
 
-  // Ours, not theirs: only the claims the trust strip already makes.
   blocks.push({
     heading: `Buying the ${name} from Unique Mart`,
     paragraphs: [
@@ -335,16 +295,6 @@ const parseDescription = (longDescription, name) => {
   return { title: title && !BANNED.test(title) ? title : name, blocks };
 };
 
-/* ------------------------------------------------------------------ facets */
-
-/* The reference's sidebar is spec-driven, and the spec text is inconsistent:
-   "12GB" and "12 GB", "Mediatek" and "MediaTek", bare "T7225" for a UNISOC
-   part, three different ways of writing 7000 mAh. All of the normalising lives
-   here so the UI only ever sees clean buckets. A product contributes to a
-   facet only when its own specs say so — nothing is guessed. */
-
-/** Groups in the order the reference shows them. `values` fixes the order of
- *  the checkboxes; a value nothing matches simply never renders. */
 const FACET_GROUPS = [
   {
     id: "availability",
@@ -400,7 +350,6 @@ const FACET_GROUPS = [
   },
 ];
 
-/** Spec rows by "group::key" and by bare key, lower-cased. */
 const specIndex = (product) => {
   const index = new Map();
   let group = "";
@@ -449,8 +398,6 @@ const CHIPSETS = [
   [/unisoc|\bT\d{4}\b/i, "UNISOC"],
   [/tensor/i, "Tensor"],
   [/kirin/i, "Kirin"],
-  // Apple stopped printing "Bionic" at A19, so the family is named for the
-  // series rather than copying the reference's "BIONIC" label.
   [/\bA\d{2}\b.*chip|bionic/i, "Apple A-Series"],
 ];
 
@@ -482,8 +429,6 @@ const deriveFacets = (product) => {
     }
   };
 
-  /* availability — only two of the four states occur in this catalogue, and
-     the other two render nowhere rather than showing an empty box */
   const skus = product.skus ?? [];
   if (skus.some((sku) => sku.preOrder)) add("availability", "Pre Order");
   else if (skus.length && skus.every((sku) => sku.comingSoon)) {
@@ -492,16 +437,12 @@ const deriveFacets = (product) => {
     add("availability", product.stockStatus === "In Stock" ? "In Stock" : "Out of Stock");
   }
 
-  /* display size — the largest panel a product has, so a foldable counts by
-     its inner screen */
   const sizeText = readSpec(index, "display::size", "size", "display::display size");
   const inches = [...sizeText.matchAll(/(\d+(?:\.\d+)?)\s*[‑–-]?\s*inch/gi)]
     .map((match) => Number(match[1]))
     .filter((value) => value > 3 && value < 20);
   if (inches.length) add("display-size", sizeBucket(Math.max(...inches)));
 
-  /* display type — specific names are consumed before the generic ones, so
-     "LTPS AMOLED" is AMOLED and never also OLED */
   let typeText = readSpec(index, "display::type", "display::display type");
   for (const [pattern, label] of DISPLAY_TYPES) {
     if (pattern.test(typeText)) {
@@ -518,12 +459,10 @@ const deriveFacets = (product) => {
     }
   }
 
-  /* RAM is one number; a "12GB (8+4 virtual)" string must not become three */
   const ramText = readSpec(index, "memory::ram", "ram");
   const ram = ramText.match(/(\d+)\s*GB/i);
   if (ram) add("ram", `${ram[1]}GB`);
 
-  /* storage genuinely is a list — "256GB 512GB 1TB" is three options */
   const romText = readSpec(
     index, "memory::rom", "memory::internal storage", "rom", "internal storage", "storage",
   );
@@ -537,7 +476,6 @@ const deriveFacets = (product) => {
     .filter((value) => value >= 1000 && value <= 20000);
   if (mah.length) add("battery", batteryBucket(Math.max(...mah)));
 
-  /* key features */
   const sim = `${readSpec(index, "network & connectivity::sim", "sim", "memory::card slot", "card slot")} ${readSpec(index, "network & amp; connectivity::sim")}`;
   if (/dual\s*-?\s*sim|2 nano|2 sim|two active|nano-sim \+ nano-sim/i.test(sim)) {
     add("features", "Dual Sim");
@@ -560,8 +498,6 @@ const deriveFacets = (product) => {
 
   return facets;
 };
-
-/* ----------------------------------------------------------------- emitting */
 
 const galleryPaths = (product) => {
   const paths = [];
@@ -649,8 +585,6 @@ ${parts.join("\n")}
 `;
 };
 
-/* --------------------------------------------------------------------- run */
-
 const slugs = slugsFromCatalogue();
 console.log(`catalogue: ${slugs.length} products`);
 
@@ -678,8 +612,6 @@ if (imageMisses.length) {
 }
 console.log(`\nrecords ${records.size}, images ${sources.size}`);
 
-// Hash what is already committed, so a gallery shot identical to a card image
-// reuses that file rather than landing a second copy of the same bytes.
 const byHash = new Map();
 const indexDir = (dir) => {
   const full = path.join(IMAGES, dir);
@@ -706,7 +638,6 @@ for (const slug of slugs) {
   const product = records.get(slug);
   const paths = galleryPaths(product);
 
-  /* place the artwork */
   const importOf = new Map();
   for (const [index, source] of paths.entries()) {
     const cached = path.join(DOWNLOADS, cacheName(source));
@@ -732,9 +663,6 @@ for (const slug of slugs) {
     placed++;
   }
 
-  // Dedupe on the placed file, not the upstream path: the catalogue lists the
-  // same photo under several paths — once per storage tier, typically — and two
-  // of them resolving to one import would repeat it in the gallery.
   const gallery = [];
   for (const source of paths) {
     const spec = importOf.get(source);
@@ -742,7 +670,6 @@ for (const slug of slugs) {
   }
   if (!gallery.length) throw new Error(`no gallery images for ${slug}`);
 
-  /* colours, and every other variant axis the product records */
   const colors = new Map();
   const options = new Map();
 
@@ -823,16 +750,6 @@ console.log(
   `wrote ${modules.length} modules — ${placed} images placed, ${reused} reused from artwork already committed`,
 );
 
-/* ------------------------------------------------------- category tree */
-
-/* Two sources, because neither is complete on its own:
-     · the menu is what the navbar shows, including sections we hold no stock
-       for yet;
-     · a product's breadcrumbs name categories the menu omits (the per-model
-       case categories, for one).
-   Everything a product sits in gets a page, and so does everything the navbar
-   can reach. */
-
 const menu = await fetchMenu();
 const tree = new Map();
 
@@ -851,7 +768,6 @@ const link = (parent, child) => {
   if (!parent.children.includes(child.slug)) parent.children.push(child.slug);
 };
 
-/* the navbar's shape */
 const walkMenu = (entries, ancestors) => {
   const top = [];
 
@@ -872,7 +788,6 @@ const walkMenu = (entries, ancestors) => {
 };
 const navTop = walkMenu(menu, []);
 
-/* what the products say, which also fills in categories the menu skips */
 for (const [slug, product] of records) {
   const crumbs = (product.breadcrumbs ?? [])
     .map((crumb) => node(String(crumb.slug ?? ""), oneLine(crumb.name)))
@@ -883,8 +798,6 @@ for (const [slug, product] of records) {
       crumb.trail = crumbs.slice(0, index).map((each) => each.slug);
     }
     link(crumbs[index - 1], crumb);
-    // A product counts towards its own category and every one above it, so
-    // /category/phone lists everything under Phones rather than nothing.
     if (!crumb.products.includes(slug)) crumb.products.push(slug);
   });
 }
@@ -940,8 +853,6 @@ const stocked = ordered.filter((each) => each.products.length).length;
 console.log(
   `wrote ${ordered.length} categories (${stocked} with products, ${navTop.length} in the navbar)`,
 );
-
-/* ------------------------------------------------------------ facet output */
 
 const facetsBySlug = new Map();
 for (const [slug, product] of records) {

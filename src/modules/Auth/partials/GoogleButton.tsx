@@ -4,8 +4,6 @@ import { useRouter } from "next/navigation";
 import { decodeBack, signIn } from "@/shared/libs/session";
 import { auth_data } from "../config/constants";
 
-/** Google's four-colour G, drawn rather than fetched so the card carries no
- *  remote asset. Proportions follow Google's published mark. */
 function GoogleMark() {
   return (
     <svg viewBox="0 0 24 24" aria-hidden className="size-5 shrink-0">
@@ -29,18 +27,6 @@ function GoogleMark() {
   );
 }
 
-/* This button does NOT talk to Google. Client decision 2026-09-20: a
-   placeholder, because real Google sign-in needs an OAuth client ID from a
-   Google Cloud project and a server to verify the returned ID token, and this
-   build has neither. It signs the visitor in locally under a clearly
-   placeholder identity, and `AuthNote` says so on the card.
-
-   To make it real later: load Google Identity Services
-   (https://accounts.google.com/gsi/client), render or trigger it with your
-   client ID, then send the returned credential to a server route that verifies
-   the signature and issues a session. `signIn` below is the only call site
-   that changes. */
-
 const DEMO_USER = {
   name: "Google User",
   email: "google.user@example.com",
@@ -58,8 +44,6 @@ export function GoogleButton({
 
   return (
     <div>
-      {/* The divider sits above: this is the alternative to the submit button
-          right before it, not to the fields. */}
       <div className="my-6 flex items-center gap-4" aria-hidden>
         <span className="h-px flex-1 bg-line" />
         <span className="text-sm text-ink-subtle">{google.divider}</span>
@@ -72,9 +56,6 @@ export function GoogleButton({
           signIn(DEMO_USER);
           router.replace(decodeBack(back));
         }}
-        // Google's own styling: white ground, grey hairline, dark medium
-        // label. The height and radius are ours so it matches the submit
-        // button above it.
         className="flex w-full items-center justify-center gap-3 rounded-control border border-line-strong bg-surface px-6 py-3.5 font-medium text-ink transition-colors hover:bg-surface-muted"
       >
         <GoogleMark />

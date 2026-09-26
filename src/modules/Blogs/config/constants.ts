@@ -5,7 +5,6 @@ export type Post = {
   title: string;
   excerpt: string;
   category: string;
-  /** ISO date. */
   published: string;
   image?: StaticImageData;
 };
@@ -17,9 +16,6 @@ export const blogs_data = {
     "Buying guides, comparisons and notes on what is new. Written by the people who sell the products, for people trying to choose between them.",
 
   recentTitle: "Recent posts",
-  /* Empty on purpose. Add a post here and the grid renders it — no code change.
-     Three invented articles with invented bylines would look like content and
-     be worth nothing to a reader. */
   posts: [] as Post[],
 
   emptyTitle: "Nothing published yet",

@@ -3,7 +3,6 @@ import type { CategoryData } from "./types";
 export const category_data: CategoryData = {
   headingTemplate: "{name} Price in Bangladesh",
 
-  // Only ever states our own price range, so it cannot go stale or overclaim.
   summaryOne: "Browse the {name} we carry and order yours below.",
   summaryRange:
     "{name} start from {from} at Unique Mart. Browse the range below and order yours.",

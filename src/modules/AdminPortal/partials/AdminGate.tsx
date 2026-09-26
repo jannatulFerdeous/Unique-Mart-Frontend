@@ -3,16 +3,17 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Lock, TriangleAlert } from "lucide-react";
-import { useAdmin } from "@/shared/libs/admin/gate";
 import { admin_data } from "../config/constants";
 import { Button } from "../components/Button";
 import { Field, Input } from "../components/Field";
 
-/** The way in. Not a lock — see the warning it renders, and the long comment at
- *  the top of `shared/libs/admin/gate`. */
-export function AdminGate() {
+export type AdminIdentity = {
+  name: string;
+  role: "owner";
+};
+
+export function AdminGate({ onSignIn }: { onSignIn: (admin: AdminIdentity) => void }) {
   const { gate } = admin_data;
-  const { signIn } = useAdmin();
 
   const [name, setName] = useState("");
   const [code, setCode] = useState("");
@@ -32,18 +33,11 @@ export function AdminGate() {
           <h1 className="mt-1 font-sans text-h3 font-bold">{gate.title}</h1>
           <p className="mt-1.5 text-ink-muted">{gate.body}</p>
 
-          {/* The warning is above the form, not below it. Anyone who is about to
-              type a passcode should have read what it is worth first. */}
           <p className="mt-5 flex gap-2.5 rounded-control border border-warning bg-warning-soft px-3 py-2.5 text-xs text-ink">
             <TriangleAlert className="mt-0.5 size-4 shrink-0" aria-hidden />
             <span>{gate.warning}</span>
           </p>
 
-          {/* The passcode, in the open and always on screen. It is compiled into
-              this page anyway, so hiding it buys nothing and costs the person in
-              front of it. Kept out of the field's hint slot on purpose: an error
-              replaces a hint, which took this away at the one moment it was
-              needed. */}
           <p className="mt-3 flex items-center gap-2 text-xs text-ink-muted">
             <span>{gate.hint}</span>
             <code className="rounded bg-surface-muted px-1.5 py-0.5 font-mono text-xs text-ink">
@@ -55,10 +49,11 @@ export function AdminGate() {
             className="mt-5 flex flex-col gap-4"
             onSubmit={(event) => {
               event.preventDefault();
-              /* `signIn` is the only thing that knows the passcode. It returns
-                 false rather than throwing, so a wrong code is a message on the
-                 field and not a console error. */
-              if (!signIn(code, name)) setWrong(true);
+              if (code.trim() !== gate.passcode) {
+                setWrong(true);
+                return;
+              }
+              onSignIn({ name: name.trim().slice(0, 60) || "Store owner", role: "owner" });
             }}
           >
             <Field label={gate.nameLabel}>
@@ -80,9 +75,6 @@ export function AdminGate() {
                   setWrong(false);
                 }}
                 placeholder={gate.codePlaceholder}
-                /* `new-password` rather than `current-password`: there is no real
-                   account here, and offering to save this into a password manager
-                   would dignify a demo code as a credential. */
                 autoComplete="new-password"
                 required
               />

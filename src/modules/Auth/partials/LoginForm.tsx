@@ -29,8 +29,6 @@ export function LoginForm({ back }: { back?: string }) {
     setShown(found);
     if (Object.keys(found).length) return;
 
-    // No backend: the identifier is taken at face value and becomes the
-    // display name until a real one exists. The password is never stored.
     const typed = identifier.trim();
     signIn({
       name: typed,

@@ -8,7 +8,6 @@ export type ProductDetailsData = {
     share: string;
     buyNow: string;
     addToCart: string;
-    /** Shown when Buy Now is pressed before a colour has been chosen. */
     selectColorFirst: string;
     quantity: string;
     decrease: string;
@@ -29,13 +28,11 @@ export type ProductDetailsData = {
     empty: string;
     write: string;
     cancel: string;
-    /** Shown in place of an author while there is no sign-in. */
     anonymous: string;
     on: string;
     ofFive: string;
     countOne: string;
     countMany: string;
-    /** Says plainly where a submitted review actually goes. */
     storageNote: string;
     saved: string;
     form: {

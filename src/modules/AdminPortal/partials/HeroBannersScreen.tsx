@@ -2,89 +2,62 @@
 
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { ArrowDown, ArrowUp, ExternalLink, ImagePlus } from "lucide-react";
-import {
-  addHeroSlide,
-  checkImage,
-  deleteHeroSlide,
-  listHeroSlides,
-  reorderHeroSlides,
-  resetHeroSlides,
-  updateHeroSlide,
-} from "@/shared/libs/admin/hero";
-import { needsPasscode, rememberPublishCode } from "@/shared/libs/admin/api";
+import { createStore } from "@/shared/libs/admin/store";
 import {
   HERO_ACCEPT,
   HERO_SIZES,
-  heroImageUrl,
+  checkImage,
   isSafeHref,
+  type AdminHeroSlide,
   type HeroImageSlot,
-  type HeroUploadSlide,
 } from "@/shared/libs/hero/types";
 import { cn } from "@/shared/utils/cn";
 import { Button, ButtonLink, buttonClass } from "../components/Button";
 import { ConfirmAction } from "../components/ConfirmAction";
 import { Field, Input } from "../components/Field";
 import { EmptyState, Panel, ScreenHeader } from "../components/Panel";
-import { PasscodePanel } from "../components/PasscodePanel";
 
-/* The homepage hero, managed from the portal.
- *
- * The one screen whose edits are not demo data: slides are saved on the server
- * and every change is live for every visitor the moment it succeeds. So there is
- * no draft state and no "save all" — each action is its own request, and the
- * list on screen is always the list the server answered with. */
+const heroSlides = createStore<AdminHeroSlide[]>(() => []);
 
-type Run = (action: () => Promise<HeroUploadSlide[]>, done: string) => Promise<boolean>;
+type Run = (change: (slides: AdminHeroSlide[]) => AdminHeroSlide[], done: string) => void;
 
 const HREF_HINT = "A page on this site, like /category/iphone, or a full https:// address.";
 
 const sizeHint = (slot: HeroImageSlot) =>
   `${HERO_SIZES[slot].width} × ${HERO_SIZES[slot].height} px. PNG, JPG, WebP or AVIF, up to 5 MB.`;
 
-const formWith = (fields: Record<string, string | File>): FormData => {
-  const form = new FormData();
-  for (const [key, value] of Object.entries(fields)) form.append(key, value);
-  return form;
+const release = (url: string | null) => {
+  if (url) URL.revokeObjectURL(url);
 };
 
+const newSlideId = () => `HS-${Date.now().toString(36)}-${Math.floor(Math.random() * 1e6).toString(36)}`;
+
 export function HeroBannersScreen() {
-  const [slides, setSlides] = useState<HeroUploadSlide[] | null>(null);
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const slides = heroSlides.use();
   const [done, setDone] = useState<string | null>(null);
-  const [askCode, setAskCode] = useState(false);
 
-  useEffect(() => {
-    listHeroSlides()
-      .then(setSlides)
-      .catch((reason: unknown) => {
-        setSlides([]);
-        setError(reason instanceof Error ? reason.message : "Could not load the slides.");
-      });
-  }, []);
-
-  const run: Run = async (action, message) => {
-    setBusy(true);
-    setError(null);
-    setDone(null);
-    try {
-      setSlides(await action());
-      setDone(message);
-      return true;
-    } catch (reason) {
-      if (needsPasscode(reason)) setAskCode(true);
-      setError(reason instanceof Error ? reason.message : "That did not work. Try again.");
-      return false;
-    } finally {
-      setBusy(false);
-    }
+  const run: Run = (change, message) => {
+    heroSlides.update(change);
+    setDone(message);
   };
 
+  const patch = (id: string, fields: Partial<AdminHeroSlide>) => (current: AdminHeroSlide[]) =>
+    current.map((slide) => (slide.id === id ? { ...slide, ...fields } : slide));
+
   const move = (from: number, to: number) => {
-    if (!slides) return;
-    const order = slides.map((slide) => slide.id);
-    [order[from], order[to]] = [order[to], order[from]];
-    void run(() => reorderHeroSlides(order), "Order saved.");
+    run((current) => {
+      const next = [...current];
+      [next[from], next[to]] = [next[to], next[from]];
+      return next;
+    }, "Order saved.");
+  };
+
+  const clearAll = () => {
+    for (const slide of slides) {
+      release(slide.desktop);
+      release(slide.mobile);
+    }
+    run(() => [], "All slides deleted.");
   };
 
   return (
@@ -100,23 +73,7 @@ export function HeroBannersScreen() {
         }
       />
 
-      {askCode && (
-        <PasscodePanel
-          onSave={(code) => {
-            rememberPublishCode(code);
-            setAskCode(false);
-            setError(null);
-            setDone("Passcode saved for this tab. Try that change again.");
-          }}
-        />
-      )}
-
-      {error && (
-        <p role="alert" className="rounded-card border border-critical bg-critical-soft px-4 py-3 text-sm text-critical">
-          {error}
-        </p>
-      )}
-      {done && !error && (
+      {done && (
         <p role="status" className="text-sm font-medium text-good">
           {done}
         </p>
@@ -128,48 +85,42 @@ export function HeroBannersScreen() {
           description="Shown in this order. Hidden slides stay here, ready to switch back on."
           bodyClassName="py-0 md:py-0"
         >
-          {slides === null ? (
-            <p className="py-10 text-center text-sm text-ink-muted">Loading slides…</p>
-          ) : slides.length === 0 ? (
+          {slides.length === 0 ? (
             <EmptyState
               title="No slides uploaded yet"
-              body="The homepage is showing its built-in slides. Add one and the homepage switches to yours."
+              body="Slides added here are a preview only. They are not saved and a reload clears them."
             />
           ) : (
-            /* One fieldset, so a request in flight disables every control at
-               once and nobody reorders a list the server is still rewriting. */
-            <fieldset disabled={busy} className="min-w-0">
-              <legend className="sr-only">Uploaded slides</legend>
-              <ol className="divide-y divide-line">
-                {slides.map((slide, position) => (
-                  <SlideRow
-                    key={slide.id}
-                    slide={slide}
-                    position={position}
-                    last={position === slides.length - 1}
-                    run={run}
-                    onMove={move}
-                  />
-                ))}
-              </ol>
-            </fieldset>
+            <ol className="divide-y divide-line">
+              {slides.map((slide, position) => (
+                <SlideRow
+                  key={slide.id}
+                  slide={slide}
+                  position={position}
+                  last={position === slides.length - 1}
+                  run={run}
+                  patch={patch}
+                  onMove={move}
+                />
+              ))}
+            </ol>
           )}
         </Panel>
 
-        <AddSlide busy={busy} run={run} />
+        <AddSlide run={run} />
       </div>
 
-      {!!slides?.length && (
+      {slides.length > 0 && (
         <Panel
-          title="Go back to the built-in slides"
-          description="Deletes every slide above and their images. The homepage returns to the six slides it shipped with."
+          title="Remove every slide"
+          description="Deletes every slide above and their images."
           className="border-critical"
         >
           <ConfirmAction
             size="md"
             label="Delete all slides"
             describe="every uploaded hero slide"
-            onConfirm={() => void run(resetHeroSlides, "All slides deleted. The homepage is back to its built-in slides.")}
+            onConfirm={clearAll}
           />
         </Panel>
       )}
@@ -177,19 +128,19 @@ export function HeroBannersScreen() {
   );
 }
 
-/* ------------------------------------------------------------------ a row */
-
 function SlideRow({
   slide,
   position,
   last,
   run,
+  patch,
   onMove,
 }: {
-  slide: HeroUploadSlide;
+  slide: AdminHeroSlide;
   position: number;
   last: boolean;
   run: Run;
+  patch: (id: string, fields: Partial<AdminHeroSlide>) => (current: AdminHeroSlide[]) => AdminHeroSlide[];
   onMove: (from: number, to: number) => void;
 }) {
   const [href, setHref] = useState(slide.href);
@@ -199,8 +150,8 @@ function SlideRow({
   const n = position + 1;
   const dirty = href.trim() !== slide.href;
 
-  const update = (fields: Record<string, string | File>, message: string) =>
-    run(() => updateHeroSlide(slide.id, formWith(fields)), message);
+  const update = (fields: Partial<AdminHeroSlide>, message: string) =>
+    run(patch(slide.id, fields), message);
 
   const saveHref = (event: FormEvent) => {
     event.preventDefault();
@@ -210,14 +161,16 @@ function SlideRow({
       return;
     }
     setHrefError(undefined);
-    void update({ href: next }, `Slide ${n} now links to ${next}.`);
+    update({ href: next }, `Slide ${n} now links to ${next}.`);
   };
 
   const replace = (slot: HeroImageSlot, file: File | null) => {
     if (!file) return;
     const problem = checkImage(file);
     setFileError(problem ?? undefined);
-    if (!problem) void update({ [slot]: file }, `Slide ${n}: ${slot} image replaced.`);
+    if (problem) return;
+    release(slide[slot]);
+    update({ [slot]: URL.createObjectURL(file) }, `Slide ${n}: ${slot} image replaced.`);
   };
 
   return (
@@ -286,8 +239,8 @@ function SlideRow({
               type="checkbox"
               checked={slide.enabled}
               onChange={(event) =>
-                void update(
-                  { enabled: String(event.target.checked) },
+                update(
+                  { enabled: event.target.checked },
                   event.target.checked ? `Slide ${n} is on the homepage.` : `Slide ${n} is hidden.`,
                 )
               }
@@ -304,9 +257,10 @@ function SlideRow({
           {slide.mobile && (
             <Button
               size="sm"
-              onClick={() =>
-                void update({ clearMobile: "true" }, `Slide ${n} now uses its desktop image on phones.`)
-              }
+              onClick={() => {
+                release(slide.mobile);
+                update({ mobile: null }, `Slide ${n} now uses its desktop image on phones.`);
+              }}
             >
               Remove mobile
             </Button>
@@ -314,7 +268,11 @@ function SlideRow({
           <ConfirmAction
             label="Delete"
             describe={`slide ${n}`}
-            onConfirm={() => void run(() => deleteHeroSlide(slide.id), `Slide ${n} deleted.`)}
+            onConfirm={() => {
+              release(slide.desktop);
+              release(slide.mobile);
+              run((current) => current.filter((each) => each.id !== slide.id), `Slide ${n} deleted.`);
+            }}
           />
         </div>
 
@@ -331,17 +289,12 @@ function SlideRow({
 function Thumb({ file, label, className }: { file: string; label: string; className?: string }) {
   return (
     <span className={cn("block overflow-hidden rounded-control bg-surface-muted", className)}>
-      {/* A plain `img`: this is the uploaded original, shown small, and running
-          a portal thumbnail through the optimiser buys nothing. */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={heroImageUrl(file)} alt={label} className="h-full w-full object-cover" />
+      <img src={file} alt={label} className="h-full w-full object-cover" />
     </span>
   );
 }
 
-/** A file picker that looks like a button. The input is visually hidden rather
- *  than `display: none`, so it stays in the tab order and the label shows its
- *  focus ring. */
 function FileButton({ label, onPick }: { label: string; onPick: (file: File | null) => void }) {
   return (
     <label className={buttonClass("secondary", "sm", "cursor-pointer has-disabled:pointer-events-none has-disabled:opacity-50 has-focus-visible:outline-2 has-focus-visible:outline-tertiary")}>
@@ -353,7 +306,6 @@ function FileButton({ label, onPick }: { label: string; onPick: (file: File | nu
         className="sr-only"
         onChange={(event) => {
           onPick(event.target.files?.[0] ?? null);
-          // Cleared, so choosing the same file again still fires a change.
           event.target.value = "";
         }}
       />
@@ -361,10 +313,6 @@ function FileButton({ label, onPick }: { label: string; onPick: (file: File | nu
   );
 }
 
-/* --------------------------------------------------------------- add form */
-
-/** A chosen file and a preview URL for it. The URL is revoked whenever it is
- *  replaced and when the form goes away, or every pick leaks the image. */
 function usePicked() {
   const [picked, setPicked] = useState<{ file: File; url: string } | null>(null);
   const current = useRef(picked);
@@ -390,13 +338,11 @@ function usePicked() {
   return [picked, pick] as const;
 }
 
-function AddSlide({ busy, run }: { busy: boolean; run: Run }) {
+function AddSlide({ run }: { run: Run }) {
   const [desktop, pickDesktop] = usePicked();
   const [mobile, pickMobile] = usePicked();
   const [href, setHref] = useState("");
   const [errors, setErrors] = useState<Partial<Record<HeroImageSlot | "href", string>>>({});
-  /* Bumped after a successful add, to remount the file inputs — a file input's
-     value cannot be set back to a file, only cleared. */
   const [round, setRound] = useState(0);
 
   const choose = (slot: HeroImageSlot, file: File | null) => {
@@ -405,7 +351,7 @@ function AddSlide({ busy, run }: { busy: boolean; run: Run }) {
     (slot === "desktop" ? pickDesktop : pickMobile)(problem ? null : file);
   };
 
-  const submit = async (event: FormEvent) => {
+  const submit = (event: FormEvent) => {
     event.preventDefault();
     const link = href.trim();
     const next = {
@@ -415,11 +361,15 @@ function AddSlide({ busy, run }: { busy: boolean; run: Run }) {
     setErrors(next);
     if (!desktop || next.href) return;
 
-    const fields: Record<string, string | File> = { href: link, desktop: desktop.file };
-    if (mobile) fields.mobile = mobile.file;
+    const slide: AdminHeroSlide = {
+      id: newSlideId(),
+      href: link,
+      desktop: URL.createObjectURL(desktop.file),
+      mobile: mobile ? URL.createObjectURL(mobile.file) : null,
+      enabled: true,
+    };
 
-    const ok = await run(() => addHeroSlide(formWith(fields)), "Slide added. It is live on the homepage.");
-    if (!ok) return;
+    run((current) => [...current, slide], "Slide added.");
     pickDesktop(null);
     pickMobile(null);
     setHref("");
@@ -427,9 +377,9 @@ function AddSlide({ busy, run }: { busy: boolean; run: Run }) {
   };
 
   return (
-    <Panel title="Add a slide" description="New slides go live at the end of the list.">
+    <Panel title="Add a slide" description="New slides are added at the end of the list.">
       <form onSubmit={submit} className="flex flex-col gap-4">
-        <fieldset disabled={busy} className="flex min-w-0 flex-col gap-4">
+        <fieldset className="flex min-w-0 flex-col gap-4">
           <legend className="sr-only">New slide</legend>
 
           <ImageField
@@ -462,7 +412,7 @@ function AddSlide({ busy, run }: { busy: boolean; run: Run }) {
           </Field>
 
           <Button type="submit" variant="primary">
-            {busy ? "Saving…" : "Add slide"}
+            Add slide
           </Button>
         </fieldset>
       </form>

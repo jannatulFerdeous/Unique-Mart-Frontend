@@ -14,8 +14,6 @@ export function ProductAside({ similar }: Props) {
 
   return (
     <aside className="mt-12 lg:mt-0">
-      {/* Where the reference puts its "GIFT FROM G&G" promo. Ours carries the
-          six confirmed promises instead — see memory.md. */}
       <section aria-labelledby="product-trust" className="bg-surface p-5">
         <h2 id="product-trust" className="font-sans font-bold text-ink">
           {labels.trust}
@@ -41,8 +39,6 @@ export function ProductAside({ similar }: Props) {
             {labels.similar}
           </h2>
 
-          {/* Compact horizontal cards, as the reference's rail uses — the grid
-              ProductCard is built for a 5-up row and is far too tall here. */}
           <ul className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
             {similar.map((product) => (
               <li key={product.slug}>

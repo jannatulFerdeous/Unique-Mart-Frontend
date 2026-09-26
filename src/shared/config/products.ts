@@ -1,8 +1,4 @@
 import type { Product } from "./catalog";
-/* These two use the plain product shot rather than the catalogue thumbnail:
-   upstream burns an "UP TO 40% OFF" promo graphic into the thumbnail, which is
-   the reference's campaign, not ours — and on the offers page it collided with
-   our own discount ribbon. See memory.md. */
 import appleIpadAir13InchWifiM3ChipDisplayUnit from "@/images/products/ipad-air-13-inch-wifi-m3-chip-display-unit/02-ipad-air-13-inch-wifi-m3-chip745.jpeg";
 import appleMacbookAir15InchM4ChipDisplayUnit from "@/images/products/macbook-air-15-inch-m4-chip-display-unit/02-macbook-air-13-inch-m4-chip-24gb-512gb-midnight35.jpeg";
 import appleMagicKeyboardForIpadAir13Inch from "@/images/brands/apple-magic-keyboard-for-ipad-air-13-inch.jpeg";
@@ -97,11 +93,6 @@ import iphone17ProMax from "@/images/products/iphone-17-pro-max.jpeg";
 import macbook256 from "@/images/products/macbook-neo-256.png";
 import macbook512 from "@/images/products/macbook-neo-512.png";
 
-/* Every product in the catalogue. Moved out of `modules/Home/config` on
-   2026-09-06 because a second module needs it: the product detail page looks a
-   product up by slug. Names, prices, ratings and imagery are the reference
-   site's — placeholders until a real catalogue exists. See memory.md. */
-
 export const exclusiveProducts: Product[] = [
   { slug: "airpods-pro-3", name: "AirPods Pro 3", image: airpods, price: 28999, compareAt: 30999, rating: 5 },
   { slug: "iphone-air", name: "iPhone Air", image: iphoneAir, price: 164999, compareAt: 189999, rating: 5 },
@@ -136,7 +127,6 @@ export const newArrivalProducts: Product[] = [
 
 export const casesProducts: Product[] = [
   { slug: "uag-exclusive-pathfinder-magsafe-case-for-iphone-17-pro", name: "UAG Exclusive Pathfinder MagSafe Case for iPhone 17 Pro", image: uagExclusivePathfinderMagsafeCaseForIphone17Pro, brand: "UAG", price: 5999, compareAt: 6999, badge: "NEW ARRIVAL" },
-  // Upstream slug misspells this one “ultra-hyrbird”; ours is corrected.
   { slug: "spigen-ultra-hybrid-magfit-case-for-galaxy-s26-ultra", name: "Spigen Ultra Hybrid MagFit Case for Galaxy S26 Ultra", image: spigenUltraHybridMagfitCaseForGalaxyS26Ultra, brand: "Spigen", price: 2999, badge: "NEW ARRIVAL" },
   { slug: "spigen-ultra-hybrid-neo-one-magfit-case-for-galaxy-s26-ultra", name: "Spigen Ultra Hybrid Neo One Magfit Case for Galaxy S26 Ultra", image: spigenUltraHybridNeoOneMagfitCaseForGalaxyS26Ultra, brand: "Spigen", price: 4499, badge: "NEW ARRIVAL" },
   { slug: "spigen-liquid-air-magfit-case-for-galaxy-s26-ultra", name: "Spigen Liquid Air (MagFit) Case for Galaxy S26 Ultra", image: spigenLiquidAirMagfitCaseForGalaxyS26Ultra, brand: "Spigen", price: 2799, badge: "NEW ARRIVAL" },
@@ -162,7 +152,6 @@ export const topSellingProducts: Product[] = [
   { slug: "google-fitbit-air", name: "Google Fitbit Air", image: googleFitbitAir, brand: "Google", price: 20999, rating: 5 },
 ];
 
-/** Keyed by the brand tab's `key` in `home_data.brands`. */
 export const brandProducts: Record<string, Product[]> = {
   samsung: [
   { slug: "samsung-galaxy-buds-4-pro", name: "Samsung Galaxy Buds4 Pro", image: samsungGalaxyBuds4Pro, brand: "Samsung", price: 21999, compareAt: 22999 },
@@ -236,8 +225,6 @@ export const brandProducts: Record<string, Product[]> = {
   ],
 };
 
-/** Flat, de-duplicated view — several products appear in more than one rail
- *  (iPhone 17 Pro Max is in both Exclusive and Top Selling). */
 export const allProducts: Product[] = Object.values(
   [
     ...exclusiveProducts,
@@ -257,20 +244,12 @@ export const findProduct = (slug: string): Product | undefined =>
 
 export const productHref = (slug: string) => `/shop/product/${slug}`;
 
-/** A product whose price is below what it is normally listed at. */
 export type Offer = {
   product: Product;
-  /** Taka off. */
   saving: number;
-  /** Whole per cent off, rounded — what the card's ribbon reads. */
   percent: number;
 };
 
-/** Every real discount in the catalogue, deepest first.
- *
- *  Derived rather than curated on purpose: the offers page cannot then
- *  advertise a saving the product page does not also show, and a price edit
- *  here is the only thing needed to add or drop an offer. */
 export const offers: Offer[] = allProducts
   .flatMap((product) => {
     const was = product.compareAt;

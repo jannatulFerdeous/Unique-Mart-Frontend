@@ -1,5 +1,6 @@
 import { site } from "@/shared/config/site";
-import { getCategoryNav } from "@/shared/libs/categories/storage";
+import { categories, rootCategories } from "@/shared/config/categories";
+import { buildCategoryNav } from "@/shared/config/navigation";
 import { CategoryBar } from "./components/CategoryBar";
 import { HeaderActions } from "./components/HeaderActions";
 import { Logo } from "./components/Logo";
@@ -35,9 +36,9 @@ const structuredData = {
   ],
 };
 
-export async function Header() {
-  // Read on the server: the menu is the category tree the portal edits.
-  const nav = await getCategoryNav();
+const nav = buildCategoryNav(categories, rootCategories);
+
+export function Header() {
 
   return (
     <header className="sticky top-0 z-50">

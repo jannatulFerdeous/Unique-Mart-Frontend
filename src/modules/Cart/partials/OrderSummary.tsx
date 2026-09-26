@@ -7,11 +7,6 @@ import { formatPrice } from "@/shared/utils/price";
 import { cart_data } from "../config/constants";
 import { lineImage } from "../lineImage";
 
-/** What the ticked lines add up to.
- *
- *  Built from the selected lines only, because that is what the checkboxes on
- *  each row mean. A summary that quietly totals the whole basket makes those
- *  ticks decorative, and the first a shopper would know of it is the bill. */
 export function OrderSummary({ selected }: { selected: CartLine[] }) {
   const subtotal = selected.reduce((sum, line) => sum + lineTotal(line), 0);
   const delivery = shippingFor(subtotal);
@@ -21,8 +16,6 @@ export function OrderSummary({ selected }: { selected: CartLine[] }) {
   return (
     <aside
       aria-labelledby="order-summary"
-      /* Sticks beside a long basket so the total and the button stay reachable
-         without scrolling back up. `top-6` clears the sticky site header. */
       className="rounded-card border border-line bg-surface p-5 lg:sticky lg:top-6"
     >
       <h2 id="order-summary" className="font-sans font-bold text-ink">
@@ -35,9 +28,6 @@ export function OrderSummary({ selected }: { selected: CartLine[] }) {
         <ul className="mt-4 space-y-3 border-b border-line pb-4">
           {selected.map((line) => {
             const image = lineImage(line);
-            /* The variant, spelled out. Two colours of one phone are two lines
-               at the same price, and without this they read as a duplicate —
-               which is a bill someone will query. */
             const variant = [line.color, ...Object.values(line.options ?? {})]
               .filter(Boolean)
               .join(" · ");
@@ -87,8 +77,6 @@ export function OrderSummary({ selected }: { selected: CartLine[] }) {
         </div>
       </dl>
 
-      {/* Only worth saying while it is still information the shopper can act
-          on. Once delivery is already free it is just noise above the total. */}
       {delivery > 0 && (
         <p className="mt-2 text-xs text-ink-subtle">
           {cart_data.deliveryNote.replace("{threshold}", formatPrice(FREE_SHIPPING_FROM))}
@@ -110,8 +98,6 @@ export function OrderSummary({ selected }: { selected: CartLine[] }) {
         {cart_data.checkout}
       </button>
 
-      {/* The same honesty the review form uses: say where this goes, rather
-          than letting a Checkout button imply an order was placed. */}
       <p className="mt-3 text-xs text-ink-subtle">{cart_data.storageNote}</p>
     </aside>
   );

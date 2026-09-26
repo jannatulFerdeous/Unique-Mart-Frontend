@@ -1,16 +1,6 @@
 import Link from "next/link";
 import { mailHref, site, telHref } from "@/shared/config/site";
 
-/* The SEO copy block that closes the reference's home page. Unlike every other
-   partial the prose lives here rather than in `constants.ts`: it carries inline
-   links, and threading anchors through a data structure costs more than it saves.
-
-   Claims are deliberately limited to the six the trust strip already makes —
-   authentic, official, 0% EMI, exchange, delivery, secure payment. The
-   reference's "Apple Authorized Reseller" framing is Gadget & Gear's
-   certification, not ours; see memory.md. */
-
-/** Underlined in the reference too, just in orange rather than the monochrome. */
 const LINK =
   "font-medium text-tertiary underline decoration-tertiary/40 underline-offset-4 transition-colors hover:decoration-tertiary";
 
@@ -18,8 +8,6 @@ export function AboutCopy() {
   return (
     <section aria-labelledby="about-copy-heading" className="pt-16 pb-14">
       <div className="container-page">
-        {/* font-sans because the base layer paints every h1–h6 in --font-display;
-            only the logo uses Montserrat. Same override SectionHeader needs. */}
         <h2
           id="about-copy-heading"
           className="font-sans font-bold text-ink"

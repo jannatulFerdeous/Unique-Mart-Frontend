@@ -37,14 +37,12 @@ export type AuthData = {
     signIn: string;
     signUp: string;
     divider: string;
-    /** Says outright that the button is a placeholder. */
     mock: string;
   };
 
   showPassword: string;
   hidePassword: string;
 
-  /** Says plainly that no account is really created. */
   note: string;
   signedInAs: string;
   signOut: string;

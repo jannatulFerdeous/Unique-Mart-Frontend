@@ -1,15 +1,3 @@
-/* Orders, and the payment attached to each.
- *
- * Payments are not a second store. A payment exists because an order exists, and
- * two stores would drift the moment one screen marked a payment paid and the
- * other still called the order unpaid. So the payments screen is a view over
- * these rows — `paymentsOf` below — and "mark paid" and "refund" are order
- * mutations. One source of truth, one place to fix.
- *
- * The rows are seeded deterministically from the shipped catalogue: real product
- * names at real prices, so the dashboard's revenue and its best-sellers are
- * arithmetic over things that exist rather than invented figures. */
-
 import { allProducts } from "@/shared/config/products";
 import { createStore, daysAgo, localId, rng } from "./store";
 import type {
@@ -21,10 +9,7 @@ import type {
   PaymentStatus,
 } from "./types";
 
-const KEY = "unique-mart.admin.orders.v1";
 
-/** Delivery, as the seeded history charged it. Current rates live in
- *  `settings`; an order keeps what it was actually billed. */
 const SHIPPING_FLAT = 120;
 const FREE_SHIPPING_FROM = 50_000;
 
@@ -36,11 +21,6 @@ export const ORDER_FLOW: OrderStatus[] = [
   "delivered",
 ];
 
-/** Statuses an order can be moved to from here.
- *
- *  Forward one step along the flow, or out of it. Deliberately not a free
- *  choice: a delivered order that can be flipped back to "pending" is how a
- *  warehouse loses track of a parcel, and a refunded one is finished. */
 export const nextStatuses = (status: OrderStatus): OrderStatus[] => {
   if (status === "delivered") return ["refunded"];
   if (status === "cancelled" || status === "refunded") return [];
@@ -64,16 +44,12 @@ const DISTRICTS: [string, string][] = [
 
 const ROADS = ["Green Road", "Mirpur Road", "Bailey Road", "Airport Road", "CDA Avenue", "Zindabazar"];
 
-/** Sum of the line totals. Never stored twice — every caller derives it. */
 export const subtotalOf = (items: OrderItem[]): number =>
   items.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0);
 
 export const shippingFor = (subtotal: number): number =>
   subtotal >= FREE_SHIPPING_FROM ? 0 : SHIPPING_FLAT;
 
-/** How many orders to seed. Spread over 120 days, which is enough history for
- *  a 30-day revenue chart to have a shape and a 90-day comparison to mean
- *  something. */
 const COUNT = 164;
 const HISTORY_DAYS = 120;
 
@@ -82,8 +58,6 @@ const seed = (): Order[] => {
   const pool = allProducts;
 
   const rows = Array.from({ length: COUNT }, (_, index) => {
-    /* Squared, so orders cluster into the recent past the way a growing shop's
-       would. A flat spread makes every dashboard trend line dead level. */
     const age = Math.round(random() ** 2 * HISTORY_DAYS);
 
     const lines = 1 + Math.floor(random() * 3);
@@ -95,20 +69,14 @@ const seed = (): Order[] => {
         slug: product.slug,
         name: product.name,
         unitPrice: product.price,
-        /* Two of something cheap is common, two flagships is not. */
         quantity: product.price < 10_000 && random() < 0.4 ? 2 : 1,
       });
     }
 
     const subtotal = subtotalOf(items);
     const shipping = shippingFor(subtotal);
-    /* A round promo on about a fifth of orders — enough that the discount
-       column is not dead, few enough that it reads as a promotion. */
     const discount = random() < 0.2 ? Math.min(2000, Math.round((subtotal * 0.05) / 100) * 100) : 0;
 
-    /* Status follows age: today's orders are still being picked, last month's
-       arrived. The small tail of cancellations and refunds is what gives the
-       payments screen something to act on. */
     const roll = random();
     let status: OrderStatus;
     if (roll < 0.05) status = "cancelled";
@@ -121,8 +89,6 @@ const seed = (): Order[] => {
 
     const method = METHODS[Math.floor(random() * METHODS.length)];
 
-    /* Cash on delivery is unpaid until the courier hands it over; everything
-       else is taken at checkout, so a pending card order is a pending payment. */
     let payment: PaymentStatus;
     if (status === "refunded") payment = "refunded";
     else if (status === "cancelled") payment = method === "cod" ? "unpaid" : "failed";
@@ -162,32 +128,12 @@ const seed = (): Order[] => {
     } satisfies Order;
   });
 
-  // Newest first, which is the order every screen wants them in.
   return rows.sort((a, b) => b.placedAt.localeCompare(a.placedAt));
 };
 
-const isOrder = (value: unknown): value is Order => {
-  if (typeof value !== "object" || value === null) return false;
-  const each = value as Record<string, unknown>;
-  return (
-    typeof each.id === "string" &&
-    each.id.length > 0 &&
-    Array.isArray(each.items) &&
-    typeof each.total === "number" &&
-    Number.isFinite(each.total) &&
-    typeof each.status === "string" &&
-    typeof each.payment === "object" &&
-    each.payment !== null
-  );
-};
 
-const revive = (value: unknown): Order[] | null => {
-  if (!Array.isArray(value)) return null;
-  const rows = value.filter(isOrder);
-  return rows.length ? rows : null;
-};
 
-export const orders = createStore(KEY, seed, revive);
+export const orders = createStore(seed);
 
 export const useOrders = (): Order[] => orders.use();
 
@@ -200,9 +146,6 @@ const patch = (id: string, change: (order: Order) => Order) => {
   );
 };
 
-/** Moves an order along. Cash-on-delivery settles on delivery, so that one
- *  transition also books the money — which is what actually happens when a
- *  courier hands the parcel over. */
 export const setOrderStatus = (id: string, status: OrderStatus) => {
   patch(id, (order) => {
     const settles =
@@ -242,9 +185,6 @@ export const markPaymentFailed = (id: string) => {
   }));
 };
 
-/** Refunds an order: the money goes back and the order leaves the flow. Both
- *  happen together, because a refunded payment on a "delivered" order is the
- *  kind of half-state that makes a ledger untrustworthy. */
 export const refundOrder = (id: string) => {
   patch(id, (order) => ({
     ...order,
@@ -265,10 +205,7 @@ export const deleteOrder = (id: string) => {
   orders.update((current) => current.filter((order) => order.id !== id));
 };
 
-export const resetOrders = () => orders.reset();
 
-/** Turns a basket into a pending order, which is what the carts screen's
- *  "convert" action does. Returns the new order so the caller can link to it. */
 export const orderFromCart = (cart: Cart, customerId: string | null): Order => {
   const items = cart.lines.map((line) => ({
     slug: line.slug,
@@ -298,17 +235,12 @@ export const orderFromCart = (cart: Cart, customerId: string | null): Order => {
   return order;
 };
 
-/* ------------------------------------------------------------- read models */
-
-/** Money actually earned. Cancelled and refunded orders are excluded, so the
- *  dashboard's headline is revenue rather than gross order value. */
 export const isRevenue = (order: Order): boolean =>
   order.status !== "cancelled" && order.status !== "refunded";
 
 export const revenueOf = (rows: Order[]): number =>
   rows.filter(isRevenue).reduce((sum, order) => sum + order.total, 0);
 
-/** One payment per order, flattened for the payments screen. */
 export type PaymentRow = {
   orderId: string;
   customerId: string;
@@ -330,6 +262,5 @@ export const paymentsOf = (rows: Order[]): PaymentRow[] =>
     ...order.payment,
   }));
 
-/** Orders belonging to one account, newest first. */
 export const ordersFor = (rows: Order[], customerId: string): Order[] =>
   rows.filter((order) => order.customerId === customerId);

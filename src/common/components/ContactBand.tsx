@@ -4,12 +4,10 @@ import { cn } from "@/shared/utils/cn";
 export type ContactAction = {
   label: string;
   href: string;
-  /** The filled button. Exactly one action should be primary. */
   primary?: boolean;
 };
 
 type ContactBandProps = {
-  /** The section's own aria-labelledby target — unique per page. */
   id: string;
   title: string;
   body: string;
@@ -31,8 +29,6 @@ export function ContactBand({ id, title, body, actions }: ContactBandProps) {
             {title}
           </h2>
 
-          {/* Centred copy, so this one keeps a measure — the About page's
-              full-width rule is for its left-aligned prose columns. */}
           <p className="mx-auto mt-4 max-w-[62ch] leading-[1.85] text-ink-inverse-muted">
             {body}
           </p>
@@ -43,12 +39,9 @@ export function ContactBand({ id, title, body, actions }: ContactBandProps) {
                 BASE,
                 primary
                   ? "bg-ink-inverse text-inverse-deep hover:bg-secondary-hover"
-                  // line-inverse is the footer's divider grey and all but
-                  // vanishes on this band; the muted ink reads as a border.
                   : "border border-ink-inverse-muted text-ink-inverse hover:bg-inverse-raised",
               );
 
-              // tel: and mailto: are not routes — Link would prefetch them.
               return href.startsWith("/") ? (
                 <Link key={label} href={href} className={className}>
                   {label}

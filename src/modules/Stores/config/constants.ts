@@ -12,12 +12,6 @@ export const stores_data = {
   heading: "Where to find us",
   intro: `${site.name} sells online and delivers across Bangladesh. Here is how orders reach you, and how to reach a person.`,
 
-  /* Empty on purpose. This shop is online only — the offers page says the same
-     thing — so the page shows the delivery panel instead. Add a branch here and
-     the list renders in its place, with no code change.
-
-     Not filled with plausible-looking addresses: a made-up shop is one somebody
-     drives across a city to visit. */
   stores: [] as Store[],
 
   onlineTitle: "We are an online shop",

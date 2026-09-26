@@ -6,7 +6,6 @@ import type { NavItem } from "@/shared/config/navigation";
 import { cn } from "@/shared/utils/cn";
 import { CategoryMenu } from "./CategoryMenu";
 
-/** `nav` is read on the server — the tree the admin portal edits. */
 export function CategoryBar({ nav: categoryNav }: { nav: NavItem[] }) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 

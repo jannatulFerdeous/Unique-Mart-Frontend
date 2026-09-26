@@ -4,7 +4,6 @@ import { auth_data } from "../config/constants";
 
 type Props = {
   active: "login" | "register";
-  /** Carried through the pill so switching tabs keeps the return path. */
   back?: string;
   children: React.ReactNode;
 };
@@ -12,8 +11,6 @@ type Props = {
 const withBack = (path: string, back?: string) =>
   back ? `${path}?back=${encodeURIComponent(back)}` : path;
 
-/** The card and its Login/Register pill. The pill is two real links, so the
- *  two states have their own URLs and work before JavaScript arrives. */
 export function AuthCard({ active, back, children }: Props) {
   const tabs = [
     { id: "login" as const, label: auth_data.loginTab, href: withBack("/auth/login", back) },

@@ -19,9 +19,6 @@ export const cart_data: CartData = {
   subtotal: "Subtotal",
   delivery: "Delivery",
   deliveryFree: "Free",
-  /* The threshold is the one the admin portal's settings screen shows. Both
-     read the same number so the shop cannot promise one thing and charge
-     another — see `shared/config/shipping`. */
   deliveryNote: "Free delivery on orders over {threshold}.",
   total: "TOTAL",
   checkout: "Checkout",

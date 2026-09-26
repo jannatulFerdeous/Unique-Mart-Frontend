@@ -2,17 +2,11 @@
 
 import { useState } from "react";
 import { TriangleAlert } from "lucide-react";
-import { resetCarts } from "@/shared/libs/admin/carts";
-import { resetCustomers } from "@/shared/libs/admin/customers";
 import { DEMO_PASSCODE } from "@/shared/libs/admin/access";
-import { resetOrders } from "@/shared/libs/admin/orders";
-import { resetProducts } from "@/shared/libs/admin/products";
-import { resetReviews } from "@/shared/libs/admin/reviews";
-import { METHOD_LABELS, resetSettings, saveSettings, toggleMethod, useSettings } from "@/shared/libs/admin/settings";
+import { METHOD_LABELS, saveSettings, toggleMethod, useSettings } from "@/shared/libs/admin/settings";
 import { formatMoney } from "@/shared/libs/admin/format";
 import { admin_data } from "../config/constants";
 import { Button } from "../components/Button";
-import { ConfirmAction } from "../components/ConfirmAction";
 import { Field, Input } from "../components/Field";
 import { Panel, ScreenHeader } from "../components/Panel";
 
@@ -47,8 +41,6 @@ export function SettingsScreen() {
         blurb="Delivery charges, payment methods and contact details."
       />
 
-      {/* Said plainly: these fields are the right fields, and nothing reads them
-          yet. Better than a settings screen that looks wired up and is not. */}
       <p className="flex gap-2.5 rounded-card border border-line bg-surface px-4 py-3 text-sm text-ink-muted">
         <TriangleAlert className="mt-0.5 size-4 shrink-0 text-warning" aria-hidden />
         <span>
@@ -161,9 +153,6 @@ export function SettingsScreen() {
                   {method.enabled ? "Offered at checkout" : "Hidden from checkout"}
                 </p>
               </div>
-              {/* A real checkbox rather than a styled div: it is keyboard
-                  reachable, it announces its own state, and it works before the
-                  stylesheet loads. */}
               <label className="flex items-center gap-2 text-sm text-ink-muted">
                 <span className="sr-only">Offer {METHOD_LABELS[method.id]} at checkout</span>
                 <input
@@ -187,26 +176,6 @@ export function SettingsScreen() {
           , which is compiled into the page anyone can read. There are no admin accounts, roles or
           audit trail, because all three need a server to be worth anything. Treat this portal as a
           working prototype of the screens, not as a place to keep real customer records.
-        </p>
-      </Panel>
-
-      <Panel
-        title="Reset demo data"
-        description={common.resetHint}
-        className="border-critical"
-      >
-        <div className="flex flex-wrap gap-2">
-          <ConfirmAction size="md" label="Reset products" describe="every product edit" onConfirm={resetProducts} />
-          <ConfirmAction size="md" label="Reset orders" describe="every order change" onConfirm={resetOrders} />
-          <ConfirmAction size="md" label="Reset customers" describe="every account change" onConfirm={resetCustomers} />
-          <ConfirmAction size="md" label="Reset baskets" describe="every basket" onConfirm={resetCarts} />
-          <ConfirmAction size="md" label="Reset sample reviews" describe="the sample reviews" onConfirm={resetReviews} />
-          <ConfirmAction size="md" label="Reset settings" describe="these settings" onConfirm={resetSettings} />
-        </div>
-
-        <p className="mt-3 text-xs text-ink-subtle">
-          Reviews written on the shop are not demo data and are never restored by this — resetting
-          sample reviews leaves them alone, and deleting one on the Reviews screen is permanent.
         </p>
       </Panel>
     </>

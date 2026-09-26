@@ -89,9 +89,6 @@ export function CategoryFilters({
 
       {groups.map((group) => (
         <Collapsible key={group.id} title={group.label}>
-          {/* Every option is listed. No inner scroller: a scrollbar inside a
-              group hides options behind a gesture, and the column has the
-              whole page to grow down. Collapse the group to shorten it. */}
           <ul className="space-y-2">
             {group.options.map((option) => (
               <li key={option.value}>

@@ -10,7 +10,6 @@ import { cn } from "@/shared/utils/cn";
 
 const depthPadding = ["px-5", "pr-5 pl-8", "pr-5 pl-11"];
 
-/** `nav` is read on the server — the tree the admin portal edits. */
 export function MobileNav({ nav: categoryNav }: { nav: NavItem[] }) {
   const [isOpen, setIsOpen] = useState(false);
   const close = () => setIsOpen(false);

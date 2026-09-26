@@ -19,8 +19,6 @@ const { reviews: copy } = product_details_data;
 const countLabel = (count: number) =>
   count === 1 ? copy.countOne : copy.countMany.replace("{n}", String(count));
 
-/** A fixed locale rather than the visitor's: the format stays predictable, and
- *  reviews only ever render in the browser, so local time is safe here. */
 const formatDate = (iso: string) => {
   const date = new Date(iso);
   if (Number.isNaN(date.getTime())) return "";
@@ -33,9 +31,6 @@ const formatDate = (iso: string) => {
   }).format(date);
 };
 
-/** Round avatar: the reviewer's initials once accounts exist, a person glyph
- *  until then. Same silhouette as the reference, without its broken-image
- *  placeholder. */
 function Avatar({ name }: { name: string | null }) {
   const letters = name ? initials(name) : "";
 
@@ -94,8 +89,6 @@ export function ProductReviews({ reviews, summary, onSubmit }: Props) {
         )}
       </div>
 
-      {/* Announced on save, and left in place afterwards so the note about
-          where the review actually went stays readable. */}
       {saved && (
         <p
           role="status"
@@ -115,8 +108,6 @@ export function ProductReviews({ reviews, summary, onSubmit }: Props) {
             <legend className="font-medium text-ink">{copy.form.rating}</legend>
             <p className="sr-only">{copy.form.ratingHint}</p>
 
-            {/* Radios, not buttons: arrow keys move between stars and the
-                group reads as one control. The visible star is the label. */}
             <div
               className="mt-2 flex gap-1"
               onMouseLeave={() => setHovered(0)}
@@ -206,8 +197,6 @@ export function ProductReviews({ reviews, summary, onSubmit }: Props) {
         </form>
       )}
 
-      {/* The store is browser-only, so the prerendered HTML always carries
-          the empty state and the list arrives on hydration. */}
       {summary.count > 0 ? (
         <>
           <div className="mt-8 flex flex-wrap items-center gap-x-10 gap-y-5 border-y border-line py-5">
@@ -273,8 +262,6 @@ export function ProductReviews({ reviews, summary, onSubmit }: Props) {
                     {copy.on} {formatDate(review.createdAt)}
                   </p>
 
-                  {/* Someone else's words: preserve their line breaks, and
-                      never render it as markup. */}
                   <p className="mt-2 whitespace-pre-line text-ink-muted">
                     {review.comment}
                   </p>

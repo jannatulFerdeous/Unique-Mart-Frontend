@@ -11,7 +11,6 @@ type Props = {
   slug: string;
   trail: { slug: string; name: string }[];
   items: ListingProduct[];
-  /** Sub-categories with stock — the chip row and the Category facet. */
   childLinks: { slug: string; name: string }[];
 };
 
@@ -22,8 +21,6 @@ export function Category({ name, slug, trail, items, childLinks }: Props) {
     ? Math.min(...products.map((product) => product.price))
     : null;
 
-  // The chip row shows siblings on a leaf category and children on a section,
-  // so there is always somewhere to go next.
   const links = childLinks.length ? childLinks : [];
 
   return (

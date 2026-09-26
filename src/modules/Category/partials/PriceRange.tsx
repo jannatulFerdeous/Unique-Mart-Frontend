@@ -9,8 +9,6 @@ type Props = {
   onChange: (next: { min: number; max: number }) => void;
 };
 
-/** Two-handle price range: a slider for a rough sweep, two boxes for a figure
- *  someone already has in mind. Both write the same state. */
 export function PriceRange({ bounds, value, onChange }: Props) {
   const fieldId = useId();
   const { priceFrom, priceTo } = category_data;
@@ -19,13 +17,8 @@ export function PriceRange({ bounds, value, onChange }: Props) {
   const left = ((value.min - bounds.min) / span) * 100;
   const right = ((value.max - bounds.min) / span) * 100;
 
-  // A default step of 1 makes the handle useless from the keyboard — forty
-  // presses move it forty taka across a two-lakh range. A hundred steps end to
-  // end is what a drag feels like, rounded so the number stays readable.
   const step = Math.max(1, Math.round(span / 100 / 100) * 100);
 
-  // Handles must not cross, and a blank or junk box falls back to the bound
-  // rather than to NaN.
   const setMin = (raw: number) =>
     onChange({
       min: Math.min(Number.isFinite(raw) ? Math.max(bounds.min, raw) : bounds.min, value.max),

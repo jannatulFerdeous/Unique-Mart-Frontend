@@ -30,8 +30,6 @@ import { StatTile } from "../components/StatTile";
 import { StatusPill } from "../components/StatusPill";
 import { Table, TableScroll, Td, TdNum, Th, ThNum, Tr } from "../components/Table";
 
-/** Squeezes a long daily series into the handful of points a sparkline can
- *  actually show. Ninety marks in 96 pixels is a smear, not a trend. */
 const toTrend = (values: number[], buckets = 12): number[] => {
   if (values.length <= buckets) return values;
 
@@ -50,9 +48,6 @@ export function Dashboard() {
   const customers = useCustomers();
   const carts = useCarts();
 
-  /* One range control for the whole screen. Every figure below reads it, so the
-     numbers always describe the same window — a per-card range is how two tiles
-     end up disagreeing about the same week. */
   const [days, setDays] = useState(30);
 
   const series = useMemo(() => revenueSeries(orders, days), [orders, days]);
@@ -114,7 +109,6 @@ export function Dashboard() {
         title="Dashboard"
         blurb={admin_data.nav[0].items[0].blurb}
         actions={
-          /* Filters in one row above the content they scope, date range first. */
           <div className="flex items-center gap-1 rounded-control border border-line bg-surface p-1">
             {RANGES.map((range) => (
               <button
@@ -137,8 +131,6 @@ export function Dashboard() {
       />
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        {/* Exactly one hero figure on the screen: what the shop earned. It takes
-            two columns so a compact figure has room to stay on one line. */}
         <StatTile
           hero
           className="md:col-span-2"
@@ -155,10 +147,6 @@ export function Dashboard() {
           deltaLabel={rangeLabel}
           trend={toTrend(series.map((point) => point.orders))}
         />
-        {/* Two work queues, and they deliberately ignore the range control above:
-            an order still waiting to be packed is waiting whether it was placed
-            this week or last month. The note says so, because a figure that
-            quietly opts out of the filter is worse than no figure. */}
         <StatTile
           label="Awaiting fulfilment"
           value={formatCount(figures.openOrders)}

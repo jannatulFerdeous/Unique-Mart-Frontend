@@ -17,8 +17,6 @@ export function WhyShop() {
           {intro}
         </p>
 
-        {/* The same six claims and icons the home strip renders, from
-            shared/config/trust.ts — the two cannot drift apart. */}
         <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {claims.map(({ icon: Icon, label, detail }) => (
             <li key={label} className="bg-surface p-6">
