@@ -18,7 +18,6 @@ export const footerColumns: FooterColumn[] = [
     items: [
       { label: "Our Brands", href: brandsPath },
       { label: "Careers", href: "/careers" },
-      { label: "Blogs", href: "/blogs" },
       { label: "About Us", href: "/about" },
     ],
   },

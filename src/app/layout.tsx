@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import { Footer } from "@/common/widgets/Footer";
-import { Header } from "@/common/widgets/Header";
+import { StoreProvider } from "@/redux/StoreProvider";
 import { site } from "@/shared/config/site";
 import { fontVariables } from "@/shared/libs/fonts";
 import "@/shared/styles/globals.css";
@@ -16,13 +15,9 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang={site.locale} className={`${fontVariables} h-full antialiased`}>
-      <body className="flex min-h-full flex-col">
-        <Header />
-        <main id="main" className="flex-1">
-          {children}
-        </main>
-        <Footer />
+    <html lang={site.locale} className={`${fontVariables} h-full antialiased`} data-scroll-behavior="smooth">
+      <body className="flex min-h-full flex-col" suppressHydrationWarning>
+        <StoreProvider>{children}</StoreProvider>
       </body>
     </html>
   );

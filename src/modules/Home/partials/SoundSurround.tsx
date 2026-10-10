@@ -1,14 +1,15 @@
 import { ProductRail } from "@/common/components/ProductRail";
 import { SectionHeader } from "@/common/components/SectionHeader";
+import type { Product } from "@/shared/config/catalog";
 import { home_data } from "../config/constants";
 
-export function SoundSurround() {
-  const { title, href, products } = home_data.soundSurround;
+export function SoundSurround({ products }: { products: Product[] }) {
+  const { title, href } = home_data.soundSurround;
+  if (!products.length) return null;
 
   return (
     <section aria-labelledby="sound-surround-heading" className="pt-5">
       <div className="container-page">
-        {/* Left-aligned, like every rail after Exclusive. */}
         <SectionHeader
           id="sound-surround-heading"
           title={title}

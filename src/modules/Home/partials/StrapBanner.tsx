@@ -5,11 +5,6 @@ import { home_data } from "../config/constants";
 export function StrapBanner() {
   const { href, alt, desktop, mobile } = home_data.promos.straps;
 
-  // Two compositions, not two sizes of one: the reference crops a 4:1 banner for
-  // desktop and a 1.9:1 one for phones. `<picture>` art-directs them, and
-  // getImageProps keeps the md-and-up <source> on the optimiser — the same
-  // pattern the hero uses, and for the same reason. Toggling two <Image>s with
-  // `hidden` would download both files.
   const {
     props: { srcSet: desktopSrcSet },
   } = getImageProps({ alt, src: desktop, sizes: "85vw" });
@@ -22,8 +17,6 @@ export function StrapBanner() {
         <Link href={href} className="block">
           <picture className="block">
             <source media="(min-width: 768px)" srcSet={desktopSrcSet} />
-            {/* `alt` is repeated out of the spread only so the jsx-a11y rule
-                can see it; the spread already carries it. */}
             <img
               {...img}
               alt={img.alt ?? ""}

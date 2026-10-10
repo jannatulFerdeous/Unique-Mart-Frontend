@@ -6,7 +6,6 @@ export function FaqIntro() {
   return (
     <section className="pt-10 md:pt-14">
       <div className="container-page text-center">
-        {/* font-sans because the base layer paints h1–h6 in --font-display. */}
         <h1
           id="faq-heading"
           className="font-sans font-bold text-ink"

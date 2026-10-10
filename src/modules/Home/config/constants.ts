@@ -44,39 +44,21 @@ import speaker from "@/images/categories/speaker.png";
 import tablets from "@/images/categories/tablets.png";
 import watches from "@/images/categories/watches.png";
 import { brandMarks } from "@/shared/config/brands";
-import {
-  brandProducts,
-  casesProducts,
-  exclusiveProducts,
-  newArrivalProducts,
-  soundSurroundProducts,
-  topSellingProducts,
-} from "@/shared/config/products";
 import { trustClaims } from "@/shared/config/trust";
 import type { HomeData } from "./types";
 
 export const home_data: HomeData = {
 
-  //
   exclusive: {
     title: "Exclusive",
     href: "/shop/exclusive",
-    // Products, prices and ratings are the reference site's — placeholders
-    // until a real catalogue exists. See memory.md.
-    products: exclusiveProducts,
   },
 
-  //
-  // The 36 marks the reference bakes into one flat 1320×330 banner. Pulled
-  // individually from its /brand page 2026-09-05 — see memory.md.
   brandWall: {
     title: "Exclusively Available",
     brands: brandMarks,
   },
 
-  //
-  // Reference-site artwork, pulled 2026-09-04 — see memory.md. The two offer
-  // banners carry Gadget & Gear's own EMI and discount terms inside the image.
   promos: {
     brands: [
       { href: "/brands/spigen", image: promoSpigen, alt: "Spigen — Protected In Every Way. Rugged, clear and carbon-weave phone cases." },
@@ -85,54 +67,37 @@ export const home_data: HomeData = {
       { href: "/brands/tucano", image: promoTucano, alt: "TUCANO — Designed To Move With You. Backpacks, laptop sleeves and slings." },
     ],
     offers: [
-      { href: "/shop/headphone-speaker/earbuds/airpods", image: promoAirpods, alt: "AirPods Pro 3 — the world's best in-ear Active Noise Cancellation. Up to 6 months 0% EMI, ৳2,000 off, or exchange. Terms and conditions apply." },
-      { href: "/shop/watches/smart-watch/apple", image: promoAppleWatch, alt: "Apple Watch Series 11 — the ultimate way to watch your health. Up to 6 months 0% EMI, ৳4,000 off, or exchange. Terms and conditions apply." },
+      { href: "/category/airpods", image: promoAirpods, alt: "AirPods Pro 3 — the world's best in-ear Active Noise Cancellation. Up to 6 months 0% EMI, ৳2,000 off, or exchange. Terms and conditions apply." },
+      { href: "/category/watches/smart-watch/apple", image: promoAppleWatch, alt: "Apple Watch Series 11 — the ultimate way to watch your health. Up to 6 months 0% EMI, ৳4,000 off, or exchange. Terms and conditions apply." },
     ],
     straps: {
-      href: "/shop/watches/watch-strap",
+      href: "/category/watches",
       alt: "Made to push boundaries — straps for Apple Watch, in steel link, woven nylon, rugged and trail loop styles.",
       desktop: promoStrapsDesktop,
       mobile: promoStrapsMobile,
     },
   },
 
-  //
-  // The reference site’s own Sound Surround rail, pulled 2026-09-05 — see memory.md.
   soundSurround: {
     title: "Sound Surround",
-    href: "/shop/sound-surround",
-    products: soundSurroundProducts,
+    href: "/category/headphone-speaker",
   },
 
-  //
-  // The reference site’s own New Arrival rail, pulled 2026-09-05 — see memory.md.
   newArrival: {
     title: "New Arrival",
     href: "/shop/new-arrival",
-    products: newArrivalProducts,
   },
 
-  //
-  // The reference site’s own Cases & Screen Protector rail, pulled 2026-09-05 —
-  // see memory.md. Every product here has `review: 0` upstream, so none carry a
-  // rating and the star row collapses on every card.
   casesAndProtectors: {
     title: "Cases & Screen Protector",
-    href: "/shop/cases-protectors",
-    products: casesProducts,
+    href: "/category/cases-protectors",
   },
 
-  //
-  // The reference site’s own Top Selling rail, pulled 2026-09-04 — see memory.md.
   topSelling: {
     title: "Top Selling",
     href: "/shop/top-selling",
-    products: topSellingProducts,
   },
 
-  //
-  // Ten brands, five products each, all pulled from the reference site on
-  // 2026-09-04 — see memory.md. Tabs are wordmarks as text, not logos.
   brands: {
     title: "Shop By Brands",
     href: "/brands",
@@ -141,128 +106,110 @@ export const home_data: HomeData = {
         key: "samsung",
         label: "Samsung",
         logo: samsungLogo,
-        href: "/shop/phones/android/samsung",
-        products: brandProducts.samsung,
+        href: "/brands/samsung",
       },
       {
         key: "apple",
         label: "Apple",
         logo: appleLogo,
-        href: "/shop/phones/iphone",
-        products: brandProducts.apple,
+        href: "/brands/apple",
       },
       {
         key: "oppo",
         label: "Oppo",
         logo: oppoLogo,
-        href: "/shop/phones/android/oppo",
-        products: brandProducts.oppo,
+        href: "/brands/oppo",
       },
       {
         key: "vivo",
         label: "vivo",
         logo: vivoLogo,
-        href: "/shop/phones/android/vivo",
-        products: brandProducts.vivo,
+        href: "/brands/vivo",
       },
       {
         key: "honor",
         label: "HONOR",
         logo: honorLogo,
-        href: "/shop/phones/android/honor",
-        products: brandProducts.honor,
+        href: "/brands/honor",
       },
       {
         key: "oneplus",
         label: "OnePlus",
         logo: oneplusLogo,
-        href: "/shop/phones/android/oneplus",
-        products: brandProducts.oneplus,
+        href: "/brands/oneplus",
       },
       {
         key: "tecno",
         label: "Tecno",
         logo: tecnoLogo,
-        href: "/shop/phones/android/tecno",
-        products: brandProducts.tecno,
+        href: "/brands/tecno",
       },
       {
         key: "infinix",
         label: "Infinix",
         logo: infinixLogo,
-        href: "/shop/phones/android/infinix",
-        products: brandProducts.infinix,
+        href: "/brands/infinix",
       },
       {
         key: "realme",
         label: "realme",
         logo: realmeLogo,
-        href: "/shop/phones/android/realme",
-        products: brandProducts.realme,
+        href: "/brands/realme",
       },
       {
         key: "xiaomi",
         label: "Xiaomi",
         logo: xiaomiLogo,
-        href: "/shop/phones/android/xiaomi",
-        products: brandProducts.xiaomi,
+        href: "/brands/xiaomi",
       },
     ],
   },
 
-  //
   categories: {
     title: "Featured Categories",
-    // The reference site's own fifteen, in its order. Artwork is theirs too —
-    // see memory.md. `/shop/car-accessories` has no entry in `categoryNav` yet.
     items: [
-      { label: "Phones", href: "/shop/phones", image: phones },
-      { label: "MacBook", href: "/shop/mac/macbook", image: macbook },
-      { label: "Tablets", href: "/shop/tablets", image: tablets },
-      { label: "iPad", href: "/shop/tablets/ipad", image: ipad },
-      { label: "Camera", href: "/shop/camera", image: camera },
-      { label: "Watches", href: "/shop/watches", image: watches },
-      { label: "Earbuds", href: "/shop/headphone-speaker/earbuds", image: earbuds },
-      { label: "Cases & Protectors", href: "/shop/cases-protectors", image: casesProtectors },
-      { label: "Cable & Adapter", href: "/shop/phone-accessories/cable", image: cableAdapter },
-      { label: "Speaker", href: "/shop/headphone-speaker/bluetooth-speaker", image: speaker },
-      { label: "Drone", href: "/shop/drone", image: drone },
-      { label: "Router", href: "/shop/networking/router", image: router },
-      { label: "Gaming", href: "/shop/gaming", image: gaming },
-      { label: "Power Bank", href: "/shop/phone-accessories/power-bank", image: powerBank },
-      { label: "Car Accessories", href: "/shop/car-accessories", image: carAccessories },
+      { label: "Phones", href: "/category/phones", image: phones },
+      { label: "MacBook", href: "/category/macbook", image: macbook },
+      { label: "Tablets", href: "/category/tablets", image: tablets },
+      { label: "iPad", href: "/category/ipad", image: ipad },
+      { label: "Camera", href: "/category/camera", image: camera },
+      { label: "Watches", href: "/category/watches", image: watches },
+      { label: "Earbuds", href: "/category/earbuds", image: earbuds },
+      { label: "Cases & Protectors", href: "/category/cases-protectors", image: casesProtectors },
+      { label: "Cable & Adapter", href: "/category/cable-adapter", image: cableAdapter },
+      { label: "Speaker", href: "/category/speaker", image: speaker },
+      { label: "Drone", href: "/category/drone", image: drone },
+      { label: "Router", href: "/category/router", image: router },
+      { label: "Gaming", href: "/category/video-games", image: gaming },
+      { label: "Power Bank", href: "/category/power-banks", image: powerBank },
+      { label: "Car Accessories", href: "/category/car-accessories", image: carAccessories },
     ],
   },
 
-  //
   trust: trustClaims,
 
-  //
   hero: {
     interval: 5000,
 
-    // Artwork is the reference site's own, pulled 2026-09-04 — see memory.md.
-    // Every slide reads `light`: all six carry a pale bottom edge, which is why
-    // the reference can hardcode one dark bullet.
     slides: [
       {
         theme: "light",
         alt: "Save big on iPhone 17 Pro — up to ৳38,000 off or 0% EMI over 24 months, with a complimentary one year extended warranty and trade-in",
-        href: "/shop/phones/iphone/17-series",
+        href: "/category/iphone",
         desktop: iphoneDesktop,
         mobile: iphoneMobile,
       },
       {
         theme: "light",
         alt: "MacBook Neo — ৳7,000 off or 0% EMI over 12 months, with a free Magic Mouse and Belkin 5-in-1 USB-C hub",
-        href: "/shop/mac/macbook",
+        href: "/category/macbook",
         desktop: macbookDesktop,
         mobile: macbookMobile,
       },
       {
         theme: "light",
         alt: "Protect your Galaxy S26 Ultra — exclusive cases and screen protectors",
-        href: "/shop/cases-protectors/phone-case/samsung",
+        href: "/category/cases-protectors/samsung-cases-protectors",
         desktop: galaxyDesktop,
         mobile: galaxyMobile,
       },

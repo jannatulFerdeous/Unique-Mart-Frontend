@@ -6,8 +6,6 @@ export function Commitment() {
   return (
     <section aria-labelledby="about-commitment-heading" className="pt-14">
       <div className="container-page">
-        {/* Square corners on the panel, as the brand wall's does — only the
-            hero and product cards round theirs. */}
         <div className="bg-surface-muted px-6 py-10 md:px-12 md:py-14">
           <h2
             id="about-commitment-heading"

@@ -1,11 +1,10 @@
 import type { ProductDetailsData } from "./types";
 
 export const product_details_data: ProductDetailsData = {
-  // The reference has four; Reviews and Questions need a backend, so ours are
-  // the two that can be real today. See memory.md.
   tabs: [
     { id: "specification", label: "Specification" },
     { id: "description", label: "Description" },
+    { id: "reviews", label: "Reviews" },
   ],
 
   labels: {
@@ -13,10 +12,15 @@ export const product_details_data: ProductDetailsData = {
     inStock: "In Stock",
     outOfStock: "Out of Stock",
     color: "Colour",
-    // Every other variant axis labels itself from the catalogue — Storage,
-    // Memory, Dial Size, Strap Size — so there is no constant for it here.
     share: "Share",
     buyNow: "Buy Now",
+    addToCart: "Add To Cart",
+    selectColorFirst: "Choose a colour first.",
+    quantity: "Quantity",
+    decrease: "One fewer",
+    increase: "One more",
+    added: "Added to your basket.",
+    viewCart: "View basket",
     cashPrice: "Cash Discount Price",
     cashNote: "Online / Cash Payment",
     emiPrice: "0% EMI Price",
@@ -25,5 +29,34 @@ export const product_details_data: ProductDetailsData = {
     similar: "Similar Products",
     trust: "Every order includes",
     noSpecs: "Full specifications for this product are on the way.",
+  },
+
+  reviews: {
+    heading: "Reviews",
+    empty: "No reviews yet — be the first to review this product.",
+    write: "Write a Review",
+    cancel: "Cancel",
+    anonymous: "Customer",
+    on: "on",
+    ofFive: "out of 5",
+    countOne: "1 review",
+    countMany: "{n} reviews",
+    moderationNote: "Reviews show here under your account name once our team has checked them. You can review each product once.",
+    saved: "Thanks — your review is in. It will show here once it's approved.",
+    signIn: "Sign in to write a review",
+    pending: "Submitting…",
+
+    form: {
+      rating: "Your rating",
+      ratingHint: "Pick a rating from 1 to 5 stars.",
+      comment: "Your review",
+      commentPlaceholder: "What did you think of it?",
+      submit: "Submit review",
+    },
+
+    errors: {
+      rating: "Choose a rating.",
+      comment: "Write at least 3 characters about the product.",
+    },
   },
 };

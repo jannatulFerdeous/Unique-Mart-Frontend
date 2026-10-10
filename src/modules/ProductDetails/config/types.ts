@@ -1,7 +1,3 @@
-import type { NavItem } from "@/shared/config/navigation";
-
-export type Crumb = NavItem;
-
 export type ProductDetailsData = {
   tabs: { id: string; label: string }[];
   labels: {
@@ -11,6 +7,13 @@ export type ProductDetailsData = {
     color: string;
     share: string;
     buyNow: string;
+    addToCart: string;
+    selectColorFirst: string;
+    quantity: string;
+    decrease: string;
+    increase: string;
+    added: string;
+    viewCart: string;
     cashPrice: string;
     cashNote: string;
     emiPrice: string;
@@ -19,5 +22,31 @@ export type ProductDetailsData = {
     similar: string;
     trust: string;
     noSpecs: string;
+  };
+  reviews: {
+    heading: string;
+    empty: string;
+    write: string;
+    cancel: string;
+    anonymous: string;
+    on: string;
+    ofFive: string;
+    countOne: string;
+    countMany: string;
+    moderationNote: string;
+    saved: string;
+    signIn: string;
+    pending: string;
+    form: {
+      rating: string;
+      ratingHint: string;
+      comment: string;
+      commentPlaceholder: string;
+      submit: string;
+    };
+    errors: {
+      rating: string;
+      comment: string;
+    };
   };
 };

@@ -1,15 +1,15 @@
 import { ProductRail } from "@/common/components/ProductRail";
 import { SectionHeader } from "@/common/components/SectionHeader";
+import type { Product } from "@/shared/config/catalog";
 import { home_data } from "../config/constants";
 
-export function TopSelling() {
-  const { title, href, products } = home_data.topSelling;
+export function TopSelling({ products }: { products: Product[] }) {
+  const { title, href } = home_data.topSelling;
+  if (!products.length) return null;
 
   return (
     <section aria-labelledby="top-selling-heading" className="pt-5">
       <div className="container-page">
-        {/* Left, not centred. Exclusive is the only rail the reference centres;
-            every one after it aligns the title left in the same row. */}
         <SectionHeader
           id="top-selling-heading"
           title={title}

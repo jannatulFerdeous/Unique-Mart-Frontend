@@ -13,9 +13,10 @@ import { ProductRail } from "@/common/components/ProductRail";
 import { SectionHeader } from "@/common/components/SectionHeader";
 import { cn } from "@/shared/utils/cn";
 import { home_data } from "../config/constants";
+import type { BrandTab } from "../config/types";
 
-export function ShopByBrands() {
-  const { title, href, items } = home_data.brands;
+export function ShopByBrands({ items }: { items: BrandTab[] }) {
+  const { title, href } = home_data.brands;
   const [active, setActive] = useState(0);
   const tabs = useRef<(HTMLButtonElement | null)[]>([]);
   const strip = useRef<HTMLDivElement>(null);
@@ -23,8 +24,6 @@ export function ShopByBrands() {
   const [atEnd, setAtEnd] = useState(true);
   const brand = items[active];
 
-  // The strip hides its scrollbar, so without these chevrons a mouse user gets
-  // no hint that the tabs past the fold exist. It overflows from ~1200 down.
   const sync = useCallback(() => {
     const el = strip.current;
     if (!el) return;
@@ -41,8 +40,6 @@ export function ShopByBrands() {
     return () => observer.disconnect();
   }, [sync]);
 
-  // No scroll snapping here, so the browser's own smooth scroll is enough —
-  // unlike ProductRail, where snap fights it.
   const page = (direction: 1 | -1) => {
     const el = strip.current;
     if (!el) return;
@@ -52,13 +49,9 @@ export function ShopByBrands() {
   const select = (index: number) => {
     const next = (index + items.length) % items.length;
     setActive(next);
-    // focus() also scrolls the tab into view, which keeps arrow-key
-    // navigation working once the strip overflows.
     tabs.current[next]?.focus();
   };
 
-  // The tabs pattern moves selection with the arrow keys, not with Tab: only
-  // the active tab is tabbable, so the strip is one stop on the way to the rail.
   const onKeyDown = (event: KeyboardEvent<HTMLButtonElement>) => {
     const step =
       event.key === "ArrowRight" ? 1 : event.key === "ArrowLeft" ? -1 : 0;
@@ -108,10 +101,6 @@ export function ShopByBrands() {
                   onClick={() => setActive(index)}
                   onKeyDown={onKeyDown}
                   className={cn(
-                    // relative matters: the sr-only label below is absolutely
-                    // positioned, and without a positioned ancestor its
-                    // containing block is the page, so it escapes the strip's
-                    // overflow clip and drags the whole document sideways.
                     "relative flex h-12 w-24 shrink-0 items-center justify-center border-b-[3px] px-1 transition-opacity",
                     isActive
                       ? "border-tertiary"
@@ -146,8 +135,6 @@ export function ShopByBrands() {
           aria-labelledby={`brand-tab-${brand.key}`}
           className="mt-6"
         >
-          {/* key remounts the rail, so switching brands resets its scroll
-              position and its arrows instead of stranding them mid-track. */}
           <ProductRail
             key={brand.key}
             products={brand.products}

@@ -4,10 +4,6 @@ export function TrustStrip() {
   return (
     <section aria-label="Why shop with us" className="mt-5">
       <div className="container-page">
-        {/* Grid until there is room for the reference's single centred row.
-            That row needs the xl type step to fit six across, which is the same
-            1280 where the reference steps its own sizes up. The reference hides
-            this strip entirely below 1024; we keep all six. */}
         <ul className="grid grid-cols-2 gap-x-4 gap-y-5 py-6 md:grid-cols-3 xl:flex xl:justify-center xl:gap-0">
           {home_data.trust.map(({ icon: Icon, label }) => (
             <li

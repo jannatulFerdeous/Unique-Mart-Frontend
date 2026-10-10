@@ -1,9 +1,6 @@
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 
-/** A crumb links only when there is somewhere to go. The category names come
- *  from the catalogue and have no routes yet, so they render as plain text
- *  rather than as links to a 404. */
 export type Crumb = { label: string; href?: string };
 
 export function ProductBreadcrumb({ trail }: { trail: Crumb[] }) {
@@ -15,9 +12,8 @@ export function ProductBreadcrumb({ trail }: { trail: Crumb[] }) {
             const last = index === trail.length - 1;
 
             return (
-              <li key={crumb.label} className="flex items-center gap-1">
+              <li key={`${index}-${crumb.label}`} className="flex items-center gap-1">
                 {last ? (
-                  // The current page is text, not a link to itself.
                   <span aria-current="page" className="text-tertiary">
                     {crumb.label}
                   </span>

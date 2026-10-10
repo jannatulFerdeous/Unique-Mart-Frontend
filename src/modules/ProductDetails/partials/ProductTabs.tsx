@@ -2,26 +2,32 @@
 
 import { Fragment, useState } from "react";
 import type { ProductDetail } from "@/shared/config/catalog";
+import { useGetProductReviewsQuery } from "@/redux/features/review/reviewApi";
 import { cn } from "@/shared/utils/cn";
 import { product_details_data } from "../config/constants";
+import { ProductReviews } from "./ProductReviews";
 
-export function ProductTabs({ detail }: { detail?: ProductDetail }) {
+type Props = {
+  productId: string;
+  detail?: ProductDetail;
+};
+
+export function ProductTabs({ productId, detail }: Props) {
   const { labels } = product_details_data;
-  // Only offer a tab that has something behind it.
-  const tabs = product_details_data.tabs.filter((tab) =>
-    tab.id === "specification"
-      ? Boolean(detail?.specs?.length)
-      : Boolean(detail?.description?.blocks.length),
-  );
-  const [active, setActive] = useState(tabs[0]?.id ?? "specification");
+  const { data: reviews = [] } = useGetProductReviewsQuery(productId);
 
-  if (tabs.length === 0) {
-    return <p className="mt-12 text-ink-muted">{labels.noSpecs}</p>;
-  }
+  const tabs = product_details_data.tabs.filter((tab) => {
+    if (tab.id === "specification") return Boolean(detail?.specs?.length);
+    if (tab.id === "description") return Boolean(detail?.description?.blocks.length);
+    return true;
+  });
+  const [active, setActive] = useState(tabs[0]?.id ?? "reviews");
+
+  const hasFacts = tabs.some((tab) => tab.id !== "reviews");
 
   return (
     <div className="mt-14">
-      {/* WAI-ARIA tabs, the same pattern the home page's brand strip uses. */}
+      {!hasFacts && <p className="mb-6 text-ink-muted">{labels.noSpecs}</p>}
       <div
         role="tablist"
         aria-label="Product information"
@@ -48,6 +54,9 @@ export function ProductTabs({ detail }: { detail?: ProductDetail }) {
               )}
             >
               {tab.label}
+              {tab.id === "reviews" && reviews.length > 0
+                ? ` (${reviews.length})`
+                : ""}
             </button>
           );
         })}
@@ -63,8 +72,6 @@ export function ProductTabs({ detail }: { detail?: ProductDetail }) {
           <table className="w-full border-collapse text-left">
             <tbody>
               {detail.specs.map((group) => (
-                // Each group is its own <tbody>-worth of rows headed by a
-                // tinted band, matching the reference's grouped table.
                 <Fragment key={group.title}>
                   <tr>
                     <th
@@ -127,6 +134,16 @@ export function ProductTabs({ detail }: { detail?: ProductDetail }) {
               </div>
             ))}
           </div>
+        </div>
+      ) : null}
+
+      {active === "reviews" ? (
+        <div
+          id="panel-reviews"
+          role="tabpanel"
+          aria-labelledby="tab-reviews"
+        >
+          <ProductReviews productId={productId} />
         </div>
       ) : null}
     </div>

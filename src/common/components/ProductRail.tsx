@@ -8,14 +8,12 @@ import { ProductCard } from "./ProductCard";
 
 type ProductRailProps = {
   products: Product[];
-  /** Names the arrows for screen readers. */
   label: string;
 };
 
 const ARROW =
   "absolute top-1/2 z-10 grid size-9.5 -translate-y-1/2 place-items-center rounded-control border border-line-strong bg-surface text-ink shadow-card transition-colors hover:bg-surface-muted";
 
-/** Long enough to read as a glide rather than a jump. */
 const SLIDE_MS = 450;
 
 const easeOutCubic = (t: number) => 1 - (1 - t) ** 3;
@@ -34,8 +32,6 @@ export function ProductRail({ products, label }: ProductRailProps) {
     setAtEnd(el.scrollLeft + el.clientWidth >= el.scrollWidth - 4);
   }, []);
 
-  // Scroll fires far more often than the arrows can change, so coalesce the
-  // state updates onto one frame and keep the scrolling thread free.
   const sync = useCallback(() => {
     if (syncFrame.current) return;
     syncFrame.current = requestAnimationFrame(() => {
@@ -44,7 +40,6 @@ export function ProductRail({ products, label }: ProductRailProps) {
     });
   }, [read]);
 
-  /** Ends any slide in progress and hands the track back to the snap engine. */
   const stop = useCallback(() => {
     if (!slide.current) return;
     cancelAnimationFrame(slide.current);
@@ -52,7 +47,6 @@ export function ProductRail({ products, label }: ProductRailProps) {
     track.current?.style.removeProperty("scroll-snap-type");
   }, []);
 
-  // Also re-runs on resize, since how many cards fit changes with the viewport.
   useEffect(() => {
     const el = track.current;
     if (!el) return;
@@ -71,8 +65,6 @@ export function ProductRail({ products, label }: ProductRailProps) {
     if (!el) return;
     stop();
 
-    // Land on a real card edge. A step guessed from card width + gap drifts a
-    // few pixels, and the snap engine then corrects it with a visible jerk.
     const origin = el.getBoundingClientRect().left - el.scrollLeft;
     const edges = Array.from(
       el.children,
@@ -95,8 +87,6 @@ export function ProductRail({ products, label }: ProductRailProps) {
       return;
     }
 
-    // Snapping stays off for the duration, otherwise it fights the animation
-    // frame by frame; we land on a card edge, which is a snap point anyway.
     el.style.scrollSnapType = "none";
     const start = performance.now();
     const step = (now: number) => {
@@ -114,9 +104,6 @@ export function ProductRail({ products, label }: ProductRailProps) {
 
   return (
     <div className="relative">
-      {/* Native scroll with snap: it works without JS, and the arrows only add
-          the paging affordance on top. Proximity rather than mandatory, so a
-          flick that stops between cards coasts to rest instead of being yanked. */}
       <ul
         ref={track}
         onScroll={sync}

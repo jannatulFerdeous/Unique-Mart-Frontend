@@ -1,9 +1,11 @@
 import { ProductRail } from "@/common/components/ProductRail";
 import { SectionHeader } from "@/common/components/SectionHeader";
+import type { Product } from "@/shared/config/catalog";
 import { home_data } from "../config/constants";
 
-export function Exclusive() {
-  const { title, href, products } = home_data.exclusive;
+export function Exclusive({ products }: { products: Product[] }) {
+  const { title, href } = home_data.exclusive;
+  if (!products.length) return null;
 
   return (
     <section aria-labelledby="exclusive-heading" className="pt-5">

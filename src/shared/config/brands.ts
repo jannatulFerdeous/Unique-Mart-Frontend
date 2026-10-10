@@ -38,18 +38,10 @@ import xiaomiLogo from "@/images/brands/logos/xiaomi.png";
 
 export type BrandMark = {
   slug: string;
-  /** The brand's display name, spelt as the brand spells it. */
   label: string;
-  /** 384×200 wordmark on a transparent ground. */
   logo: StaticImageData;
 };
 
-/** Shared because two modules render it: Home's brand wall and the Brands
- *  directory. The order is the wall's — curated, not alphabetical — so the
- *  wall keeps rendering exactly as it did.
- *
- *  Not the full catalogue: the reference site lists 91 brands, these are the 36
- *  whose logos we hold. */
 export const brandMarks: BrandMark[] = [
   { slug: "infinix", label: "Infinix", logo: infinixLogo },
   { slug: "skullcandy", label: "Skullcandy", logo: skullcandyLogo },
@@ -89,7 +81,6 @@ export const brandMarks: BrandMark[] = [
   { slug: "otto", label: "OTTO", logo: ottoLogo },
 ];
 
-/** One place to change if the brand route ever moves. */
 export const brandsPath = "/brands";
 
 export const brandHref = (slug: string) => `${brandsPath}/${slug}`;
