@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Star } from "lucide-react";
 import type { Product } from "@/shared/config/catalog";
-import { productHref } from "@/shared/config/products";
+import { productHref } from "@/shared/libs/storefront/catalog";
 import { trustClaims } from "@/shared/config/trust";
 import { formatPrice } from "@/shared/utils/price";
 import { product_details_data } from "../config/constants";

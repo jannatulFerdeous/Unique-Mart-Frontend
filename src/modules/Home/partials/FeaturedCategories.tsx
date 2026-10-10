@@ -1,9 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import { home_data } from "../config/constants";
+import type { FeaturedCategory } from "../config/types";
 
-export function FeaturedCategories() {
-  const { title, items } = home_data.categories;
+export function FeaturedCategories({ items }: { items: FeaturedCategory[] }) {
+  const { title } = home_data.categories;
+  if (!items.length) return null;
 
   return (
     <section aria-labelledby="categories-heading" className="pt-7">

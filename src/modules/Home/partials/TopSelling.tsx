@@ -1,9 +1,11 @@
 import { ProductRail } from "@/common/components/ProductRail";
 import { SectionHeader } from "@/common/components/SectionHeader";
+import type { Product } from "@/shared/config/catalog";
 import { home_data } from "../config/constants";
 
-export function TopSelling() {
-  const { title, href, products } = home_data.topSelling;
+export function TopSelling({ products }: { products: Product[] }) {
+  const { title, href } = home_data.topSelling;
+  if (!products.length) return null;
 
   return (
     <section aria-labelledby="top-selling-heading" className="pt-5">

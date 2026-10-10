@@ -1,8 +1,10 @@
 import type { ComponentProps, ReactNode } from "react";
 import { cn } from "@/shared/utils/cn";
 
+// `relative` keeps absolutely positioned bits (sr-only headers) inside the
+// scroll box; without it they escape and widen the whole page on phones.
 export function TableScroll({ children }: { children: ReactNode }) {
-  return <div className="-mx-4 overflow-x-auto md:-mx-5">{children}</div>;
+  return <div className="relative -mx-4 overflow-x-auto md:-mx-5">{children}</div>;
 }
 
 export function Table({ className, children, ...rest }: ComponentProps<"table">) {

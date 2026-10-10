@@ -2,19 +2,19 @@
 
 import { Fragment, useState } from "react";
 import type { ProductDetail } from "@/shared/config/catalog";
-import { useReviews } from "@/shared/libs/reviews";
+import { useGetProductReviewsQuery } from "@/redux/features/review/reviewApi";
 import { cn } from "@/shared/utils/cn";
 import { product_details_data } from "../config/constants";
 import { ProductReviews } from "./ProductReviews";
 
 type Props = {
-  slug: string;
+  productId: string;
   detail?: ProductDetail;
 };
 
-export function ProductTabs({ slug, detail }: Props) {
+export function ProductTabs({ productId, detail }: Props) {
   const { labels } = product_details_data;
-  const { reviews, summary, add } = useReviews(slug);
+  const { data: reviews = [] } = useGetProductReviewsQuery(productId);
 
   const tabs = product_details_data.tabs.filter((tab) => {
     if (tab.id === "specification") return Boolean(detail?.specs?.length);
@@ -54,8 +54,8 @@ export function ProductTabs({ slug, detail }: Props) {
               )}
             >
               {tab.label}
-              {tab.id === "reviews" && summary.count > 0
-                ? ` (${summary.count})`
+              {tab.id === "reviews" && reviews.length > 0
+                ? ` (${reviews.length})`
                 : ""}
             </button>
           );
@@ -143,11 +143,7 @@ export function ProductTabs({ slug, detail }: Props) {
           role="tabpanel"
           aria-labelledby="tab-reviews"
         >
-          <ProductReviews
-            reviews={reviews}
-            summary={summary}
-            onSubmit={add}
-          />
+          <ProductReviews productId={productId} />
         </div>
       ) : null}
     </div>

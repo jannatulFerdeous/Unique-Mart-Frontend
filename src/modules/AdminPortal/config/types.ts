@@ -1,5 +1,3 @@
-import type { OrderStatus, PaymentStatus, ProductStatus } from "@/shared/libs/admin/types";
-
 export type NavItem = {
   href: string;
   label: string;
@@ -11,7 +9,24 @@ export type NavItem = {
 export type NavIcon =
   | "dashboard"
   | "banners"
-  | "settings";
+  | "products"
+  | "brands"
+  | "mainCategories"
+  | "categories"
+  | "subCategories"
+  | "attributeGroups"
+  | "attributes"
+  | "users"
+  | "settings"
+  | "profile"
+  | "orders"
+  | "reviews"
+  | "addresses"
+  | "rewards"
+  | "faq"
+  | "coupons"
+  | "newsletter"
+  | "support";
 
 export type NavGroup = {
   title: string;
@@ -32,18 +47,13 @@ export type Tone =
 
 export type AdminData = {
   gate: {
-    eyebrow: string;
-    title: string;
-    body: string;
-    warning: string;
-    nameLabel: string;
-    namePlaceholder: string;
-    codeLabel: string;
-    codePlaceholder: string;
-    hint: string;
-    passcode: string;
-    submit: string;
-    wrong: string;
+    loading: string;
+    signInTitle: string;
+    signInBody: string;
+    signIn: string;
+    noAccessTitle: string;
+    noAccessBody: string;
+    goHome: string;
     back: string;
   };
 
@@ -58,10 +68,6 @@ export type AdminData = {
   };
 
   nav: NavGroup[];
-
-  orderStatus: Record<OrderStatus, { label: string; tone: Tone }>;
-  paymentStatus: Record<PaymentStatus, { label: string; tone: Tone }>;
-  productStatus: Record<ProductStatus, { label: string; tone: Tone }>;
 
   common: {
     search: string;

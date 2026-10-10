@@ -5,31 +5,34 @@ export const cart_data: CartData = {
   crumbCart: "Cart List",
   title: "Your basket",
 
-  selectAll: "Select all",
-  selectedCount: "{n} selected",
-  color: "Colour",
   remove: "Remove",
   removeOne: "Remove {name} from the basket",
   decrease: "One fewer",
   increase: "One more",
-  quantity: "Quantity",
   each: "each",
+  missing: "This product is no longer sold. Remove it to check out.",
 
   summary: "Order Summary",
   subtotal: "Subtotal",
   delivery: "Delivery",
   deliveryFree: "Free",
-  deliveryNote: "Free delivery on orders over {threshold}.",
   total: "TOTAL",
   checkout: "Checkout",
-  nothingSelected: "Tick something to check out.",
+  missingBlocks: "Remove the products that are no longer sold to check out.",
 
   emptyTitle: "Your basket is empty",
   emptyBody: "Nothing here yet. Browse the offers or pick up where you left off.",
   emptyAction: "See what is reduced",
 
-  storageNote:
-    "This basket is kept in this browser. There is no checkout behind it yet, so nothing is ordered and no payment is taken.",
+  signInTitle: "Sign in to see your basket",
+  signInBody: "Your basket is saved to your account, so it follows you to any device.",
+  signInAction: "Sign in",
+  loading: "Loading your basket…",
+  errorTitle: "Couldn't load your basket",
+  retry: "Try again",
+
+  note: "Everything in the basket is ordered together at checkout. You pay cash on delivery.",
   clear: "Empty the basket",
   clearConfirm: "Remove everything?",
+  keep: "Keep it",
 };

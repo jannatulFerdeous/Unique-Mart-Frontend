@@ -1,4 +1,16 @@
+import { getHeroSlides } from "@/shared/api/banners";
+import { getCatalog } from "@/shared/api/storefront";
+import {
+  brandOf,
+  findNode,
+  findNodeBySlug,
+  productsUnder,
+  toCard,
+  type ApiProduct,
+  type Catalog,
+} from "@/shared/libs/storefront/catalog";
 import { home_data } from "./config/constants";
+import type { BrandTab, FeaturedCategory } from "./config/types";
 import { AboutCopy } from "./partials/AboutCopy";
 import { BrandWall } from "./partials/BrandWall";
 import { CasesAndProtectors } from "./partials/CasesAndProtectors";
@@ -13,21 +25,79 @@ import { StrapBanner } from "./partials/StrapBanner";
 import { TopSelling } from "./partials/TopSelling";
 import { TrustStrip } from "./partials/TrustStrip";
 
-export function Home() {
+// Cards per homepage row; the row's "View all" link shows the rest.
+const ROW = 12;
+
+const cards = (catalog: Catalog, products: ApiProduct[]) =>
+  products.slice(0, ROW).map((product) => toCard(catalog, product));
+
+// The products behind a /category/... link from the homepage config.
+const linked = (catalog: Catalog, href: string) => {
+  const path = href.replace(/^\/category\//, "").split("/");
+  const node = path.length === 1 ? findNodeBySlug(catalog, path[0]) : findNode(catalog, path);
+  return node ? productsUnder(catalog, node) : [];
+};
+
+// Every row is driven by what the admin sets: the Exclusive / Featured ticks,
+// date added, sales, brand and category.
+const rowsFor = (catalog: Catalog) => {
+  const all = catalog.products; // newest first
+  const exclusive = all.filter((product) => product.isExclusive);
+  const featured = all.filter((product) => product.isFeatured);
+
+  return {
+    // Until something is ticked Exclusive, the row shows featured products.
+    exclusive: cards(catalog, exclusive.length ? exclusive : featured),
+    topSelling: cards(
+      catalog,
+      [...all].sort((a, b) => b.salesCount - a.salesCount || Number(b.isFeatured) - Number(a.isFeatured)),
+    ),
+    newArrival: cards(catalog, all),
+    soundSurround: cards(catalog, linked(catalog, home_data.soundSurround.href)),
+    cases: cards(catalog, linked(catalog, home_data.casesAndProtectors.href)),
+  };
+};
+
+const brandTabs = (catalog: Catalog): BrandTab[] =>
+  home_data.brands.items
+    .map((tab) => ({
+      ...tab,
+      products: cards(
+        catalog,
+        catalog.products.filter((product) => brandOf(catalog, product)?.slug === tab.key),
+      ),
+    }))
+    .filter((tab) => tab.products.length > 0);
+
+// Category tiles whose link leads somewhere with products, pointed at the full address.
+const featuredCategories = (catalog: Catalog): FeaturedCategory[] =>
+  home_data.categories.items.flatMap((item) => {
+    const path = item.href.replace(/^\/category\//, "").split("/");
+    const node = path.length === 1 ? findNodeBySlug(catalog, path[0]) : findNode(catalog, path);
+    return node && node.productCount > 0 ? [{ ...item, href: node.href }] : [];
+  });
+
+export async function Home() {
+  const [fromAdmin, catalog] = await Promise.all([getHeroSlides(), getCatalog()]);
+  // Backend down or no live banners → keep the bundled slides so the hero never disappears.
+  const slides = fromAdmin?.length ? fromAdmin : home_data.hero.slides;
+  const rows = rowsFor(catalog);
+  const brands = brandTabs(catalog);
+
   return (
     <>
-      <HeroBanner slides={home_data.hero.slides} interval={home_data.hero.interval} />
+      <HeroBanner slides={slides} interval={home_data.hero.interval} />
       <TrustStrip />
-      <Exclusive />
-      <FeaturedCategories />
-      <ShopByBrands />
-      <TopSelling />
+      <Exclusive products={rows.exclusive} />
+      <FeaturedCategories items={featuredCategories(catalog)} />
+      {brands.length > 0 && <ShopByBrands items={brands} />}
+      <TopSelling products={rows.topSelling} />
       <PromoBanners />
       <BrandWall />
-      <NewArrival />
+      <NewArrival products={rows.newArrival} />
       <StrapBanner />
-      <SoundSurround />
-      <CasesAndProtectors />
+      <SoundSurround products={rows.soundSurround} />
+      <CasesAndProtectors products={rows.cases} />
       <AboutCopy />
     </>
   );

@@ -4,11 +4,12 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Lock, Mail, Phone, User } from "lucide-react";
-import { decodeBack, signIn } from "@/shared/libs/session";
+import { apiErrorMessage } from "@/redux/api/errors";
+import { decodeBack } from "@/shared/libs/session";
 import { auth_data } from "../config/constants";
+import { useAccount } from "../hooks/useAccount";
 import { AuthField } from "./AuthField";
 import { GoogleButton } from "./GoogleButton";
-import { AuthNote } from "./AuthNote";
 import { withBack } from "./AuthCard";
 
 const MIN_PASSWORD = 8;
@@ -16,6 +17,7 @@ const MIN_PASSWORD = 8;
 export function RegisterForm({ back }: { back?: string }) {
   const router = useRouter();
   const { register, errors } = auth_data;
+  const account = useAccount();
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -23,12 +25,15 @@ export function RegisterForm({ back }: { back?: string }) {
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [shown, setShown] = useState<Record<string, string>>({});
+  const [failure, setFailure] = useState<string | null>(null);
+  const [pending, setPending] = useState(false);
 
-  const submit = (event: React.FormEvent) => {
+  const submit = async (event: React.FormEvent) => {
     event.preventDefault();
 
     const found: Record<string, string> = {};
-    if (!name.trim()) found.name = errors.name;
+    const trimmed = name.trim();
+    if (trimmed.length < 2 || trimmed.length > 50) found.name = errors.name;
     if (!/^\S+@\S+\.\S+$/.test(email.trim())) found.email = errors.email;
     if (!phone.trim()) found.phone = errors.phone;
     if (!password) found.password = errors.password;
@@ -36,11 +41,17 @@ export function RegisterForm({ back }: { back?: string }) {
     if (confirm !== password) found.confirm = errors.mismatch;
 
     setShown(found);
+    setFailure(null);
     if (Object.keys(found).length) return;
 
-    signIn({ name: name.trim(), email: email.trim(), phone: phone.trim() });
-
-    router.replace(decodeBack(back));
+    setPending(true);
+    try {
+      await account.register({ name, email, phone, password });
+      router.replace(decodeBack(back));
+    } catch (problem) {
+      setFailure(apiErrorMessage(problem));
+      setPending(false);
+    }
   };
 
   return (
@@ -94,11 +105,18 @@ export function RegisterForm({ back }: { back?: string }) {
         />
       </div>
 
+      {failure && (
+        <p role="alert" className="mt-4 rounded-control bg-critical-soft px-4 py-3 text-sm text-danger">
+          {failure}
+        </p>
+      )}
+
       <button
         type="submit"
-        className="mt-6 w-full rounded-control bg-tertiary px-6 py-3.5 font-bold text-tertiary-contrast transition-colors hover:bg-tertiary-hover"
+        disabled={pending}
+        className="mt-6 w-full rounded-control bg-tertiary px-6 py-3.5 font-bold text-tertiary-contrast transition-colors hover:bg-tertiary-hover disabled:opacity-60"
       >
-        {register.submit}
+        {pending ? register.pending : register.submit}
       </button>
 
       <GoogleButton view="register" back={back} />
@@ -112,8 +130,6 @@ export function RegisterForm({ back }: { back?: string }) {
           {register.footerLink}
         </Link>
       </p>
-
-      <AuthNote />
     </form>
   );
 }

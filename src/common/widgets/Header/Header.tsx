@@ -1,6 +1,6 @@
 import { site } from "@/shared/config/site";
-import { categories, rootCategories } from "@/shared/config/categories";
-import { buildCategoryNav } from "@/shared/config/navigation";
+import { getCatalog } from "@/shared/api/storefront";
+import { navFromTree } from "@/shared/libs/storefront/catalog";
 import { CategoryBar } from "./components/CategoryBar";
 import { HeaderActions } from "./components/HeaderActions";
 import { Logo } from "./components/Logo";
@@ -36,9 +36,8 @@ const structuredData = {
   ],
 };
 
-const nav = buildCategoryNav(categories, rootCategories);
-
-export function Header() {
+export async function Header() {
+  const nav = navFromTree((await getCatalog()).tree);
 
   return (
     <header className="sticky top-0 z-50">

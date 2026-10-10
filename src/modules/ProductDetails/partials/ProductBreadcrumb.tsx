@@ -12,7 +12,7 @@ export function ProductBreadcrumb({ trail }: { trail: Crumb[] }) {
             const last = index === trail.length - 1;
 
             return (
-              <li key={crumb.label} className="flex items-center gap-1">
+              <li key={`${index}-${crumb.label}`} className="flex items-center gap-1">
                 {last ? (
                   <span aria-current="page" className="text-tertiary">
                     {crumb.label}

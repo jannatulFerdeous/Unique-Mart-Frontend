@@ -6,10 +6,11 @@ export const auth_data: AuthData = {
 
   login: {
     title: "Log in to Unique Mart",
-    identifier: "Enter your email or phone number",
+    identifier: "Email address",
     password: "Password",
     forgot: "Forgot Password?",
     submit: "Log In",
+    pending: "Logging in…",
     footer: "Don't have an account?",
     footerLink: "Register Here",
   },
@@ -22,6 +23,7 @@ export const auth_data: AuthData = {
     password: "Password",
     confirm: "Confirm Password",
     submit: "Sign Up",
+    pending: "Creating your account…",
     footer: "Already have an account?",
     footerLink: "Login Here",
   },
@@ -36,25 +38,24 @@ export const auth_data: AuthData = {
   },
 
   google: {
-    signIn: "Sign in with Google",
-    signUp: "Sign up with Google",
     divider: "or",
-    mock: "Placeholder — this does not contact Google yet.",
+    pending: "Signing you in with Google…",
+    unavailable: "Google sign-in isn't set up on this site yet. Use your email and password.",
   },
 
   showPassword: "Show password",
   hidePassword: "Hide password",
 
-  note: "Accounts are kept in this browser on this device. Nothing is sent anywhere, no password is stored, and the Google button is a placeholder that does not contact Google — all of it until sign-in is connected to the store.",
   signedInAs: "Signed in as",
   signOut: "Sign out",
 
   errors: {
-    identifier: "Enter your email or phone number.",
-    name: "Enter your name.",
+    identifier: "Enter the email address on your account.",
+    name: "Enter your name (2 to 50 characters).",
     email: "Enter a valid email address.",
     phone: "Enter your phone number.",
     password: "Enter a password.",
+    min: "Passwords are at least 6 characters.",
     short: "Use at least 8 characters.",
     mismatch: "Passwords do not match.",
   },

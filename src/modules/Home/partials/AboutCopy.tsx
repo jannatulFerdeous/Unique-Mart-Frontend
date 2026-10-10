@@ -22,15 +22,15 @@ export function AboutCopy() {
             commute and the watch that counts your evening walk. {site.name}{" "}
             started in {site.since} to make that technology straightforward to
             buy in Bangladesh: one catalogue covering{" "}
-            <Link href="/category/phone" className={LINK}>
+            <Link href="/category/phones" className={LINK}>
               phones
             </Link>
             ,{" "}
-            <Link href="/category/apple-store" className={LINK}>
+            <Link href="/category/mac" className={LINK}>
               computers
             </Link>
             ,{" "}
-            <Link href="/category/watch" className={LINK}>
+            <Link href="/category/watches" className={LINK}>
               wearables
             </Link>
             ,{" "}
@@ -54,7 +54,7 @@ export function AboutCopy() {
             </Link>{" "}
             buyers will find the current generations alongside the previous
             ones, and our{" "}
-            <Link href="/category/phone" className={LINK}>
+            <Link href="/category/phones" className={LINK}>
               Android
             </Link>{" "}
             range runs from flagships to dependable everyday handsets. Whichever
@@ -69,7 +69,7 @@ export function AboutCopy() {
           <p>
             Whether you are editing video, writing code or just want something
             light for the sofa, the right machine matters.{" "}
-            <Link href="/category/apple-store" className={LINK}>
+            <Link href="/category/mac" className={LINK}>
               Mac
             </Link>{" "}
             covers the latest MacBook Air and MacBook Pro configurations, while{" "}
@@ -79,7 +79,7 @@ export function AboutCopy() {
             span everything from full-size iPad Pro models to compact Android
             slates for reading and study. Pair either with a keyboard, a stand
             or a drive from{" "}
-            <Link href="/category/computer-accessories" className={LINK}>
+            <Link href="/category/pc-accessories" className={LINK}>
               PC accessories
             </Link>{" "}
             and you have a desk that actually works.
@@ -90,7 +90,7 @@ export function AboutCopy() {
           </h3>
           <p>
             A{" "}
-            <Link href="/category/watch" className={LINK}>
+            <Link href="/category/watches" className={LINK}>
               smartwatch
             </Link>{" "}
             has become less a gadget than a habit — steps, sleep, heart rate and
@@ -119,12 +119,12 @@ export function AboutCopy() {
           </h3>
           <p>
             The small things decide how long the expensive things last. Our{" "}
-            <Link href="/category/cases-screen-protectors" className={LINK}>
+            <Link href="/category/cases-protectors" className={LINK}>
               cases and screen protectors
             </Link>{" "}
             cover the current iPhone and Galaxy line-ups with slim, rugged and
             MagSafe-compatible options, and{" "}
-            <Link href="/category/mobile-phone-accessories" className={LINK}>
+            <Link href="/category/phone-accessories" className={LINK}>
               phone accessories
             </Link>{" "}
             adds the chargers, cables and power banks worth trusting your device

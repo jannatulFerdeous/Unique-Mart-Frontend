@@ -8,8 +8,7 @@ export const wishlist_data: WishlistData = {
   countMany: "{n} products saved",
 
   addToCart: "Add to basket",
-  chooseOptions: "Choose a colour",
-  inCart: "In your basket",
+  chooseOptions: "Choose options",
   remove: "Remove",
   removeOne: "Remove {name} from your wishlist",
   clear: "Clear the wishlist",
@@ -22,6 +21,11 @@ export const wishlist_data: WishlistData = {
     "Press the heart on any product to keep it here. Saved products wait for you without going in the basket.",
   emptyAction: "See what is reduced",
 
-  storageNote: "Your wishlist is kept in this browser.",
   gone: "This product is no longer in the catalogue.",
+  loading: "Loading your saved products…",
+  signInTitle: "Sign in to see your wishlist",
+  signInBody: "Your wishlist is saved to your account, so it follows you to any device.",
+  signInAction: "Sign in",
+  errorTitle: "Couldn't load your wishlist",
+  retry: "Try again",
 };

@@ -3,30 +3,34 @@ export type CartData = {
   crumbCart: string;
   title: string;
 
-  selectAll: string;
-  selectedCount: string;
-  color: string;
   remove: string;
   removeOne: string;
   decrease: string;
   increase: string;
-  quantity: string;
   each: string;
+  missing: string;
 
   summary: string;
   subtotal: string;
   delivery: string;
   deliveryFree: string;
-  deliveryNote: string;
   total: string;
   checkout: string;
-  nothingSelected: string;
+  missingBlocks: string;
 
   emptyTitle: string;
   emptyBody: string;
   emptyAction: string;
 
-  storageNote: string;
+  signInTitle: string;
+  signInBody: string;
+  signInAction: string;
+  loading: string;
+  errorTitle: string;
+  retry: string;
+
+  note: string;
   clear: string;
   clearConfirm: string;
+  keep: string;
 };

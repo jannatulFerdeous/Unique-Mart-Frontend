@@ -1,65 +1,59 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ProductDetails, type Crumb } from "@/modules/ProductDetails";
-import { allProducts, findProduct } from "@/shared/config/products";
-import { findProductDetail } from "@/shared/config/product-details";
-import { categoryPath } from "@/shared/config/categories";
+import { refId } from "@/redux/features/catalog/catalog.types";
+import { getCatalog, getProduct } from "@/shared/api/storefront";
+import { toCard, toDetail, type ApiProduct, type Catalog } from "@/shared/libs/storefront/catalog";
 import { formatPrice } from "@/shared/utils/price";
 
-export function generateStaticParams() {
-  return allProducts.map((product) => ({ slug: product.slug }));
-}
+const SIMILAR = 4;
 
 export async function generateMetadata({
   params,
 }: PageProps<"/shop/product/[slug]">): Promise<Metadata> {
   const { slug } = await params;
-  const product = findProduct(slug);
+  const product = await getProduct(slug);
   if (!product) return {};
 
   return {
     title: product.name,
-    description: `${product.name} price in Bangladesh — ${formatPrice(product.price)} at Unique Mart. Official product, nationwide delivery.`,
+    description: `${product.name} price in Bangladesh — ${formatPrice(product.price - product.discount)} at Unique Mart. Official product, nationwide delivery.`,
   };
 }
 
-function buildTrail(
-  name: string,
-  crumbs: { label: string; slug: string }[] = [],
-): Crumb[] {
-  return [
-    { label: "Home", href: "/" },
-    ...crumbs.map((crumb) => ({
-      label: crumb.label,
-      href: categoryPath(crumb.slug),
-    })),
-    { label: name },
-  ];
-}
+const trailFor = (catalog: Catalog, product: ApiProduct): Crumb[] => [
+  { label: "Home", href: "/" },
+  ...[product.mainCategoryId, product.categoryId, product.subCategoryId]
+    .map((ref) => catalog.nodeById.get(refId(ref)))
+    // A shelf named after the product itself ("iPhone 17 Pro Max") would repeat it.
+    .flatMap((node) => (node && node.name !== product.name ? [{ label: node.name, href: node.href }] : [])),
+  { label: product.name },
+];
+
+// Closest first: same shelf, then same aisle, then same brand.
+const similarTo = (catalog: Catalog, product: ApiProduct) => {
+  const others = catalog.products.filter((each) => each.slug !== product.slug);
+  const same = (field: "subCategoryId" | "categoryId" | "brandId") =>
+    others.filter((each) => refId(each[field]) && refId(each[field]) === refId(product[field]));
+  return [...same("subCategoryId"), ...same("categoryId"), ...same("brandId")]
+    .filter((each, index, list) => list.indexOf(each) === index)
+    .slice(0, SIMILAR)
+    .map((each) => toCard(catalog, each));
+};
 
 export default async function ProductPage({
   params,
 }: PageProps<"/shop/product/[slug]">) {
   const { slug } = await params;
-  const product = findProduct(slug);
+  const [product, catalog] = await Promise.all([getProduct(slug), getCatalog()]);
   if (!product) notFound();
-
-  const detail = findProductDetail(slug);
-  const similar = [
-    ...allProducts.filter(
-      (each) => each.slug !== slug && each.brand && each.brand === product.brand,
-    ),
-    ...allProducts.filter((each) => each.slug !== slug),
-  ]
-    .filter((each, index, list) => list.findIndex((x) => x.slug === each.slug) === index)
-    .slice(0, 4);
 
   return (
     <ProductDetails
-      product={product}
-      detail={detail}
-      similar={similar}
-      trail={buildTrail(product.name, detail?.breadcrumb)}
+      product={toCard(catalog, product)}
+      detail={toDetail(catalog, product)}
+      similar={similarTo(catalog, product)}
+      trail={trailFor(catalog, product)}
     />
   );
 }

@@ -6,15 +6,21 @@ import { CategoryBrowser } from "./partials/CategoryBrowser";
 import { CategoryIntro } from "./partials/CategoryIntro";
 import { CategoryPriceTable } from "./partials/CategoryPriceTable";
 
+type Link = { slug: string; name: string; href: string };
+
 type Props = {
   name: string;
   slug: string;
-  trail: { slug: string; name: string }[];
+  trail: Link[];
   items: ListingProduct[];
-  childLinks: { slug: string; name: string }[];
+  childLinks: Link[];
+  // Filter groups to offer, without counts; the browser counts what's listed.
+  facetGroups: { id: string; label: string; values: string[] }[];
+  // Heading override, e.g. for search results; defaults to "{name} Price in Bangladesh".
+  heading?: string;
 };
 
-export function Category({ name, slug, trail, items, childLinks }: Props) {
+export function Category({ name, slug, trail, items, childLinks, facetGroups, heading }: Props) {
   const { emptyTitle, emptyBody } = category_data;
   const products: Product[] = items.map((item) => item.product);
   const from = products.length
@@ -31,6 +37,7 @@ export function Category({ name, slug, trail, items, childLinks }: Props) {
         from={from}
         links={links}
         activeSlug={slug}
+        heading={heading}
       />
 
       <section className="pt-8 pb-14">
@@ -52,6 +59,7 @@ export function Category({ name, slug, trail, items, childLinks }: Props) {
             <CategoryBrowser
               name={name}
               items={items}
+              facetGroups={facetGroups}
               childLabels={childLinks.map((link) => ({
                 value: link.slug,
                 label: link.name,

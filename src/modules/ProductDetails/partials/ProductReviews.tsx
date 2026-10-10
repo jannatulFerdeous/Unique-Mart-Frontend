@@ -3,16 +3,15 @@
 import { useId, useState } from "react";
 import { Star, User } from "lucide-react";
 import { Stars } from "@/common/components/Stars";
-import { REVIEW_LIMITS, type ReviewSummary, type Review } from "@/shared/libs/reviews";
+import { apiErrorMessage } from "@/redux/api/errors";
+import { useCreateReviewMutation, useGetProductReviewsQuery } from "@/redux/features/review/reviewApi";
+import { REVIEW_LIMITS, personName, summarise } from "@/redux/features/review/review.types";
 import { initials } from "@/shared/libs/session";
+import { useSignInFirst } from "@/shared/libs/useSignInFirst";
 import { cn } from "@/shared/utils/cn";
 import { product_details_data } from "../config/constants";
 
-type Props = {
-  reviews: Review[];
-  summary: ReviewSummary;
-  onSubmit: (draft: { rating: number; comment: string }) => void;
-};
+type Props = { productId: string };
 
 const { reviews: copy } = product_details_data;
 
@@ -44,8 +43,12 @@ function Avatar({ name }: { name: string | null }) {
   );
 }
 
-export function ProductReviews({ reviews, summary, onSubmit }: Props) {
+export function ProductReviews({ productId }: Props) {
   const fieldId = useId();
+  const { data: reviews = [] } = useGetProductReviewsQuery(productId);
+  const summary = summarise(reviews);
+  const { signedIn, goSignIn } = useSignInFirst();
+  const [createReview, { isLoading: submitting }] = useCreateReviewMutation();
   const [open, setOpen] = useState(false);
   const [rating, setRating] = useState(0);
   const [hovered, setHovered] = useState(0);
@@ -53,21 +56,25 @@ export function ProductReviews({ reviews, summary, onSubmit }: Props) {
   const [errors, setErrors] = useState<string[]>([]);
   const [saved, setSaved] = useState(false);
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
     const found: string[] = [];
     if (!rating) found.push(copy.errors.rating);
-    if (!comment.trim()) found.push(copy.errors.comment);
+    if (comment.trim().length < REVIEW_LIMITS.comment.min) found.push(copy.errors.comment);
 
     setErrors(found);
     if (found.length) return;
 
-    onSubmit({ rating, comment });
-    setRating(0);
-    setComment("");
-    setOpen(false);
-    setSaved(true);
+    try {
+      await createReview({ productId, rating, comment: comment.trim() }).unwrap();
+      setRating(0);
+      setComment("");
+      setOpen(false);
+      setSaved(true);
+    } catch (problem) {
+      setErrors([apiErrorMessage(problem, "Couldn't send your review. Please try again.")]);
+    }
   };
 
   return (
@@ -79,12 +86,13 @@ export function ProductReviews({ reviews, summary, onSubmit }: Props) {
           <button
             type="button"
             onClick={() => {
+              if (!signedIn) return goSignIn();
               setOpen(true);
               setSaved(false);
             }}
             className="rounded-control bg-tertiary px-5 py-2.5 font-medium text-tertiary-contrast transition-colors hover:bg-tertiary-hover"
           >
-            {copy.write}
+            {signedIn ? copy.write : copy.signIn}
           </button>
         )}
       </div>
@@ -153,13 +161,13 @@ export function ProductReviews({ reviews, summary, onSubmit }: Props) {
               id={`${fieldId}-comment`}
               value={comment}
               onChange={(event) => setComment(event.target.value)}
-              maxLength={REVIEW_LIMITS.comment}
+              maxLength={REVIEW_LIMITS.comment.max}
               rows={4}
               placeholder={copy.form.commentPlaceholder}
               className="mt-2 w-full rounded-control border border-line-strong bg-surface p-2 text-base text-ink placeholder:text-ink-subtle"
             />
             <p className="mt-1 text-right text-sm text-ink-subtle tabular-nums">
-              {comment.length}/{REVIEW_LIMITS.comment}
+              {comment.length}/{REVIEW_LIMITS.comment.max}
             </p>
           </div>
 
@@ -174,14 +182,15 @@ export function ProductReviews({ reviews, summary, onSubmit }: Props) {
             </ul>
           )}
 
-          <p className="mt-4 text-sm text-ink-subtle">{copy.storageNote}</p>
+          <p className="mt-4 text-sm text-ink-subtle">{copy.moderationNote}</p>
 
           <div className="mt-5 flex flex-wrap gap-3">
             <button
               type="submit"
-              className="rounded-control bg-tertiary px-6 py-2.5 font-bold text-tertiary-contrast transition-colors hover:bg-tertiary-hover"
+              disabled={submitting}
+              className="rounded-control bg-tertiary px-6 py-2.5 font-bold text-tertiary-contrast transition-colors hover:bg-tertiary-hover disabled:opacity-60"
             >
-              {copy.form.submit}
+              {submitting ? copy.pending : copy.form.submit}
             </button>
             <button
               type="button"
@@ -242,13 +251,13 @@ export function ProductReviews({ reviews, summary, onSubmit }: Props) {
 
           <ul className="divide-y divide-line">
             {reviews.map((review) => (
-              <li key={review.id} className="flex gap-4 py-6 sm:gap-6">
-                <Avatar name={review.name} />
+              <li key={review._id} className="flex gap-4 py-6 sm:gap-6">
+                <Avatar name={personName(review.userId)} />
 
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
                     <p className="font-bold text-ink">
-                      {review.name ?? copy.anonymous}
+                      {personName(review.userId) ?? copy.anonymous}
                     </p>
                     <span className="flex items-center gap-1.5">
                       <Stars value={review.rating} />

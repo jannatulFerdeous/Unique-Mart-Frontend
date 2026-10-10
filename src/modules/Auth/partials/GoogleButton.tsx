@@ -1,46 +1,73 @@
 "use client";
 
+import { useRef, useState } from "react";
+import Script from "next/script";
 import { useRouter } from "next/navigation";
-import { decodeBack, signIn } from "@/shared/libs/session";
+import { apiErrorMessage } from "@/redux/api/errors";
+import { decodeBack } from "@/shared/libs/session";
 import { auth_data } from "../config/constants";
+import { useAccount } from "../hooks/useAccount";
 
-function GoogleMark() {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden className="size-5 shrink-0">
-      <path
-        fill="#4285F4"
-        d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"
-      />
-      <path
-        fill="#34A853"
-        d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84A11 11 0 0 0 12 23z"
-      />
-      <path
-        fill="#FBBC05"
-        d="M5.84 14.1a6.6 6.6 0 0 1 0-4.2V7.07H2.18a11 11 0 0 0 0 9.86l3.66-2.84z"
-      />
-      <path
-        fill="#EA4335"
-        d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-      />
-    </svg>
-  );
-}
-
-const DEMO_USER = {
-  name: "Google User",
-  email: "google.user@example.com",
+// The parts of Google Identity Services this button uses.
+type GoogleIdentity = {
+  accounts: {
+    id: {
+      initialize: (options: { client_id: string; callback: (response: { credential?: string }) => void }) => void;
+      renderButton: (
+        parent: HTMLElement,
+        options: { theme: string; size: string; text: string; shape: string; width: number; logo_alignment: string },
+      ) => void;
+    };
+  };
 };
 
-export function GoogleButton({
-  view,
-  back,
-}: {
-  view: "login" | "register";
-  back?: string;
-}) {
-  const router = useRouter();
+declare global {
+  interface Window {
+    google?: GoogleIdentity;
+  }
+}
+
+const CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
+
+// Google draws its own button between 200 and 400px wide.
+const BUTTON_WIDTH = { min: 200, max: 400 };
+
+export function GoogleButton({ view, back }: { view: "login" | "register"; back?: string }) {
   const { google } = auth_data;
+  const router = useRouter();
+  const { signInWithGoogle } = useAccount();
+  const slot = useRef<HTMLDivElement>(null);
+  const [failure, setFailure] = useState<string | null>(null);
+  const [pending, setPending] = useState(false);
+
+  const finish = async (credential?: string) => {
+    if (!credential) return;
+    setFailure(null);
+    setPending(true);
+    try {
+      await signInWithGoogle(credential);
+      router.replace(decodeBack(back));
+    } catch (problem) {
+      setFailure(apiErrorMessage(problem));
+      setPending(false);
+    }
+  };
+
+  // Runs once the script loads and again whenever this form mounts.
+  const draw = () => {
+    const identity = window.google?.accounts.id;
+    if (!identity || !slot.current || !CLIENT_ID) return;
+    identity.initialize({ client_id: CLIENT_ID, callback: ({ credential }) => finish(credential) });
+    slot.current.replaceChildren();
+    identity.renderButton(slot.current, {
+      theme: "outline",
+      size: "large",
+      shape: "rectangular",
+      logo_alignment: "center",
+      text: view === "login" ? "signin_with" : "signup_with",
+      width: Math.min(BUTTON_WIDTH.max, Math.max(BUTTON_WIDTH.min, slot.current.offsetWidth)),
+    });
+  };
 
   return (
     <div>
@@ -50,19 +77,24 @@ export function GoogleButton({
         <span className="h-px flex-1 bg-line" />
       </div>
 
-      <button
-        type="button"
-        onClick={() => {
-          signIn(DEMO_USER);
-          router.replace(decodeBack(back));
-        }}
-        className="flex w-full items-center justify-center gap-3 rounded-control border border-line-strong bg-surface px-6 py-3.5 font-medium text-ink transition-colors hover:bg-surface-muted"
-      >
-        <GoogleMark />
-        {view === "login" ? google.signIn : google.signUp}
-      </button>
-
-      <p className="mt-2 text-center text-sm text-ink-subtle">{google.mock}</p>
+      {CLIENT_ID ? (
+        <>
+          <Script src="https://accounts.google.com/gsi/client" onReady={draw} />
+          <div ref={slot} aria-busy={pending} className="flex min-h-11 justify-center" />
+          {pending && (
+            <p role="status" className="mt-2 text-center text-sm text-ink-muted">
+              {google.pending}
+            </p>
+          )}
+          {failure && (
+            <p role="alert" className="mt-3 rounded-control bg-critical-soft px-4 py-3 text-sm text-danger">
+              {failure}
+            </p>
+          )}
+        </>
+      ) : (
+        <p className="text-center text-sm text-ink-subtle">{google.unavailable}</p>
+      )}
     </div>
   );
 }

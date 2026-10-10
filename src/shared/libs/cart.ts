@@ -1,220 +1,92 @@
-import { useCallback, useSyncExternalStore } from "react";
+"use client";
 
-export type CartLine = {
-  slug: string;
-  name: string;
-  unitPrice: number;
-  color: string | null;
-  options: Record<string, string>;
-  quantity: number;
-  addedAt: string;
-  selected: boolean;
-};
+import type { StaticImageData } from "next/image";
+import { useGetAttributesQuery } from "@/redux/features/attribute/attributeApi";
+import type { Attribute } from "@/redux/features/attribute/attribute.types";
+import { useGetCartQuery } from "@/redux/features/cart/cartApi";
+import type { CartItem } from "@/redux/features/cart/cart.types";
+import { attributeLabel, productImage, valueLabels } from "./storefront/catalog";
+import { useSignInFirst } from "./useSignInFirst";
 
-export type CartDraft = Omit<CartLine, "addedAt" | "selected" | "quantity"> & {
-  quantity?: number;
-};
-
-const KEY = "unique-mart.cart.v1";
-const CHANGED = "unique-mart:cart-changed";
-
+// The backend checks stock on every change; this only stops the + button early.
 export const MAX_QUANTITY = 99;
 
-export const lineKey = (line: Pick<CartLine, "slug" | "color" | "options">): string => {
-  const options = Object.entries(line.options ?? {})
-    .sort(([a], [b]) => a.localeCompare(b))
-    .map(([label, value]) => `${label}=${value}`)
-    .join("&");
-
-  return [line.slug, line.color ?? "", options].join("|");
+// One cart line as the basket and checkout draw it.
+export type CartLine = {
+  // The cart item's _id, which quantity changes and removal refer to.
+  id: string;
+  slug: string | null;
+  name: string;
+  image: StaticImageData | null;
+  // Variant choices, e.g. { Colour: "Black" }.
+  options: Record<string, string>;
+  // What one costs now, after the product's discount.
+  unitPrice: number;
+  compareAt?: number;
+  quantity: number;
+  stock: number;
+  // The product or the chosen variant has been removed from the catalogue.
+  missing: boolean;
 };
 
-const stored = (): string | null => {
-  try {
-    return window.localStorage.getItem(KEY);
-  } catch {
-    return null;
+const toLine = (item: CartItem, attributeById: Map<string, Attribute>): CartLine => {
+  const product = item.productId;
+  const variant = product?.hasVariants ? product.variants.find((each) => each._id === item.variantId) : undefined;
+  const priced = variant ?? product;
+  const missing = !product || (product.hasVariants && !variant);
+
+  const options: Record<string, string> = {};
+  for (const each of variant?.attributes ?? []) {
+    const id = typeof each.attributeId === "string" ? each.attributeId : each.attributeId._id;
+    const attribute = attributeById.get(id);
+    if (!attribute) continue;
+    options[attributeLabel(attribute.name)] = valueLabels(attribute, each.value).join(", ");
   }
-};
 
-const EMPTY: CartLine[] = [];
+  const discount = priced?.discount ?? 0;
+  const listPrice = priced?.price ?? item.price;
 
-const isLine = (value: unknown): value is CartLine => {
-  if (typeof value !== "object" || value === null) return false;
-  const each = value as Record<string, unknown>;
-
-  return (
-    typeof each.slug === "string" &&
-    each.slug.length > 0 &&
-    typeof each.name === "string" &&
-    typeof each.unitPrice === "number" &&
-    Number.isFinite(each.unitPrice) &&
-    typeof each.quantity === "number" &&
-    Number.isFinite(each.quantity) &&
-    each.quantity > 0 &&
-    (typeof each.color === "string" || each.color === null)
-  );
-};
-
-const revive = (value: unknown): CartLine => {
-  const each = value as CartLine;
   return {
-    ...each,
-    options: typeof each.options === "object" && each.options !== null ? each.options : {},
-    selected: each.selected !== false,
-    quantity: Math.min(MAX_QUANTITY, Math.max(1, Math.round(each.quantity))),
-    addedAt: typeof each.addedAt === "string" ? each.addedAt : new Date().toISOString(),
+    id: item._id,
+    slug: product?.slug ?? null,
+    name: product?.name ?? "A product that is no longer sold",
+    image: product?.images[0]?.url ? productImage(product.images[0].url) : null,
+    options,
+    unitPrice: Math.max(0, listPrice - discount),
+    compareAt: discount > 0 ? listPrice : undefined,
+    quantity: item.quantity,
+    // The cart route doesn't send a simple product's stock; the backend says when it runs out.
+    stock: variant?.stock ?? MAX_QUANTITY,
+    missing,
   };
 };
-
-const parse = (raw: string | null): CartLine[] => {
-  if (!raw) return EMPTY;
-
-  try {
-    const parsed: unknown = JSON.parse(raw);
-    if (!Array.isArray(parsed)) return EMPTY;
-
-    const lines = parsed.filter(isLine).map(revive);
-    return lines.length ? lines : EMPTY;
-  } catch {
-    return EMPTY;
-  }
-};
-
-let cache: { raw: string | null; lines: CartLine[] } | null = null;
-
-export const read = (): CartLine[] => {
-  if (typeof window === "undefined") return EMPTY;
-
-  const raw = stored();
-  if (cache && cache.raw === raw) return cache.lines;
-
-  const lines = parse(raw);
-  cache = { raw, lines };
-  return lines;
-};
-
-const announce = () => {
-  window.dispatchEvent(new CustomEvent(CHANGED));
-};
-
-const write = (lines: CartLine[]): CartLine[] => {
-  try {
-    if (lines.length) window.localStorage.setItem(KEY, JSON.stringify(lines));
-    else window.localStorage.removeItem(KEY);
-  } catch {
-  }
-
-  cache = { raw: stored(), lines };
-  announce();
-  return lines;
-};
-
-export const add = (draft: CartDraft): CartLine[] => {
-  const wanted = Math.min(MAX_QUANTITY, Math.max(1, Math.round(draft.quantity ?? 1)));
-  const key = lineKey(draft);
-  const lines = read();
-  const held = lines.find((line) => lineKey(line) === key);
-
-  if (held) {
-    return write(
-      lines.map((line) =>
-        lineKey(line) === key
-          ? {
-              ...line,
-              quantity: Math.min(MAX_QUANTITY, line.quantity + wanted),
-              selected: true,
-              unitPrice: draft.unitPrice,
-            }
-          : line,
-      ),
-    );
-  }
-
-  return write([
-    ...lines,
-    {
-      slug: draft.slug,
-      name: draft.name,
-      unitPrice: draft.unitPrice,
-      color: draft.color,
-      options: draft.options ?? {},
-      quantity: wanted,
-      addedAt: new Date().toISOString(),
-      selected: true,
-    },
-  ]);
-};
-
-export const setQuantity = (key: string, quantity: number): CartLine[] => {
-  const wanted = Math.round(quantity);
-  if (wanted < 1) return remove(key);
-
-  return write(
-    read().map((line) =>
-      lineKey(line) === key ? { ...line, quantity: Math.min(MAX_QUANTITY, wanted) } : line,
-    ),
-  );
-};
-
-export const remove = (key: string): CartLine[] =>
-  write(read().filter((line) => lineKey(line) !== key));
-
-export const setSelected = (key: string, selected: boolean): CartLine[] =>
-  write(read().map((line) => (lineKey(line) === key ? { ...line, selected } : line)));
-
-export const setAllSelected = (selected: boolean): CartLine[] =>
-  write(read().map((line) => ({ ...line, selected })));
-
-export const clear = (): CartLine[] => write([]);
 
 export const lineTotal = (line: CartLine): number => line.unitPrice * line.quantity;
 
-export const countOf = (lines: CartLine[]): number =>
-  lines.reduce((sum, line) => sum + line.quantity, 0);
+const EMPTY: CartLine[] = [];
 
-export const selectedOf = (lines: CartLine[]): CartLine[] =>
-  lines.filter((line) => line.selected);
-
-export const subtotalOf = (lines: CartLine[]): number =>
-  selectedOf(lines).reduce((sum, line) => sum + lineTotal(line), 0);
-
-const subscribe = (onStoreChange: () => void) => {
-  const handle = (event: Event) => {
-    if (event instanceof StorageEvent && event.key !== null && event.key !== KEY) return;
-    onStoreChange();
-  };
-
-  window.addEventListener(CHANGED, handle);
-  window.addEventListener("storage", handle);
-  return () => {
-    window.removeEventListener(CHANGED, handle);
-    window.removeEventListener("storage", handle);
-  };
-};
-
-const serverSnapshot = () => EMPTY;
-
+// The signed-in shopper's cart on the backend. Guests have none.
 export const useCart = () => {
-  const lines = useSyncExternalStore(subscribe, read, serverSnapshot);
+  const { signedIn } = useSignInFirst();
+  const query = useGetCartQuery(undefined, { skip: !signedIn });
+  const items = signedIn ? (query.data?.items ?? []) : [];
+  const hasVariants = items.some((item) => item.variantId);
+  const attributes = useGetAttributesQuery(undefined, { skip: !hasVariants });
+
+  const attributeById = new Map((attributes.data?.items ?? []).map((each) => [each._id, each]));
+  const lines = items.length ? items.map((item) => toLine(item, attributeById)) : EMPTY;
 
   return {
+    ...query,
     lines,
-    count: countOf(lines),
-    selected: selectedOf(lines),
-    subtotal: subtotalOf(lines),
-    add,
-    setQuantity,
-    remove,
-    setSelected,
-    setAllSelected,
-    clear,
+    count: lines.reduce((sum, line) => sum + line.quantity, 0),
+    subtotal: lines.reduce((sum, line) => sum + lineTotal(line), 0),
   };
 };
 
-export const useCartCount = (): number =>
-  useSyncExternalStore(
-    subscribe,
-    useCallback(() => countOf(read()), []),
-    () => 0,
-  );
+// For the header badge: no attribute lookup needed.
+export const useCartCount = (): number => {
+  const { signedIn } = useSignInFirst();
+  const { data } = useGetCartQuery(undefined, { skip: !signedIn });
+  return signedIn ? (data?.items ?? []).reduce((sum, item) => sum + item.quantity, 0) : 0;
+};

@@ -1,29 +1,20 @@
-import { DEMO_PASSCODE } from "@/shared/libs/admin/access";
 import type { AdminData } from "./types";
 
 export const admin_data: AdminData = {
   gate: {
-    eyebrow: "Unique Mart",
-    title: "Admin portal",
-    body: "Manage the catalogue, orders, payments, reviews and customers.",
-
-    warning:
-      "This is a demo gate, not security. The passcode is in the page's own JavaScript, and everything below is demo data held in memory — a reload starts it over. Do not put real customer data behind it.",
-    nameLabel: "Your name",
-    namePlaceholder: "Store owner",
-    codeLabel: "Passcode",
-    codePlaceholder: "••••••••",
-
-    hint: "Passcode",
-    passcode: DEMO_PASSCODE,
-    submit: "Open the portal",
-    wrong: "That passcode does not match.",
+    loading: "Opening your dashboard…",
+    signInTitle: "Sign in to your dashboard",
+    signInBody: "Your orders, addresses and account details, and for staff the store management tools, are all here once you sign in.",
+    signIn: "Sign in",
+    noAccessTitle: "This page isn't part of your dashboard",
+    noAccessBody: "Your account doesn't include this section. Ask an admin if you need it.",
+    goHome: "Go to my dashboard",
     back: "Back to the shop",
   },
 
   shell: {
     brand: "Unique Mart",
-    subtitle: "Admin portal",
+    subtitle: "Dashboard",
     viewSite: "View shop",
     signOut: "Sign out",
     menu: "Menu",
@@ -40,7 +31,7 @@ export const admin_data: AdminData = {
           label: "Dashboard",
           icon: "dashboard",
           exact: true,
-          blurb: "Revenue, orders and what needs attention today.",
+          blurb: "Your store at a glance, and what needs attention today.",
         },
       ],
     },
@@ -57,6 +48,110 @@ export const admin_data: AdminData = {
       ],
     },
     {
+      title: "Catalog",
+      items: [
+        {
+          href: "/admin/products",
+          label: "Products",
+          icon: "products",
+          blurb: "Everything for sale: prices, stock, specs, variants and photos.",
+        },
+        {
+          href: "/admin/brands",
+          label: "Brands",
+          icon: "brands",
+          blurb: "Who makes what you sell.",
+        },
+        {
+          href: "/admin/main-categories",
+          label: "Main categories",
+          icon: "mainCategories",
+          blurb: "The top level of the shop, like Electronics or Fashion.",
+        },
+        {
+          href: "/admin/categories",
+          label: "Categories",
+          icon: "categories",
+          blurb: "Aisles inside a main category, like Phones or Watches.",
+        },
+        {
+          href: "/admin/sub-categories",
+          label: "Sub-categories",
+          icon: "subCategories",
+          blurb: "Shelves inside a category, like iPhone inside Phones.",
+        },
+      ],
+    },
+    {
+      title: "Specs",
+      items: [
+        {
+          href: "/admin/attribute-groups",
+          label: "Attribute groups",
+          icon: "attributeGroups",
+          blurb: "Headings that specs are listed under, like Display or Battery.",
+        },
+        {
+          href: "/admin/attributes",
+          label: "Attributes",
+          icon: "attributes",
+          blurb: "The specs a product can have, like Colour or Storage, and their choices.",
+        },
+      ],
+    },
+    {
+      title: "Marketing",
+      items: [
+        {
+          href: "/admin/coupons",
+          label: "Coupons",
+          icon: "coupons",
+          blurb: "Discount codes: how much they take off, what they apply to and when they run.",
+        },
+        {
+          href: "/admin/newsletter",
+          label: "Newsletter",
+          icon: "newsletter",
+          blurb: "Who signed up for the newsletter. Download the list for your mailing tool.",
+        },
+      ],
+    },
+    {
+      title: "People",
+      items: [
+        {
+          href: "/admin/users",
+          label: "Users",
+          icon: "users",
+          blurb: "Customers and staff accounts, their roles and whether they can sign in.",
+        },
+        {
+          href: "/admin/reviews",
+          label: "Reviews",
+          icon: "reviews",
+          blurb: "Product reviews from shoppers. Nothing shows on the shop until you publish it.",
+        },
+        {
+          href: "/admin/reports",
+          label: "Support requests",
+          icon: "support",
+          blurb: "Problems customers have reported from their account, and where each one is up to.",
+        },
+      ],
+    },
+    {
+      title: "My account",
+      items: [
+        { href: "/account/profile", label: "Account Info", icon: "profile", blurb: "Your name, phone number and photo." },
+        { href: "/account/orders", label: "My Orders", icon: "orders", blurb: "Everything you've ordered and where it is." },
+        { href: "/account/reviews", label: "My Reviews", icon: "reviews", blurb: "Reviews you've written for products." },
+        { href: "/account/addresses", label: "Manage Address", icon: "addresses", blurb: "Where your orders are delivered." },
+        { href: "/account/support", label: "Support", icon: "support", blurb: "Tell us about a problem and follow our reply." },
+        { href: "/account/rewards", label: "Reward Points", icon: "rewards", blurb: "Points you've earned on purchases." },
+        { href: "/account/faq", label: "FAQ", icon: "faq", blurb: "Answers to common questions about ordering and delivery." },
+      ],
+    },
+    {
       title: "Store",
       items: [
         {
@@ -68,30 +163,6 @@ export const admin_data: AdminData = {
       ],
     },
   ],
-
-  orderStatus: {
-    pending: { label: "Pending", tone: "flow-1" },
-    confirmed: { label: "Confirmed", tone: "flow-2" },
-    packed: { label: "Packed", tone: "flow-3" },
-    shipped: { label: "Shipped", tone: "flow-4" },
-    delivered: { label: "Delivered", tone: "flow-5" },
-    cancelled: { label: "Cancelled", tone: "critical" },
-    refunded: { label: "Refunded", tone: "warning" },
-  },
-
-  paymentStatus: {
-    unpaid: { label: "Unpaid", tone: "neutral" },
-    pending: { label: "Pending", tone: "warning" },
-    paid: { label: "Paid", tone: "good" },
-    failed: { label: "Failed", tone: "critical" },
-    refunded: { label: "Refunded", tone: "serious" },
-  },
-
-  productStatus: {
-    live: { label: "Live", tone: "good" },
-    draft: { label: "Draft", tone: "neutral" },
-    archived: { label: "Archived", tone: "serious" },
-  },
 
   common: {
     search: "Search",
@@ -115,11 +186,3 @@ export const admin_data: AdminData = {
     chart: "Chart",
   },
 };
-
-export const PAGE_SIZE = 12;
-
-export const RANGES: { days: number; label: string }[] = [
-  { days: 7, label: "Last 7 days" },
-  { days: 30, label: "Last 30 days" },
-  { days: 90, label: "Last 90 days" },
-];

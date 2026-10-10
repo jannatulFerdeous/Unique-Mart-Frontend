@@ -1,25 +1,18 @@
+import Image from "next/image";
 import Link from "next/link";
+import logoLight from "@/images/brand/logo-light.png";
 import { site } from "@/shared/config/site";
 import { cn } from "@/shared/utils/cn";
 
+// The header is dark, so it uses the logo with white lettering.
 export function Logo({ className }: { className?: string }) {
   return (
     <Link
       href="/"
       aria-label={`${site.name} — home`}
-      className={cn(
-        "flex shrink-0 items-center gap-3 focus-visible:outline-ink-inverse",
-        className,
-      )}
+      className={cn("flex shrink-0 items-center focus-visible:outline-ink-inverse", className)}
     >
-      <span className="flex flex-col">
-        <span className="font-display text-lg leading-none font-extrabold tracking-tight text-ink-inverse uppercase lg:text-xl">
-          {site.name}
-        </span>
-        <span className="mt-1 text-[0.625rem] leading-none font-medium tracking-[0.18em] text-ink-inverse-muted uppercase">
-          {site.descriptor}
-        </span>
-      </span>
+      <Image src={logoLight} alt="" priority sizes="120px" className="h-10 w-auto lg:h-12" />
     </Link>
   );
 }

@@ -1,28 +1,55 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useState, useSyncExternalStore, type ReactNode } from "react";
+import Image from "next/image";
 import Link from "next/link";
-import { ExternalLink, LogOut, Menu, X } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import { ExternalLink, Lock, LogOut, Menu, X } from "lucide-react";
+import logoLight from "@/images/brand/logo-light.png";
+import { useAccount } from "@/modules/Auth/hooks/useAccount";
+import { encodeBack, useSession, type SessionUser } from "@/shared/libs/session";
 import { initials } from "@/shared/utils/initials";
+import { ROLE_LABEL, canOpen, homeFor } from "../config/access";
 import { admin_data } from "../config/constants";
-import { Button } from "../components/Button";
-import { AdminGate, type AdminIdentity } from "./AdminGate";
+import { Button, ButtonLink } from "../components/Button";
 import { AdminSidebar } from "./AdminSidebar";
 
+const noop = () => () => {};
+
+// The session lives in this browser, so the server can't know it. Until the
+// page has loaded in the browser, show a neutral placeholder instead of
+// flashing the sign-in screen at someone who is signed in.
+const useInBrowser = () => useSyncExternalStore(noop, () => true, () => false);
+
 export function AdminShell({ children }: { children: ReactNode }) {
+  const inBrowser = useInBrowser();
+  const { user } = useSession();
+  const pathname = usePathname();
+
+  if (!inBrowser) return <Notice title={admin_data.gate.loading} />;
+  if (!user) return <SignInNotice pathname={pathname} />;
+  if (!canOpen(user.role, pathname)) return <NoAccessNotice role={user.role} />;
+  return <Shell user={user}>{children}</Shell>;
+}
+
+function Shell({ user, children }: { user: SessionUser; children: ReactNode }) {
   const { shell } = admin_data;
-  const [admin, setAdmin] = useState<AdminIdentity | null>(null);
-
+  const router = useRouter();
+  const { signOut } = useAccount();
   const [menuOpen, setMenuOpen] = useState(false);
+  const role = user.role as keyof typeof ROLE_LABEL | undefined;
 
-  if (!admin) return <AdminGate onSignIn={setAdmin} />;
+  const leave = async () => {
+    await signOut();
+    router.push("/");
+  };
 
   return (
     <div className="flex flex-1 bg-canvas">
       <div className="hidden w-60 shrink-0 bg-inverse px-3 lg:block">
         <div className="sticky top-0 flex h-dvh flex-col overflow-y-auto">
-          <Brand />
-          <AdminSidebar />
+          <Brand role={user.role} />
+          <AdminSidebar onSignOut={leave} />
         </div>
       </div>
 
@@ -30,7 +57,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
         <div className="fixed inset-0 z-50 flex lg:hidden">
           <div className="w-64 max-w-[80%] overflow-y-auto bg-inverse px-3">
             <div className="flex items-center justify-between gap-2 pt-4">
-              <Brand />
+              <Brand role={user.role} />
               <button
                 type="button"
                 onClick={() => setMenuOpen(false)}
@@ -40,7 +67,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
                 <X className="size-5" aria-hidden />
               </button>
             </div>
-            <AdminSidebar onNavigate={() => setMenuOpen(false)} />
+            <AdminSidebar onNavigate={() => setMenuOpen(false)} onSignOut={leave} />
           </div>
           <button
             type="button"
@@ -74,20 +101,20 @@ export function AdminShell({ children }: { children: ReactNode }) {
             {shell.viewSite}
           </Link>
 
-          <span className="flex items-center gap-2 border-l border-line pl-3">
+          <Link href="/account/profile" className="flex items-center gap-2 border-l border-line pl-3">
             <span
               aria-hidden
               className="inline-flex size-8 items-center justify-center rounded-full bg-tertiary-soft text-xs font-bold text-tertiary"
             >
-              {initials(admin.name) || "A"}
+              {initials(user.name) || "U"}
             </span>
             <span className="hidden min-w-0 flex-col leading-tight md:flex">
-              <span className="truncate text-sm font-medium text-ink">{admin.name}</span>
-              <span className="text-xs text-ink-subtle capitalize">{admin.role}</span>
+              <span className="truncate text-sm font-medium text-ink">{user.name}</span>
+              <span className="text-xs text-ink-subtle">{role ? ROLE_LABEL[role] : ""}</span>
             </span>
-          </span>
+          </Link>
 
-          <Button size="sm" variant="ghost" onClick={() => setAdmin(null)} aria-label={shell.signOut}>
+          <Button size="sm" variant="ghost" onClick={leave} aria-label={shell.signOut}>
             <LogOut className="size-4" aria-hidden />
             <span className="hidden sm:inline">{shell.signOut}</span>
           </Button>
@@ -101,15 +128,49 @@ export function AdminShell({ children }: { children: ReactNode }) {
   );
 }
 
-function Brand() {
+function Brand({ role }: { role?: string }) {
   const { shell } = admin_data;
 
   return (
-    <Link href="/admin" className="block px-3 py-4">
-      <span className="block font-display text-base font-bold text-ink-inverse">
-        {shell.brand}
-      </span>
-      <span className="block text-xs text-ink-inverse-muted">{shell.subtitle}</span>
+    <Link href={homeFor(role)} aria-label={`${shell.brand} ${shell.subtitle}`} className="block px-3 py-4">
+      <Image src={logoLight} alt="" sizes="100px" className="h-10 w-auto" />
     </Link>
+  );
+}
+
+function Notice({ title, body, children }: { title: string; body?: string; children?: ReactNode }) {
+  return (
+    <div className="flex flex-1 items-center justify-center bg-canvas px-4 py-16">
+      <div className="w-full max-w-md rounded-card border border-line bg-surface p-6 text-center shadow-card md:p-7">
+        {children ? <Lock className="mx-auto size-6 text-ink-subtle" aria-hidden /> : null}
+        <h1 className="mt-3 font-sans text-h4 font-bold text-ink">{title}</h1>
+        {body ? <p className="mt-2 text-sm text-ink-muted">{body}</p> : null}
+        {children ? <div className="mt-5 flex flex-wrap justify-center gap-2">{children}</div> : null}
+      </div>
+    </div>
+  );
+}
+
+function SignInNotice({ pathname }: { pathname: string }) {
+  const { gate } = admin_data;
+  return (
+    <Notice title={gate.signInTitle} body={gate.signInBody}>
+      <ButtonLink href="/">{gate.back}</ButtonLink>
+      <ButtonLink href={`/auth/login?back=${encodeURIComponent(encodeBack(pathname))}`} variant="primary">
+        {gate.signIn}
+      </ButtonLink>
+    </Notice>
+  );
+}
+
+function NoAccessNotice({ role }: { role?: string }) {
+  const { gate } = admin_data;
+  return (
+    <Notice title={gate.noAccessTitle} body={gate.noAccessBody}>
+      <ButtonLink href="/">{gate.back}</ButtonLink>
+      <ButtonLink href={homeFor(role)} variant="primary">
+        {gate.goHome}
+      </ButtonLink>
+    </Notice>
   );
 }

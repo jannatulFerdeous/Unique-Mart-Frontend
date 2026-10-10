@@ -3,39 +3,49 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Lock, User } from "lucide-react";
-import { decodeBack, signIn } from "@/shared/libs/session";
+import { Lock, Mail } from "lucide-react";
+import { apiErrorMessage } from "@/redux/api/errors";
+import { decodeBack } from "@/shared/libs/session";
 import { auth_data } from "../config/constants";
+import { useAccount } from "../hooks/useAccount";
 import { AuthField } from "./AuthField";
 import { GoogleButton } from "./GoogleButton";
-import { AuthNote } from "./AuthNote";
 import { withBack } from "./AuthCard";
+
+// The backend rejects shorter passwords before checking them.
+const MIN_PASSWORD = 6;
 
 export function LoginForm({ back }: { back?: string }) {
   const router = useRouter();
   const { login, errors } = auth_data;
+  const { signInWithPassword } = useAccount();
 
-  const [identifier, setIdentifier] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [shown, setShown] = useState<Record<string, string>>({});
+  const [failure, setFailure] = useState<string | null>(null);
+  const [pending, setPending] = useState(false);
 
-  const submit = (event: React.FormEvent) => {
+  const submit = async (event: React.FormEvent) => {
     event.preventDefault();
 
     const found: Record<string, string> = {};
-    if (!identifier.trim()) found.identifier = errors.identifier;
+    if (!/^\S+@\S+\.\S+$/.test(email.trim())) found.email = errors.identifier;
     if (!password) found.password = errors.password;
+    else if (password.length < MIN_PASSWORD) found.password = errors.min;
 
     setShown(found);
+    setFailure(null);
     if (Object.keys(found).length) return;
 
-    const typed = identifier.trim();
-    signIn({
-      name: typed,
-      ...(typed.includes("@") ? { email: typed } : { phone: typed }),
-    });
-
-    router.replace(decodeBack(back));
+    setPending(true);
+    try {
+      await signInWithPassword(email, password);
+      router.replace(decodeBack(back));
+    } catch (problem) {
+      setFailure(apiErrorMessage(problem));
+      setPending(false);
+    }
   };
 
   return (
@@ -44,12 +54,13 @@ export function LoginForm({ back }: { back?: string }) {
 
       <div className="space-y-4">
         <AuthField
-          Icon={User}
+          Icon={Mail}
           label={login.identifier}
-          value={identifier}
-          onChange={setIdentifier}
-          autoComplete="username"
-          error={shown.identifier}
+          value={email}
+          onChange={setEmail}
+          type="email"
+          autoComplete="email"
+          error={shown.email}
         />
 
         <AuthField
@@ -72,11 +83,18 @@ export function LoginForm({ back }: { back?: string }) {
         </Link>
       </p>
 
+      {failure && (
+        <p role="alert" className="mt-4 rounded-control bg-critical-soft px-4 py-3 text-sm text-danger">
+          {failure}
+        </p>
+      )}
+
       <button
         type="submit"
-        className="mt-6 w-full rounded-control bg-tertiary px-6 py-3.5 font-bold text-tertiary-contrast transition-colors hover:bg-tertiary-hover"
+        disabled={pending}
+        className="mt-6 w-full rounded-control bg-tertiary px-6 py-3.5 font-bold text-tertiary-contrast transition-colors hover:bg-tertiary-hover disabled:opacity-60"
       >
-        {login.submit}
+        {pending ? login.pending : login.submit}
       </button>
 
       <GoogleButton view="login" back={back} />
@@ -90,8 +108,6 @@ export function LoginForm({ back }: { back?: string }) {
           {login.footerLink}
         </Link>
       </p>
-
-      <AuthNote />
     </form>
   );
 }

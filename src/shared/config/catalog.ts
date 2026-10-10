@@ -1,6 +1,8 @@
 import type { StaticImageData } from "next/image";
 
 export type Product = {
+  // The backend product's _id: what the cart, wishlist and reviews refer to.
+  id: string;
   slug: string;
   name: string;
   image: StaticImageData;
@@ -43,6 +45,18 @@ export type DescriptionBlock = {
   paragraphs: string[];
 };
 
+// One buyable version of a product: the option values that pick it, and its own
+// price and stock. `options` is keyed by the VariantGroup label.
+export type VariantOffer = {
+  // The backend variant's _id, which the cart needs to add this version.
+  id?: string;
+  sku: string;
+  options: Record<string, string>;
+  price: number;
+  compareAt?: number;
+  stock: number;
+};
+
 export type ProductDetail = {
   breadcrumb?: { label: string; slug: string }[];
   gallery: StaticImageData[];
@@ -50,6 +64,7 @@ export type ProductDetail = {
   highlights: string[];
   colors?: ColorOption[];
   options?: VariantGroup[];
+  variants?: VariantOffer[];
   emi?: { months: number; perMonth: number };
   specs: SpecGroup[];
   description?: {

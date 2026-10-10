@@ -7,7 +7,6 @@ export type WishlistData = {
 
   addToCart: string;
   chooseOptions: string;
-  inCart: string;
   remove: string;
   removeOne: string;
   clear: string;
@@ -19,6 +18,11 @@ export type WishlistData = {
   emptyBody: string;
   emptyAction: string;
 
-  storageNote: string;
   gone: string;
+  loading: string;
+  signInTitle: string;
+  signInBody: string;
+  signInAction: string;
+  errorTitle: string;
+  retry: string;
 };

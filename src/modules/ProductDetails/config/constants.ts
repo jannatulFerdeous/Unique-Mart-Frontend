@@ -36,14 +36,15 @@ export const product_details_data: ProductDetailsData = {
     empty: "No reviews yet — be the first to review this product.",
     write: "Write a Review",
     cancel: "Cancel",
-    anonymous: "You",
+    anonymous: "Customer",
     on: "on",
     ofFive: "out of 5",
     countOne: "1 review",
     countMany: "{n} reviews",
-    storageNote:
-      "Reviews are saved in your browser on this device. They will publish under your account name once sign-in and the review store are connected.",
-    saved: "Thanks — your review is saved on this device.",
+    moderationNote: "Reviews show here under your account name once our team has checked them. You can review each product once.",
+    saved: "Thanks — your review is in. It will show here once it's approved.",
+    signIn: "Sign in to write a review",
+    pending: "Submitting…",
 
     form: {
       rating: "Your rating",
@@ -55,7 +56,7 @@ export const product_details_data: ProductDetailsData = {
 
     errors: {
       rating: "Choose a rating.",
-      comment: "Write a few words about the product.",
+      comment: "Write at least 3 characters about the product.",
     },
   },
 };

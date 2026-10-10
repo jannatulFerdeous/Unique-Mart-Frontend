@@ -1,9 +1,11 @@
 import { ProductRail } from "@/common/components/ProductRail";
 import { SectionHeader } from "@/common/components/SectionHeader";
+import type { Product } from "@/shared/config/catalog";
 import { home_data } from "../config/constants";
 
-export function CasesAndProtectors() {
-  const { title, href, products } = home_data.casesAndProtectors;
+export function CasesAndProtectors({ products }: { products: Product[] }) {
+  const { title, href } = home_data.casesAndProtectors;
+  if (!products.length) return null;
 
   return (
     <section aria-labelledby="cases-and-protectors-heading" className="pt-5">

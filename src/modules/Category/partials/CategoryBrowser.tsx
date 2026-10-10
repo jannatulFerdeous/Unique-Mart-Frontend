@@ -3,7 +3,6 @@
 import { useMemo, useState } from "react";
 import { SlidersHorizontal, X } from "lucide-react";
 import { ProductCard } from "@/common/components/ProductCard";
-import { facetGroups } from "@/shared/config/facets";
 import { cn } from "@/shared/utils/cn";
 import { category_data } from "../config/constants";
 import type { FacetGroupView, FacetOption, ListingProduct, SortId } from "../config/types";
@@ -12,6 +11,7 @@ import { CategoryFilters } from "./CategoryFilters";
 type Props = {
   name: string;
   items: ListingProduct[];
+  facetGroups: { id: string; label: string; values: string[] }[];
   childLabels: { value: string; label: string }[];
 };
 
@@ -23,7 +23,7 @@ const own = (item: ListingProduct, id: string): string[] => {
   return item.facets[id] ?? [];
 };
 
-export function CategoryBrowser({ name, items, childLabels }: Props) {
+export function CategoryBrowser({ name, items, facetGroups, childLabels }: Props) {
   const {
     sorts, sortLabel, itemsOne, itemsMany, noMatch, clearAll,
     pageSize, previous, next, filtersToggle, groups: labels,
@@ -118,7 +118,7 @@ export function CategoryBrowser({ name, items, childLabels }: Props) {
 
     return built;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [items, brands, subCategories, brandsAreCategories, labels]);
+  }, [items, facetGroups, brands, subCategories, brandsAreCategories, labels]);
 
   const live = useMemo(() => new Set(groups.map((group) => group.id)), [groups]);
 

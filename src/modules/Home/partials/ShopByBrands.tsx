@@ -13,9 +13,10 @@ import { ProductRail } from "@/common/components/ProductRail";
 import { SectionHeader } from "@/common/components/SectionHeader";
 import { cn } from "@/shared/utils/cn";
 import { home_data } from "../config/constants";
+import type { BrandTab } from "../config/types";
 
-export function ShopByBrands() {
-  const { title, href, items } = home_data.brands;
+export function ShopByBrands({ items }: { items: BrandTab[] }) {
+  const { title, href } = home_data.brands;
   const [active, setActive] = useState(0);
   const tabs = useRef<(HTMLButtonElement | null)[]>([]);
   const strip = useRef<HTMLDivElement>(null);

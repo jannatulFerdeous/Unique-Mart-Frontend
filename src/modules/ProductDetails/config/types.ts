@@ -33,8 +33,10 @@ export type ProductDetailsData = {
     ofFive: string;
     countOne: string;
     countMany: string;
-    storageNote: string;
+    moderationNote: string;
     saved: string;
+    signIn: string;
+    pending: string;
     form: {
       rating: string;
       ratingHint: string;

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { decodeBack, initials, useSession } from "@/shared/libs/session";
 import { auth_data } from "../config/constants";
+import { useAccount } from "../hooks/useAccount";
 import { LoginForm } from "./LoginForm";
 import { RegisterForm } from "./RegisterForm";
 
@@ -12,7 +13,8 @@ type Props = {
 };
 
 export function AuthBody({ view, back }: Props) {
-  const { user, signOut } = useSession();
+  const { user } = useSession();
+  const { signOut } = useAccount();
 
   if (user) {
     const mark = initials(user.name);

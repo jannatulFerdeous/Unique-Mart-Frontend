@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Product } from "@/shared/config/catalog";
-import { productHref } from "@/shared/config/products";
+import { productHref } from "@/shared/libs/storefront/catalog";
 import { formatPrice } from "@/shared/utils/price";
 import { category_data } from "../config/constants";
 

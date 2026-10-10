@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { ProductCard } from "@/common/components/ProductCard";
-import type { Offer } from "@/shared/config/products";
+import type { Offer } from "@/shared/libs/storefront/catalog";
 import { cn } from "@/shared/utils/cn";
 import { formatPrice } from "@/shared/utils/price";
 import { offers_data } from "../config/constants";

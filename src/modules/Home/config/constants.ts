@@ -44,14 +44,6 @@ import speaker from "@/images/categories/speaker.png";
 import tablets from "@/images/categories/tablets.png";
 import watches from "@/images/categories/watches.png";
 import { brandMarks } from "@/shared/config/brands";
-import {
-  brandProducts,
-  casesProducts,
-  exclusiveProducts,
-  newArrivalProducts,
-  soundSurroundProducts,
-  topSellingProducts,
-} from "@/shared/config/products";
 import { trustClaims } from "@/shared/config/trust";
 import type { HomeData } from "./types";
 
@@ -60,7 +52,6 @@ export const home_data: HomeData = {
   exclusive: {
     title: "Exclusive",
     href: "/shop/exclusive",
-    products: exclusiveProducts,
   },
 
   brandWall: {
@@ -77,10 +68,10 @@ export const home_data: HomeData = {
     ],
     offers: [
       { href: "/category/airpods", image: promoAirpods, alt: "AirPods Pro 3 — the world's best in-ear Active Noise Cancellation. Up to 6 months 0% EMI, ৳2,000 off, or exchange. Terms and conditions apply." },
-      { href: "/category/apple-watch", image: promoAppleWatch, alt: "Apple Watch Series 11 — the ultimate way to watch your health. Up to 6 months 0% EMI, ৳4,000 off, or exchange. Terms and conditions apply." },
+      { href: "/category/watches/smart-watch/apple", image: promoAppleWatch, alt: "Apple Watch Series 11 — the ultimate way to watch your health. Up to 6 months 0% EMI, ৳4,000 off, or exchange. Terms and conditions apply." },
     ],
     straps: {
-      href: "/category/watch-strap",
+      href: "/category/watches",
       alt: "Made to push boundaries — straps for Apple Watch, in steel link, woven nylon, rugged and trail loop styles.",
       desktop: promoStrapsDesktop,
       mobile: promoStrapsMobile,
@@ -89,26 +80,22 @@ export const home_data: HomeData = {
 
   soundSurround: {
     title: "Sound Surround",
-    href: "/shop/sound-surround",
-    products: soundSurroundProducts,
+    href: "/category/headphone-speaker",
   },
 
   newArrival: {
     title: "New Arrival",
     href: "/shop/new-arrival",
-    products: newArrivalProducts,
   },
 
   casesAndProtectors: {
     title: "Cases & Screen Protector",
-    href: "/category/cases-screen-protectors",
-    products: casesProducts,
+    href: "/category/cases-protectors",
   },
 
   topSelling: {
     title: "Top Selling",
     href: "/shop/top-selling",
-    products: topSellingProducts,
   },
 
   brands: {
@@ -119,71 +106,61 @@ export const home_data: HomeData = {
         key: "samsung",
         label: "Samsung",
         logo: samsungLogo,
-        href: "/category/samsung-mobile-phone",
-        products: brandProducts.samsung,
+        href: "/brands/samsung",
       },
       {
         key: "apple",
         label: "Apple",
         logo: appleLogo,
-        href: "/category/iphone",
-        products: brandProducts.apple,
+        href: "/brands/apple",
       },
       {
         key: "oppo",
         label: "Oppo",
         logo: oppoLogo,
-        href: "/category/oppo",
-        products: brandProducts.oppo,
+        href: "/brands/oppo",
       },
       {
         key: "vivo",
         label: "vivo",
         logo: vivoLogo,
-        href: "/category/vivo",
-        products: brandProducts.vivo,
+        href: "/brands/vivo",
       },
       {
         key: "honor",
         label: "HONOR",
         logo: honorLogo,
-        href: "/category/honor-mobile-phone",
-        products: brandProducts.honor,
+        href: "/brands/honor",
       },
       {
         key: "oneplus",
         label: "OnePlus",
         logo: oneplusLogo,
-        href: "/category/oneplus",
-        products: brandProducts.oneplus,
+        href: "/brands/oneplus",
       },
       {
         key: "tecno",
         label: "Tecno",
         logo: tecnoLogo,
-        href: "/category/tecno-mobile-phone",
-        products: brandProducts.tecno,
+        href: "/brands/tecno",
       },
       {
         key: "infinix",
         label: "Infinix",
         logo: infinixLogo,
-        href: "/category/infinix-mobile-phone",
-        products: brandProducts.infinix,
+        href: "/brands/infinix",
       },
       {
         key: "realme",
         label: "realme",
         logo: realmeLogo,
-        href: "/category/realme-mobile-phone",
-        products: brandProducts.realme,
+        href: "/brands/realme",
       },
       {
         key: "xiaomi",
         label: "Xiaomi",
         logo: xiaomiLogo,
-        href: "/category/xiaomi-mobile-phone",
-        products: brandProducts.xiaomi,
+        href: "/brands/xiaomi",
       },
     ],
   },
@@ -191,16 +168,16 @@ export const home_data: HomeData = {
   categories: {
     title: "Featured Categories",
     items: [
-      { label: "Phones", href: "/category/phone", image: phones },
+      { label: "Phones", href: "/category/phones", image: phones },
       { label: "MacBook", href: "/category/macbook", image: macbook },
       { label: "Tablets", href: "/category/tablets", image: tablets },
       { label: "iPad", href: "/category/ipad", image: ipad },
       { label: "Camera", href: "/category/camera", image: camera },
-      { label: "Watches", href: "/category/watch", image: watches },
+      { label: "Watches", href: "/category/watches", image: watches },
       { label: "Earbuds", href: "/category/earbuds", image: earbuds },
-      { label: "Cases & Protectors", href: "/category/cases-screen-protectors", image: casesProtectors },
+      { label: "Cases & Protectors", href: "/category/cases-protectors", image: casesProtectors },
       { label: "Cable & Adapter", href: "/category/cable-adapter", image: cableAdapter },
-      { label: "Speaker", href: "/category/speakers", image: speaker },
+      { label: "Speaker", href: "/category/speaker", image: speaker },
       { label: "Drone", href: "/category/drone", image: drone },
       { label: "Router", href: "/category/router", image: router },
       { label: "Gaming", href: "/category/video-games", image: gaming },
@@ -232,7 +209,7 @@ export const home_data: HomeData = {
       {
         theme: "light",
         alt: "Protect your Galaxy S26 Ultra — exclusive cases and screen protectors",
-        href: "/category/samsung-cases-accessories",
+        href: "/category/cases-protectors/samsung-cases-protectors",
         desktop: galaxyDesktop,
         mobile: galaxyMobile,
       },

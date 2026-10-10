@@ -1,23 +1,23 @@
 "use client";
 
 import { Heart } from "lucide-react";
-import { useIsWished, toggle } from "@/shared/libs/wishlist";
+import { useWishToggle } from "@/shared/libs/wishlist";
 import { cn } from "@/shared/utils/cn";
 
 type Variant = "card" | "inline";
 
 export function WishlistButton({
-  slug,
+  productId,
   name,
   variant = "card",
   className,
 }: {
-  slug: string;
+  productId: string;
   name: string;
   variant?: Variant;
   className?: string;
 }) {
-  const wished = useIsWished(slug);
+  const { wished, toggle, busy } = useWishToggle(productId, name);
 
   const label = wished ? `Remove ${name} from your wishlist` : `Save ${name} to your wishlist`;
 
@@ -25,7 +25,8 @@ export function WishlistButton({
     return (
       <button
         type="button"
-        onClick={() => toggle(slug)}
+        onClick={toggle}
+        disabled={busy}
         aria-pressed={wished}
         className={cn(
           "inline-flex items-center gap-2 rounded-control border px-5 py-3.5 font-bold transition-colors",
@@ -45,7 +46,8 @@ export function WishlistButton({
   return (
     <button
       type="button"
-      onClick={() => toggle(slug)}
+      onClick={toggle}
+      disabled={busy}
       aria-pressed={wished}
       aria-label={label}
       title={label}

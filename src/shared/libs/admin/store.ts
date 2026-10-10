@@ -32,26 +32,3 @@ export function createStore<T>(seed: () => T): AdminStore<T> {
 
   return { read, write, update, use };
 }
-
-export const rng = (seed: number) => {
-  let state = seed >>> 0;
-
-  return () => {
-    state = (state + 0x6d2b79f5) >>> 0;
-    let t = state;
-    t = Math.imul(t ^ (t >>> 15), t | 1);
-    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-};
-
-export const today = (): Date => {
-  const now = new Date();
-  return new Date(now.getFullYear(), now.getMonth(), now.getDate());
-};
-
-export const daysAgo = (days: number): string =>
-  new Date(today().getTime() - days * 86_400_000).toISOString();
-
-export const localId = (prefix: string): string =>
-  `${prefix}-${Date.now().toString(36)}-${Math.floor(Math.random() * 1e6).toString(36)}`;

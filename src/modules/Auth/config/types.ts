@@ -8,6 +8,7 @@ export type AuthData = {
     password: string;
     forgot: string;
     submit: string;
+    pending: string;
     footer: string;
     footerLink: string;
   };
@@ -20,6 +21,7 @@ export type AuthData = {
     password: string;
     confirm: string;
     submit: string;
+    pending: string;
     footer: string;
     footerLink: string;
   };
@@ -34,16 +36,14 @@ export type AuthData = {
   };
 
   google: {
-    signIn: string;
-    signUp: string;
     divider: string;
-    mock: string;
+    pending: string;
+    unavailable: string;
   };
 
   showPassword: string;
   hidePassword: string;
 
-  note: string;
   signedInAs: string;
   signOut: string;
 
@@ -53,6 +53,7 @@ export type AuthData = {
     email: string;
     phone: string;
     password: string;
+    min: string;
     short: string;
     mismatch: string;
   };

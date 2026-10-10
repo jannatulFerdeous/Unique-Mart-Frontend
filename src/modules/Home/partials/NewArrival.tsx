@@ -1,9 +1,11 @@
 import { ProductRail } from "@/common/components/ProductRail";
 import { SectionHeader } from "@/common/components/SectionHeader";
+import type { Product } from "@/shared/config/catalog";
 import { home_data } from "../config/constants";
 
-export function NewArrival() {
-  const { title, href, products } = home_data.newArrival;
+export function NewArrival({ products }: { products: Product[] }) {
+  const { title, href } = home_data.newArrival;
+  if (!products.length) return null;
 
   return (
     <section aria-labelledby="new-arrival-heading" className="pt-5">

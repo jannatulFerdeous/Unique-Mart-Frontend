@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { ChevronDown, Menu, X } from "lucide-react";
+import logo from "@/images/brand/logo.png";
 import { utilityNav } from "@/shared/config/navigation";
 import type { NavItem } from "@/shared/config/navigation";
 import { site } from "@/shared/config/site";
@@ -66,9 +68,7 @@ export function MobileNav({ nav: categoryNav }: { nav: NavItem[] }) {
           )}
         >
           <div className="flex items-center justify-between border-b border-line px-5 py-4">
-            <span className="font-display text-base font-extrabold tracking-tight uppercase">
-              {site.name}
-            </span>
+            <Image src={logo} alt={site.name} sizes="100px" className="h-9 w-auto" />
             <button
               type="button"
               onClick={close}

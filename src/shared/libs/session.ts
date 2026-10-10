@@ -3,6 +3,8 @@ import { useCallback, useSyncExternalStore } from "react";
 export { initials } from "@/shared/utils/initials";
 
 export type SessionUser = {
+  id?: string;
+  role?: string;
   name: string;
   email?: string;
   phone?: string;
@@ -55,6 +57,8 @@ const announce = () => {
 
 export const signIn = (user: SessionUser): SessionUser => {
   const clean: SessionUser = {
+    ...(user.id ? { id: user.id } : {}),
+    ...(user.role ? { role: user.role } : {}),
     name: user.name.trim().slice(0, 60),
     ...(user.email ? { email: user.email.trim().slice(0, 254) } : {}),
     ...(user.phone ? { phone: user.phone.trim().slice(0, 30) } : {}),

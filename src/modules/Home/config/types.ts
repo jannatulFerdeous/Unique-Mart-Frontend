@@ -2,7 +2,7 @@ import type { ImgHTMLAttributes } from "react";
 import type { StaticImageData } from "next/image";
 import type { BrandMark } from "@/shared/config/brands";
 import type { TrustClaim } from "@/shared/config/trust";
-import type { Product, ProductRailData } from "@/shared/config/catalog";
+import type { Product } from "@/shared/config/catalog";
 
 export type HeroArt = { src: string; width: number; height: number };
 
@@ -42,6 +42,13 @@ export type WideBanner = {
   mobile: StaticImageData;
 };
 
+// A homepage product row; its products come from the admin (see Home.tsx).
+export type HomeRow = {
+  title: string;
+  href: string;
+};
+
+// `key` is the brand's slug in the admin; its products are filled in at render.
 export type BrandTab = {
   key: string;
   label: string;
@@ -50,13 +57,15 @@ export type BrandTab = {
   products: Product[];
 };
 
+export type BrandTabConfig = Omit<BrandTab, "products">;
+
 export type HomeData = {
   trust: TrustClaim[];
-  exclusive: ProductRailData;
-  topSelling: ProductRailData;
-  newArrival: ProductRailData;
-  soundSurround: ProductRailData;
-  casesAndProtectors: ProductRailData;
+  exclusive: HomeRow;
+  topSelling: HomeRow;
+  newArrival: HomeRow;
+  soundSurround: HomeRow;
+  casesAndProtectors: HomeRow;
   brandWall: {
     title: string;
     brands: BrandMark[];
@@ -69,7 +78,7 @@ export type HomeData = {
   brands: {
     title: string;
     href: string;
-    items: BrandTab[];
+    items: BrandTabConfig[];
   };
   categories: {
     title: string;

@@ -12,13 +12,9 @@ const DATE_TIME = new Intl.DateTimeFormat("en-GB", {
   minute: "2-digit",
 });
 
-const DAY_SHORT = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short" });
-
 export const formatDate = (iso: string): string => DATE.format(new Date(iso));
 
 export const formatDateTime = (iso: string): string => DATE_TIME.format(new Date(iso));
-
-export const formatDayShort = (iso: string): string => DAY_SHORT.format(new Date(iso));
 
 export const formatAgo = (iso: string): string => {
   const then = new Date(iso).getTime();
@@ -37,15 +33,6 @@ export const formatAgo = (iso: string): string => {
 const compact = new Intl.NumberFormat("en-IN", { maximumFractionDigits: 1 });
 const plain = new Intl.NumberFormat("en-IN", { maximumFractionDigits: 0 });
 
-export const formatMoneyCompact = (amount: number): string => {
-  const sign = amount < 0 ? "-" : "";
-  const value = Math.abs(amount);
-
-  if (value >= 10_000_000) return `${sign}Tk ${compact.format(value / 10_000_000)} Cr`;
-  if (value >= 100_000) return `${sign}Tk ${compact.format(value / 100_000)} L`;
-  return `${sign}Tk ${plain.format(value)}`;
-};
-
 export const formatMoney = (amount: number): string =>
   `${amount < 0 ? "-" : ""}Tk ${plain.format(Math.abs(amount))}`;
 
@@ -56,20 +43,4 @@ export const formatDelta = (percent: number | null): string => {
   const rounded = Math.abs(percent) < 0.05 ? 0 : percent;
   const sign = rounded > 0 ? "+" : rounded < 0 ? "−" : "";
   return `${sign}${compact.format(Math.abs(rounded))}%`;
-};
-
-export const niceScale = (value: number, bands: number): { max: number; step: number } => {
-  if (!(value > 0) || bands < 1) return { max: 1, step: 1 / bands };
-
-  const rough = value / bands;
-  const magnitude = 10 ** Math.floor(Math.log10(rough));
-  const ladder = [1, 1.5, 2, 2.5, 3, 4, 5, 6, 7.5, 8, 10];
-
-  for (const rung of ladder) {
-    const step = rung * magnitude;
-    if (step * bands >= value) return { max: step * bands, step };
-  }
-
-  const step = 10 * magnitude;
-  return { max: step * bands, step };
 };

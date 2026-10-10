@@ -3,83 +3,91 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Minus, Plus, Trash2 } from "lucide-react";
-import {
-  MAX_QUANTITY,
-  lineKey,
-  lineTotal,
-  remove,
-  setQuantity,
-  setSelected,
-  type CartLine,
-} from "@/shared/libs/cart";
-import { productHref } from "@/shared/config/products";
+import { apiErrorMessage } from "@/redux/api/errors";
+import { useRemoveCartItemMutation, useUpdateCartItemMutation } from "@/redux/features/cart/cartApi";
+import { MAX_QUANTITY, lineTotal, type CartLine } from "@/shared/libs/cart";
+import { productHref } from "@/shared/libs/storefront/catalog";
+import { toast } from "@/shared/libs/toast";
 import { formatPrice } from "@/shared/utils/price";
-import { cn } from "@/shared/utils/cn";
 import { cart_data } from "../config/constants";
-import { lineImage } from "../lineImage";
 
 export function CartRow({ line }: { line: CartLine }) {
-  const key = lineKey(line);
+  const [update, updating] = useUpdateCartItemMutation();
+  const [remove, removing] = useRemoveCartItemMutation();
+  const busy = updating.isLoading || removing.isLoading;
+  const href = line.slug ? productHref(line.slug) : null;
 
-  const image = lineImage(line);
+  const act = async (action: () => Promise<unknown>) => {
+    try {
+      await action();
+    } catch (problem) {
+      toast("danger", apiErrorMessage(problem, "Couldn't update your basket. Please try again."));
+    }
+  };
+
+  const setQuantity = (quantity: number) =>
+    act(() =>
+      quantity < 1
+        ? remove(line.id).unwrap()
+        : update({ itemId: line.id, quantity: Math.min(MAX_QUANTITY, quantity) }).unwrap(),
+    );
+
+  const removeButton = (
+    <button
+      type="button"
+      onClick={() => act(() => remove(line.id).unwrap())}
+      disabled={busy}
+      aria-label={cart_data.removeOne.replace("{name}", line.name)}
+      className="grid size-9 place-items-center rounded-control text-ink-subtle transition-colors hover:bg-danger-soft hover:text-danger disabled:opacity-40"
+    >
+      <Trash2 className="size-4.5" aria-hidden />
+    </button>
+  );
+
+  if (line.missing) {
+    return (
+      <li className="flex items-center justify-between gap-4 border-b border-line py-5 last:border-0">
+        <div className="min-w-0">
+          <p className="font-medium text-ink">{line.name}</p>
+          <p className="mt-1 text-sm text-danger">{cart_data.missing}</p>
+        </div>
+        {removeButton}
+      </li>
+    );
+  }
+
+  const options = Object.entries(line.options);
 
   return (
     <li
-      className={cn(
-        "flex flex-wrap items-center gap-x-4 gap-y-3 border-b border-line py-5 last:border-0 sm:flex-nowrap",
-        !line.selected && "opacity-60",
-      )}
+      aria-busy={busy}
+      className="flex flex-wrap items-center gap-x-4 gap-y-3 border-b border-line py-5 last:border-0 sm:flex-nowrap"
     >
-      <input
-        type="checkbox"
-        checked={line.selected}
-        onChange={(event) => setSelected(key, event.target.checked)}
-        aria-label={`Include ${line.name} in the total`}
-        className="size-5 shrink-0 accent-tertiary"
-      />
-
-      <Link
-        href={productHref(line.slug)}
-        className="shrink-0"
-        tabIndex={-1}
-        aria-hidden
-      >
-        {image ? (
-          <Image
-            src={image}
-            alt=""
-            sizes="80px"
-            className="size-20 object-contain"
-          />
-        ) : (
-          <span className="block size-20 bg-surface-muted" />
-        )}
-      </Link>
+      {href && (
+        <Link href={href} className="shrink-0" tabIndex={-1} aria-hidden>
+          {line.image ? (
+            <Image src={line.image} alt="" sizes="80px" className="size-20 object-contain" />
+          ) : (
+            <span className="block size-20 bg-surface-muted" />
+          )}
+        </Link>
+      )}
 
       <div className="min-w-0 flex-1 basis-48">
-        <Link
-          href={productHref(line.slug)}
-          className="font-medium text-ink transition-colors hover:text-tertiary"
-        >
-          {line.name}
-        </Link>
+        {href ? (
+          <Link href={href} className="font-medium text-ink transition-colors hover:text-tertiary">
+            {line.name}
+          </Link>
+        ) : (
+          <p className="font-medium text-ink">{line.name}</p>
+        )}
 
-        {(line.color || Object.keys(line.options).length > 0) && (
+        {options.length > 0 && (
           <dl className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
-            {line.color && (
-              <div className="flex items-center gap-1.5">
-                <dt className="text-ink-muted">{cart_data.color}:</dt>
-                <dd className="rounded-control bg-surface-muted px-2 py-0.5 text-ink">
-                  {line.color}
-                </dd>
-              </div>
-            )}
-            {Object.entries(line.options).map(([label, value]) => (
+            {options.map(([label, value]) => (
               <div key={label} className="flex items-center gap-1.5">
                 <dt className="text-ink-muted">{label}:</dt>
-                <dd className="rounded-control bg-surface-muted px-2 py-0.5 text-ink">
-                  {value}
-                </dd>
+                <dd className="rounded-control bg-surface-muted px-2 py-0.5 text-ink">{value}</dd>
               </div>
             ))}
           </dl>
@@ -87,9 +95,7 @@ export function CartRow({ line }: { line: CartLine }) {
       </div>
 
       <div className="text-right">
-        <p className="font-bold text-tertiary">
-          {formatPrice(lineTotal(line))}
-        </p>
+        <p className="font-bold text-tertiary">{formatPrice(lineTotal(line))}</p>
         {line.quantity > 1 && (
           <p className="mt-0.5 text-sm text-ink-subtle">
             {formatPrice(line.unitPrice)} {cart_data.each}
@@ -100,24 +106,22 @@ export function CartRow({ line }: { line: CartLine }) {
       <div className="flex items-center gap-1">
         <button
           type="button"
-          onClick={() => setQuantity(key, line.quantity - 1)}
+          onClick={() => setQuantity(line.quantity - 1)}
+          disabled={busy}
           aria-label={`${cart_data.decrease} — ${line.name}`}
-          className="grid size-9 place-items-center rounded-control bg-surface-muted text-ink transition-colors hover:bg-line"
+          className="grid size-9 place-items-center rounded-control bg-surface-muted text-ink transition-colors hover:bg-line disabled:opacity-40"
         >
           <Minus className="size-4" aria-hidden />
         </button>
 
-        <span
-          aria-live="polite"
-          className="min-w-9 text-center font-medium text-ink tabular-nums"
-        >
+        <span aria-live="polite" className="min-w-9 text-center font-medium text-ink tabular-nums">
           {line.quantity}
         </span>
 
         <button
           type="button"
-          onClick={() => setQuantity(key, line.quantity + 1)}
-          disabled={line.quantity >= MAX_QUANTITY}
+          onClick={() => setQuantity(line.quantity + 1)}
+          disabled={busy || line.quantity >= Math.min(MAX_QUANTITY, line.stock)}
           aria-label={`${cart_data.increase} — ${line.name}`}
           className="grid size-9 place-items-center rounded-control bg-surface-muted text-ink transition-colors hover:bg-line disabled:opacity-40"
         >
@@ -125,14 +129,7 @@ export function CartRow({ line }: { line: CartLine }) {
         </button>
       </div>
 
-      <button
-        type="button"
-        onClick={() => remove(key)}
-        aria-label={cart_data.removeOne.replace("{name}", line.name)}
-        className="grid size-9 place-items-center rounded-control text-ink-subtle transition-colors hover:bg-danger-soft hover:text-danger"
-      >
-        <Trash2 className="size-4.5" aria-hidden />
-      </button>
+      {removeButton}
     </li>
   );
 }

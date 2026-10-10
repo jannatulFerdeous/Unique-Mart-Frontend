@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import { TriangleAlert } from "lucide-react";
-import { DEMO_PASSCODE } from "@/shared/libs/admin/access";
 import { METHOD_LABELS, saveSettings, toggleMethod, useSettings } from "@/shared/libs/admin/settings";
 import { formatMoney } from "@/shared/libs/admin/format";
+import { MODERATOR_SECTIONS } from "../config/access";
 import { admin_data } from "../config/constants";
 import { Button } from "../components/Button";
 import { Field, Input } from "../components/Field";
@@ -167,15 +167,28 @@ export function SettingsScreen() {
         </ul>
       </Panel>
 
-      <Panel title="Access">
-        <p className="text-sm text-ink-muted">
-          The portal opens with the passcode{" "}
-          <code className="rounded bg-surface-muted px-1.5 py-0.5 font-mono text-xs text-ink">
-            {DEMO_PASSCODE}
-          </code>
-          , which is compiled into the page anyone can read. There are no admin accounts, roles or
-          audit trail, because all three need a server to be worth anything. Treat this portal as a
-          working prototype of the screens, not as a place to keep real customer records.
+      <Panel
+        title="Access"
+        description="Who sees what in the dashboard. Everyone who signs in gets their own account pages."
+      >
+        <dl className="grid gap-3 text-sm sm:grid-cols-[10rem_minmax(0,1fr)]">
+          <dt className="font-medium text-ink">Super admin, Admin</dt>
+          <dd className="text-ink-muted">Every section.</dd>
+          <dt className="font-medium text-ink">Moderator</dt>
+          <dd className="text-ink-muted">
+            {admin_data.nav
+              .flatMap((group) => group.items)
+              .filter((item) => MODERATOR_SECTIONS.includes(item.href))
+              .map((item) => item.label)
+              .join(", ") || "Their own account only."}
+          </dd>
+          <dt className="font-medium text-ink">Customer</dt>
+          <dd className="text-ink-muted">Their own account only.</dd>
+        </dl>
+        <p className="mt-4 text-xs text-ink-subtle">
+          Moderator sections are set in <code className="font-mono">modules/AdminPortal/config/access.ts</code> until the
+          backend can store permissions. The backend doesn&apos;t check who is calling yet, so this decides what the
+          dashboard shows, not what the API allows.
         </p>
       </Panel>
     </>

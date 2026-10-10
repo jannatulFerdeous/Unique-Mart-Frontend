@@ -1,19 +1,19 @@
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
-import { categoryPath } from "@/shared/config/categories";
 import { cn } from "@/shared/utils/cn";
 import { formatPrice } from "@/shared/utils/price";
 import { category_data } from "../config/constants";
 
 type Props = {
   name: string;
-  trail: { slug: string; name: string }[];
+  trail: { slug: string; name: string; href: string }[];
   from: number | null;
-  links: { slug: string; name: string }[];
+  links: { slug: string; name: string; href: string }[];
   activeSlug: string;
+  heading?: string;
 };
 
-export function CategoryIntro({ name, trail, from, links, activeSlug }: Props) {
+export function CategoryIntro({ name, trail, from, links, activeSlug, heading }: Props) {
   const { headingTemplate, summaryRange, summaryOne, summaryEmpty, browseLabel } =
     category_data;
 
@@ -41,7 +41,7 @@ export function CategoryIntro({ name, trail, from, links, activeSlug }: Props) {
             {trail.map((crumb) => (
               <li key={crumb.slug} className="flex items-center gap-1">
                 <Link
-                  href={categoryPath(crumb.slug)}
+                  href={crumb.href}
                   className="text-ink-muted transition-colors hover:text-tertiary"
                 >
                   {crumb.name}
@@ -58,7 +58,7 @@ export function CategoryIntro({ name, trail, from, links, activeSlug }: Props) {
         </nav>
 
         <h1 className="mt-4 font-sans font-bold text-tertiary">
-          {headingTemplate.replace("{name}", name)}
+          {heading ?? headingTemplate.replace("{name}", name)}
         </h1>
 
         <p className="mt-2 max-w-3xl text-ink-muted">
@@ -73,7 +73,7 @@ export function CategoryIntro({ name, trail, from, links, activeSlug }: Props) {
               {links.map((link) => (
                 <li key={link.slug}>
                   <Link
-                    href={categoryPath(link.slug)}
+                    href={link.href}
                     aria-current={link.slug === activeSlug ? "page" : undefined}
                     className={cn(
                       "block rounded-control border px-3 py-1.5 text-sm transition-colors",

@@ -1,4 +1,4 @@
-import type { Offer } from "@/shared/config/products";
+import type { Offer } from "@/shared/libs/storefront/catalog";
 import { OffersBrowser } from "./partials/OffersBrowser";
 import { OffersHero } from "./partials/OffersHero";
 
