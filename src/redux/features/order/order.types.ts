@@ -9,6 +9,7 @@ export type OrderStatus = (typeof ORDER_STATUSES)[number];
 export type OrderItem = {
   _id: string;
   productId: string;
+  variantId?: string;
   name: string;
   sku: string;
   image: string | null;
@@ -35,6 +36,7 @@ export type Order = {
   discount: number;
   deliveryCharge: number;
   totalAmount: number;
+  couponId: string | null;
   couponCode: string | null;
   shippingAddressId: string;
   shippingAddress: ShippingAddress;
@@ -50,3 +52,6 @@ export type OrderList = { items: Order[]; meta: ApiMeta };
 // Mirrors the backend `createOrderValidationSchema`. The backend accepts a
 // coupon code but doesn't apply it yet, so the checkout doesn't send one.
 export type CreateOrderArgs = { shippingAddressId: string };
+
+// Mirrors the backend `updateOrderStatusValidationSchema` (staff only).
+export type UpdateOrderStatusArgs = { id: string; orderStatus: OrderStatus };

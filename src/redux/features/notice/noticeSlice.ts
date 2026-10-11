@@ -11,7 +11,9 @@ export type NoticeScope =
   | "coupons"
   | "reviews"
   | "newsletter"
-  | "reports";
+  | "reports"
+  | "refunds"
+  | "orders";
 
 export type Notice = { scope: NoticeScope; tone: "good" | "danger"; text: string };
 

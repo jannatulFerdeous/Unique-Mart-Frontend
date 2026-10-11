@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Category } from "@/modules/Category";
 import { getCatalog } from "@/shared/api/storefront";
-import { brandMarks, brandsPath } from "@/shared/config/brands";
+import { brandsPath } from "@/shared/config/brands";
 import {
   brandOf,
   facetGroupsFor,
@@ -11,12 +11,13 @@ import {
   type Catalog,
 } from "@/shared/libs/storefront/catalog";
 
-// A brand from the admin, or one of the logos on the brand wall that isn't
-// stocked yet (its page then says so instead of 404ing).
+// An active brand from the admin with its live products; a brand with none yet
+// still gets its page, which says so.
 const brandFor = (catalog: Catalog, slug: string) => {
-  const stocked = catalog.brands.find((brand) => brand.slug === slug);
-  const name = stocked?.name ?? brandMarks.find((mark) => mark.slug === slug)?.label;
-  return name ? { name, products: catalog.products.filter((product) => brandOf(catalog, product)?.slug === slug) } : null;
+  const brand = catalog.brands.find((each) => each.slug === slug);
+  return brand
+    ? { name: brand.name, products: catalog.products.filter((product) => brandOf(catalog, product)?.slug === slug) }
+    : null;
 };
 
 export async function generateMetadata({ params }: PageProps<"/brands/[slug]">): Promise<Metadata> {

@@ -11,8 +11,8 @@ import { ProductBreadcrumb } from "@/modules/ProductDetails";
 import { apiErrorMessage } from "@/redux/api/errors";
 import { useGetAddressesQuery } from "@/redux/features/address/addressApi";
 import type { Address } from "@/redux/features/address/address.types";
-import { useClearCartMutation } from "@/redux/features/cart/cartApi";
 import { useCreateOrderMutation } from "@/redux/features/order/orderApi";
+import { useCreatePaymentMutation } from "@/redux/features/payment/paymentApi";
 import { useCart } from "@/shared/libs/cart";
 import { useSignInFirst } from "@/shared/libs/useSignInFirst";
 import { cn } from "@/shared/utils/cn";
@@ -75,22 +75,33 @@ function CheckoutForm({ addresses, lines }: { addresses: Address[]; lines: Retur
   const [chosen, setChosen] = useState<string | null>(null);
   const [adding, setAdding] = useState(addresses.length === 0);
   const [failure, setFailure] = useState<string | null>(null);
-  const [createOrder, { isLoading: placing }] = useCreateOrderMutation();
-  const [clearCart] = useClearCartMutation();
+  const [leaving, setLeaving] = useState(false);
+  const [createOrder] = useCreateOrderMutation();
+  const [createPayment] = useCreatePaymentMutation();
 
   // The pick, else the default address, else the first one.
   const selected = addresses.find((each) => each._id === chosen) ?? addresses.find((each) => each.isDefault) ?? addresses[0];
 
+  // Places the order (the backend empties the cart), then hands over to
+  // SSLCommerz. The backend confirms an order only once it's paid.
   const place = async () => {
     if (!selected) return;
     setFailure(null);
+    setLeaving(true);
+    let orderId: string;
     try {
-      const order = await createOrder({ shippingAddressId: selected._id }).unwrap();
-      // The backend copies the cart into the order but leaves the cart full.
-      await clearCart().unwrap().catch(() => undefined);
-      router.push(`/account/orders/${order._id}?placed=1`);
+      orderId = (await createOrder({ shippingAddressId: selected._id }).unwrap())._id;
     } catch (problem) {
+      setLeaving(false);
       setFailure(apiErrorMessage(problem, "Couldn't place your order. Please try again."));
+      return;
+    }
+    try {
+      const { checkoutUrl } = await createPayment({ orderId }).unwrap();
+      window.location.assign(checkoutUrl);
+    } catch {
+      // The order is placed; it can be paid from its page.
+      router.push(`/account/orders/${orderId}?placed=1`);
     }
   };
 
@@ -177,8 +188,8 @@ function CheckoutForm({ addresses, lines }: { addresses: Address[]; lines: Retur
             {copy.paymentHeading}
           </h2>
           <p className="mt-3 rounded-control border border-tertiary bg-tertiary-soft p-4 text-sm">
-            <span className="block font-medium text-ink">{copy.cashOnDelivery}</span>
-            <span className="mt-0.5 block text-ink-muted">{copy.cashNote}</span>
+            <span className="block font-medium text-ink">{copy.payOnline}</span>
+            <span className="mt-0.5 block text-ink-muted">{copy.payOnlineNote}</span>
           </p>
         </section>
       </div>
@@ -190,10 +201,10 @@ function CheckoutForm({ addresses, lines }: { addresses: Address[]; lines: Retur
             <button
               type="button"
               onClick={place}
-              disabled={!selected || adding || placing}
+              disabled={!selected || adding || leaving}
               className="mt-5 w-full rounded-control bg-tertiary px-6 py-3.5 font-bold text-tertiary-contrast transition-colors hover:bg-tertiary-hover disabled:pointer-events-none disabled:opacity-50"
             >
-              {placing ? copy.placing : copy.place}
+              {leaving ? copy.placing : copy.place}
             </button>
           }
         />

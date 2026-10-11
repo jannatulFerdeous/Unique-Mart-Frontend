@@ -18,9 +18,9 @@ export const checkout_data = {
   needAddress: "Choose or add a delivery address to place your order.",
 
   paymentHeading: "Payment",
-  cashOnDelivery: "Cash on delivery",
-  cashNote: "Pay in cash when your order arrives.",
+  payOnline: "Pay online with SSLCommerz",
+  payOnlineNote: "Card, mobile banking or internet banking. You'll finish paying on SSLCommerz's secure page.",
 
-  place: "Place order",
-  placing: "Placing your order…",
+  place: "Place order and pay",
+  placing: "Taking you to payment…",
 } as const;

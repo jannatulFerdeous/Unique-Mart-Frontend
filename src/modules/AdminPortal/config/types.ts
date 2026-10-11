@@ -26,6 +26,8 @@ export type NavIcon =
   | "faq"
   | "coupons"
   | "newsletter"
+  | "refunds"
+  | "orderStatus"
   | "support";
 
 export type NavGroup = {

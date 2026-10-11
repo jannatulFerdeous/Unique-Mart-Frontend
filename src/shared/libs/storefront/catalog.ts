@@ -12,7 +12,7 @@ import {
   type MainCategory,
   type SubCategory,
 } from "@/redux/features/catalog/catalog.types";
-import type { AttributeValue, Product as ApiProduct } from "@/redux/features/product/product.types";
+import type { AttributeValue, Product as ApiProduct, ProductVariant } from "@/redux/features/product/product.types";
 import type { NavItem } from "@/shared/config/navigation";
 import type {
   DescriptionBlock,
@@ -173,8 +173,43 @@ export const inStock = (product: ApiProduct) =>
 export const brandOf = (catalog: Catalog, product: ApiProduct) =>
   catalog.brandById.get(refId(product.brandId));
 
+// Logos keep their own shape (product images are padded to a white square,
+// which would shrink a wide logo); shown with `fill`, so the size is nominal.
+const LOGO_WIDTH = 480;
+const brandLogo = (url: string): StaticImageData => ({
+  src: url.includes("res.cloudinary.com") && url.includes("/upload/")
+    ? url.replace("/upload/", `/upload/c_limit,w_${LOGO_WIDTH},f_auto,q_auto/`)
+    : url,
+  width: LOGO_WIDTH,
+  height: LOGO_WIDTH / 2,
+});
+
+// A brand as the shop shows it, from what the admin set: name, slug, logo
+// (null when none was uploaded) and how many live products it has.
+export type BrandMark = { slug: string; label: string; logo: StaticImageData | null; productCount: number };
+
+// Every active brand, A to Z.
+export const toBrandMarks = (catalog: Catalog): BrandMark[] => {
+  const counts = new Map<string, number>();
+  for (const product of catalog.products) {
+    const id = refId(product.brandId);
+    counts.set(id, (counts.get(id) ?? 0) + 1);
+  }
+  return [...catalog.brands]
+    .sort((a, b) => a.name.localeCompare(b.name))
+    .map((brand) => ({
+      slug: brand.slug,
+      label: brand.name,
+      logo: brand.logo?.url ? brandLogo(brand.logo.url) : null,
+      productCount: counts.get(brand._id) ?? 0,
+    }));
+};
+
 export const toCard = (catalog: Catalog, product: ApiProduct): Product => ({
   id: product._id,
+  variantId: product.hasVariants
+    ? (product.variants.find((variant) => variant.stock > 0) ?? product.variants[0])?._id
+    : undefined,
   slug: product.slug,
   name: product.name,
   image: productImage(product.images[0]?.url),
@@ -206,7 +241,7 @@ export const toOffers = (catalog: Catalog): Offer[] =>
 export const attributeLabel = (name: string, group?: string) =>
   group && name.endsWith(` (${group})`) ? name.slice(0, -(group.length + 3)) : name.replace(/ \([^)]*\)$/, "");
 
-export const valueLabels = (attribute: Attribute | undefined, value: AttributeValue): string[] => {
+export const valueLabels = (attribute: Pick<Attribute, "type" | "options"> | undefined, value: AttributeValue): string[] => {
   const label = (raw: string) => attribute?.options?.find((option) => option.value === raw)?.label ?? raw;
   if (Array.isArray(value)) return value.map(label);
   if (typeof value === "boolean") return [value ? "Yes" : "No"];
@@ -214,6 +249,14 @@ export const valueLabels = (attribute: Attribute | undefined, value: AttributeVa
   if (attribute?.type === "select") return [label(value)];
   return value.split(/;\s+|\n/).map((line) => line.trim()).filter(Boolean);
 };
+
+// A variant's choices, e.g. { Colour: "Black" }, where the route populated its attributes.
+export const variantChoices = (variant: ProductVariant): Record<string, string> =>
+  Object.fromEntries(
+    variant.attributes.flatMap(({ attributeId, value }) =>
+      typeof attributeId === "string" ? [] : [[attributeLabel(attributeId.name), valueLabels(attributeId, value).join(", ")]],
+    ),
+  );
 
 export type FacetGroup = { id: string; label: string; values: string[] };
 

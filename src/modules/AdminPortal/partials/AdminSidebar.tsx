@@ -22,6 +22,8 @@ import {
   Star,
   Tag,
   TicketPercent,
+  Truck,
+  Undo2,
   UserRound,
   Users,
 } from "lucide-react";
@@ -52,6 +54,8 @@ const ICONS: Record<NavIcon, LucideIcon> = {
   faq: MessageCircleQuestion,
   coupons: TicketPercent,
   newsletter: Mail,
+  refunds: Undo2,
+  orderStatus: Truck,
   support: LifeBuoy,
 };
 

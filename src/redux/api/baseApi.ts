@@ -18,6 +18,7 @@ export const TAG = {
   wishlist: "Wishlist",
   address: "Address",
   order: "Order",
+  payment: "Payment",
   review: "Review",
   coupon: "Coupon",
   newsletter: "Newsletter",

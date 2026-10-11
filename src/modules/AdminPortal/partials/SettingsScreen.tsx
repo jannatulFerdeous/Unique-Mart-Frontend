@@ -1,196 +1,140 @@
 "use client";
 
-import { useState } from "react";
-import { TriangleAlert } from "lucide-react";
-import { METHOD_LABELS, saveSettings, toggleMethod, useSettings } from "@/shared/libs/admin/settings";
+import type { ReactNode } from "react";
+import { mailHref, site, telHref } from "@/shared/config/site";
 import { formatMoney } from "@/shared/libs/admin/format";
-import { MODERATOR_SECTIONS } from "../config/access";
-import { admin_data } from "../config/constants";
-import { Button } from "../components/Button";
-import { Field, Input } from "../components/Field";
+import { ButtonLink } from "../components/Button";
 import { Panel, ScreenHeader } from "../components/Panel";
+import { StatusPill } from "../components/StatusPill";
+import { REFUNDS_HREF } from "../config/orders";
+import { blurbFor, navFor } from "./AdminSidebar";
+
+// The backend has nowhere to store settings, so this page shows how the store
+// is actually set up, and where each part is changed.
+
+// The backend's SSLCommerz limits per transaction (payment.service.ts).
+const PAYMENT_MIN = 10;
+const PAYMENT_MAX = 500_000;
+
+// The store-management sections a role can open, by label.
+const sectionsFor = (role: string) =>
+  navFor(role)
+    .flatMap((group) => group.items)
+    .filter((item) => item.href.startsWith("/admin"))
+    .map((item) => item.label);
 
 export function SettingsScreen() {
-  const { common } = admin_data;
-  const settings = useSettings();
-
-  const [form, setForm] = useState(() => ({
-    storeName: settings.storeName,
-    supportPhone: settings.supportPhone,
-    supportEmail: settings.supportEmail,
-    freeShippingFrom: String(settings.freeShippingFrom),
-    shippingFlat: String(settings.shippingFlat),
-    defaultReorderAt: String(settings.defaultReorderAt),
-  }));
-  const [saved, setSaved] = useState(false);
-
-  const set = <K extends keyof typeof form>(key: K, value: string) => {
-    setForm((current) => ({ ...current, [key]: value }));
-    setSaved(false);
-  };
-
-  const number = (value: string, fallback: number) => {
-    const parsed = Number(value);
-    return Number.isFinite(parsed) && parsed >= 0 ? Math.round(parsed) : fallback;
-  };
+  const moderatorSections = sectionsFor("moderator");
 
   return (
     <>
-      <ScreenHeader
-        title="Settings"
-        blurb="Delivery charges, payment methods and contact details."
-      />
+      <ScreenHeader title="Settings" blurb={blurbFor("/admin/settings")} />
 
-      <p className="flex gap-2.5 rounded-card border border-line bg-surface px-4 py-3 text-sm text-ink-muted">
-        <TriangleAlert className="mt-0.5 size-4 shrink-0 text-warning" aria-hidden />
-        <span>
-          These are the settings a real checkout would read. Nothing on the shop reads them today —
-          the delivery charge and the contact details there come from the shipped config. The
-          reorder point below does take effect, on every product added from now on.
-        </span>
-      </p>
-
-      <div className="grid gap-5 lg:grid-cols-2">
-        <Panel title="Store">
-          <div className="flex flex-col gap-4">
-            <Field label="Store name">
-              <Input
-                value={form.storeName}
-                onChange={(event) => set("storeName", event.target.value)}
-                maxLength={60}
-              />
-            </Field>
-            <Field label="Support phone">
-              <Input
-                value={form.supportPhone}
-                onChange={(event) => set("supportPhone", event.target.value)}
-                maxLength={30}
-              />
-            </Field>
-            <Field label="Support email">
-              <Input
-                type="email"
-                value={form.supportEmail}
-                onChange={(event) => set("supportEmail", event.target.value)}
-                maxLength={254}
-              />
-            </Field>
-          </div>
+      <div className="grid items-start gap-5 lg:grid-cols-2">
+        <Panel title="Store" description="What the website shows in the header, footer and About pages.">
+          <Facts>
+            <Fact label="Name">{site.name}</Fact>
+            <Fact label="Phone">
+              <a href={telHref} className="hover:text-tertiary hover:underline">
+                {site.phone}
+              </a>
+            </Fact>
+            <Fact label="Email">
+              <a href={mailHref} className="break-all hover:text-tertiary hover:underline">
+                {site.email}
+              </a>
+            </Fact>
+            <Fact label="Website">{site.url.replace(/^https?:\/\//, "")}</Fact>
+          </Facts>
+          <WhereToChange>
+            <code className="font-mono">src/shared/config/site.ts</code> in the website
+          </WhereToChange>
         </Panel>
 
-        <Panel title="Delivery and stock">
-          <div className="flex flex-col gap-4">
-            <Field
-              label="Delivery charge (Tk)"
-              hint="Charged on every order below the free-delivery threshold."
-            >
-              <Input
-                value={form.shippingFlat}
-                onChange={(event) => set("shippingFlat", event.target.value)}
-                inputMode="numeric"
-              />
-            </Field>
-
-            <Field
-              label="Free delivery from (Tk)"
-              hint={`At or above ${formatMoney(number(form.freeShippingFrom, settings.freeShippingFrom))}, delivery is free.`}
-            >
-              <Input
-                value={form.freeShippingFrom}
-                onChange={(event) => set("freeShippingFrom", event.target.value)}
-                inputMode="numeric"
-              />
-            </Field>
-
-            <Field
-              label="Default reorder point"
-              hint="What a newly added product starts with. Existing products keep their own."
-            >
-              <Input
-                value={form.defaultReorderAt}
-                onChange={(event) => set("defaultReorderAt", event.target.value)}
-                inputMode="numeric"
-              />
-            </Field>
-          </div>
+        <Panel title="Delivery" description="What customers pay to have an order delivered.">
+          <Facts>
+            <Fact label="Charge">
+              <StatusPill label="Free" tone="good" />
+            </Fact>
+            <Fact label="Applies to">Every order, anywhere in the country</Fact>
+          </Facts>
+          <p className="mt-4 text-sm text-ink-muted">
+            The backend sets delivery to Tk 0 on every order, and the cart and checkout show it as free.
+          </p>
+          <WhereToChange>
+            the order service in the backend (<code className="font-mono">order.service.ts</code>)
+          </WhereToChange>
         </Panel>
-      </div>
-
-      <div className="flex items-center gap-3">
-        <Button
-          variant="primary"
-          onClick={() => {
-            saveSettings({
-              storeName: form.storeName.trim() || settings.storeName,
-              supportPhone: form.supportPhone.trim(),
-              supportEmail: form.supportEmail.trim(),
-              freeShippingFrom: number(form.freeShippingFrom, settings.freeShippingFrom),
-              shippingFlat: number(form.shippingFlat, settings.shippingFlat),
-              defaultReorderAt: number(form.defaultReorderAt, settings.defaultReorderAt),
-            });
-            setSaved(true);
-          }}
-        >
-          {common.save}
-        </Button>
-        {saved && (
-          <span role="status" className="text-sm font-medium text-good">
-            {common.saved}
-          </span>
-        )}
       </div>
 
       <Panel
-        title="Payment methods"
-        description="Which methods checkout offers, in the order it offers them."
+        title="Payments"
+        description="How customers pay for their orders."
+        actions={
+          <ButtonLink href={REFUNDS_HREF} size="sm">
+            Refunds
+          </ButtonLink>
+        }
       >
-        <ul className="flex flex-col divide-y divide-line">
-          {settings.methods.map((method) => (
-            <li key={method.id} className="flex items-center justify-between gap-4 py-3 first:pt-0 last:pb-0">
-              <div>
-                <p className="text-sm font-medium text-ink">{METHOD_LABELS[method.id]}</p>
-                <p className="text-xs text-ink-subtle">
-                  {method.enabled ? "Offered at checkout" : "Hidden from checkout"}
-                </p>
-              </div>
-              <label className="flex items-center gap-2 text-sm text-ink-muted">
-                <span className="sr-only">Offer {METHOD_LABELS[method.id]} at checkout</span>
-                <input
-                  type="checkbox"
-                  checked={method.enabled}
-                  onChange={(event) => toggleMethod(method.id, event.target.checked)}
-                  className="size-4 accent-tertiary"
-                />
-              </label>
-            </li>
-          ))}
-        </ul>
+        <Facts>
+          <Fact label="Method">
+            <span className="flex flex-wrap items-center gap-2">
+              SSLCOMMERZ
+              <StatusPill label="Only method" tone="good" />
+            </span>
+          </Fact>
+          <Fact label="Customers can use">Card, mobile banking and internet banking, on SSLCOMMERZ&apos;s secure page</Fact>
+          <Fact label="Currency">Taka (BDT)</Fact>
+          <Fact label="Order amount">
+            {formatMoney(PAYMENT_MIN)} to {formatMoney(PAYMENT_MAX)}
+          </Fact>
+          <Fact label="Cash on delivery">
+            <StatusPill label="Not offered" tone="neutral" />
+          </Fact>
+        </Facts>
+        <p className="mt-4 text-sm text-ink-muted">
+          Customers pay straight after placing an order. An order stays pending until it&apos;s paid, and can only be
+          confirmed once SSLCOMMERZ has verified the payment. A paid order can&apos;t be cancelled until it&apos;s refunded.
+        </p>
+        <WhereToChange>
+          the backend&apos;s <code className="font-mono">.env</code>: the SSLCOMMERZ store ID, password, and sandbox or live
+          mode
+        </WhereToChange>
       </Panel>
 
-      <Panel
-        title="Access"
-        description="Who sees what in the dashboard. Everyone who signs in gets their own account pages."
-      >
-        <dl className="grid gap-3 text-sm sm:grid-cols-[10rem_minmax(0,1fr)]">
-          <dt className="font-medium text-ink">Super admin, Admin</dt>
-          <dd className="text-ink-muted">Every section.</dd>
-          <dt className="font-medium text-ink">Moderator</dt>
-          <dd className="text-ink-muted">
-            {admin_data.nav
-              .flatMap((group) => group.items)
-              .filter((item) => MODERATOR_SECTIONS.includes(item.href))
-              .map((item) => item.label)
-              .join(", ") || "Their own account only."}
-          </dd>
-          <dt className="font-medium text-ink">Customer</dt>
-          <dd className="text-ink-muted">Their own account only.</dd>
-        </dl>
-        <p className="mt-4 text-xs text-ink-subtle">
-          Moderator sections are set in <code className="font-mono">modules/AdminPortal/config/access.ts</code> until the
-          backend can store permissions. The backend doesn&apos;t check who is calling yet, so this decides what the
-          dashboard shows, not what the API allows.
+      <Panel title="Access" description="Who can open what in the dashboard. Everyone who signs in gets their own account pages.">
+        <Facts>
+          <Fact label="Super admin, Admin">Every section</Fact>
+          <Fact label="Moderator">{moderatorSections.join(", ") || "Their own account only"}</Fact>
+          <Fact label="Customer">Their own account only</Fact>
+        </Facts>
+        <p className="mt-4 text-sm text-ink-muted">
+          The backend checks the role for orders, payments, refunds, coupons, products, banners, reviews, the newsletter
+          and support requests. It doesn&apos;t yet for users, brands, categories and attributes, so for those this list
+          only decides what the dashboard shows.
         </p>
+        <WhereToChange>
+          <code className="font-mono">MODERATOR_SECTIONS</code> in{" "}
+          <code className="font-mono">src/modules/AdminPortal/config/access.ts</code>; roles are given in Users
+        </WhereToChange>
       </Panel>
     </>
   );
+}
+
+function Facts({ children }: { children: ReactNode }) {
+  return <dl className="grid gap-x-6 gap-y-3 text-sm sm:grid-cols-[10rem_minmax(0,1fr)]">{children}</dl>;
+}
+
+function Fact({ label, children }: { label: string; children: ReactNode }) {
+  return (
+    <>
+      <dt className="text-ink-muted">{label}</dt>
+      <dd className="-mt-2 text-ink sm:mt-0">{children}</dd>
+    </>
+  );
+}
+
+function WhereToChange({ children }: { children: ReactNode }) {
+  return <p className="mt-4 border-t border-line pt-3 text-xs text-ink-subtle">To change this: {children}</p>;
 }

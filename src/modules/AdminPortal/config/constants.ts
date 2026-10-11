@@ -100,6 +100,23 @@ export const admin_data: AdminData = {
       ],
     },
     {
+      title: "Sales",
+      items: [
+        {
+          href: "/admin/orders",
+          label: "Orders",
+          icon: "orderStatus",
+          blurb: "Move a customer's order along, from confirmed to delivered, or cancel it.",
+        },
+        {
+          href: "/admin/refunds",
+          label: "Refunds",
+          icon: "refunds",
+          blurb: "Give money back on a paid order through SSLCommerz, and follow each refund until it lands.",
+        },
+      ],
+    },
+    {
       title: "Marketing",
       items: [
         {
@@ -158,7 +175,7 @@ export const admin_data: AdminData = {
           href: "/admin/settings",
           label: "Settings",
           icon: "settings",
-          blurb: "Delivery charges, payment methods and contact details.",
+          blurb: "How your store is set up right now: contact details, delivery, payments and who can open what.",
         },
       ],
     },

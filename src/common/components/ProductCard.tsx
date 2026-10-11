@@ -12,7 +12,7 @@ type Props = {
 };
 
 export function ProductCard({ product, ribbon }: Props) {
-  const { id, slug, name, image, brand, price, compareAt, rating, badge } = product;
+  const { id, variantId, slug, name, image, brand, price, compareAt, rating, badge } = product;
   const href = `/shop/product/${slug}`;
   const corner = ribbon ?? badge;
 
@@ -29,7 +29,7 @@ export function ProductCard({ product, ribbon }: Props) {
         </span>
       ) : null}
 
-      <WishlistButton productId={id} name={name} />
+      <WishlistButton productId={id} variantId={variantId} name={name} />
 
       <Link href={href} tabIndex={-1} aria-hidden className="block">
         <Image

@@ -1,6 +1,4 @@
 import { site } from "@/shared/config/site";
-import { FREE_SHIPPING_FROM, SHIPPING_FLAT } from "@/shared/config/shipping";
-import { formatPrice } from "@/shared/utils/price";
 import type { ProsePage } from "./types";
 
 const UPDATED = "2026-09-20";
@@ -272,10 +270,6 @@ export const termsPage: ProsePage = {
           kind: "text",
           text: `Using this site means accepting these terms. If you do not accept them, please do not use the site. "We" and "us" mean ${site.name}; "you" means anyone browsing or ordering.`,
         },
-        {
-          kind: "text",
-          text: "Online ordering and payment are not live on this site yet. Sections about payment, delivery and returns describe the terms that will apply when they are, and no order placed through the site is binding until that point.",
-        },
       ],
     },
     {
@@ -332,7 +326,7 @@ export const termsPage: ProsePage = {
       blocks: [
         {
           kind: "text",
-          text: "When payment goes live, the methods offered at checkout will be the ones listed there. Any advance or pre-booking amount, and whether it is refundable, will be stated clearly before you pay it rather than in this document.",
+          text: "Orders are paid online through SSLCOMMERZ, by card, mobile banking or internet banking, straight after you place them. Cash on delivery is not offered. Prices are in Taka, and we confirm an order only once SSLCOMMERZ has verified its payment.",
         },
       ],
     },
@@ -341,7 +335,7 @@ export const termsPage: ProsePage = {
       blocks: [
         {
           kind: "text",
-          text: `Delivery is charged at ${formatPrice(SHIPPING_FLAT)} per order, and is free on orders of ${formatPrice(FREE_SHIPPING_FROM)} or more. The basket shows the charge before you check out.`,
+          text: "Delivery is free on every order, anywhere in the country. If that ever changes, the basket will show the charge before you check out.",
         },
         {
           kind: "text",
@@ -385,7 +379,7 @@ export const termsPage: ProsePage = {
       blocks: [
         {
           kind: "text",
-          text: "You may cancel an order before it is dispatched. If we cannot supply a product you have paid for, we will tell you and refund the amount in full to the method you paid with.",
+          text: "You can cancel an order yourself from your account until it is paid. Once it is paid, contact us before it is dispatched and we will cancel it and refund you. If we cannot supply a product you have paid for, we will tell you and refund the amount in full through SSLCOMMERZ, to the method you paid with.",
         },
       ],
     },

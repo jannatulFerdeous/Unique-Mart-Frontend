@@ -19,22 +19,37 @@ export const useWishlist = () => {
 
 export const useWishlistCount = (): number => useWishlist().count;
 
-// Heart state and toggle for one product.
-export const useWishToggle = (productId: string, name: string) => {
+// Heart state and toggle for one product. `variantId` is the version the heart
+// saves; products with variants need one. With `exact`, only that version
+// counts as saved and removing takes only it off. Otherwise any saved version
+// counts, and removing takes them all off.
+export const useWishToggle = ({
+  productId,
+  variantId,
+  name,
+  exact = false,
+}: {
+  productId: string;
+  variantId?: string;
+  name: string;
+  exact?: boolean;
+}) => {
   const { signedIn, goSignIn } = useSignInFirst();
   const { entries } = useWishlist();
   const [add, adding] = useAddToWishlistMutation();
   const [remove, removing] = useRemoveFromWishlistMutation();
-  const wished = entries.some((entry) => entry.productId?._id === productId);
+  const wished = entries.some(
+    (entry) => entry.productId?._id === productId && (!exact || (entry.variantId ?? undefined) === variantId),
+  );
 
   const toggle = async () => {
     if (!signedIn) return goSignIn();
     try {
       if (wished) {
-        await remove(productId).unwrap();
+        await remove({ productId, variantId: exact ? variantId : undefined }).unwrap();
         toast("good", `${name} removed from your wishlist.`);
       } else {
-        await add(productId).unwrap();
+        await add({ productId, variantId }).unwrap();
         toast("good", `${name} saved to your wishlist.`);
       }
     } catch (problem) {

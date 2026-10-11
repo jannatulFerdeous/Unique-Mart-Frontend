@@ -6,6 +6,8 @@ import { ArrowLeft, ChevronLeft, ChevronRight, CircleCheck } from "lucide-react"
 import { apiErrorMessage } from "@/redux/api/errors";
 import { useCancelOrderMutation, useGetMyOrderQuery, useGetMyOrdersQuery } from "@/redux/features/order/orderApi";
 import { ORDER_STATUSES, type Order, type OrderStatus } from "@/redux/features/order/order.types";
+import { useCreatePaymentMutation, useGetOrderPaymentQuery } from "@/redux/features/payment/paymentApi";
+import type { PaymentResult } from "@/redux/features/payment/payment.types";
 import { formatDate, formatDateTime } from "@/shared/libs/admin/format";
 import { productImage } from "@/shared/libs/storefront/catalog";
 import { cn } from "@/shared/utils/cn";
@@ -17,7 +19,17 @@ import { NoticeLine } from "../components/ListControls";
 import { EmptyState, Panel, ScreenHeader } from "../components/Panel";
 import { StatusPill } from "../components/StatusPill";
 import { Table, TableScroll, Td, TdNum, Th, ThNum, Tr } from "../components/Table";
-import { ORDERS_HREF, ORDERS_PAGE_SIZE, ORDER_STATUS_META, canCancel, orderNumber } from "../config/orders";
+import {
+  ORDERS_HREF,
+  ORDERS_PAGE_SIZE,
+  ORDER_STATUS_META,
+  PAYMENT_POLL_MS,
+  PAYMENT_RESULT_NOTICE,
+  PAYMENT_STATUS_META,
+  canCancel,
+  canPay,
+  orderNumber,
+} from "../config/orders";
 import { blurbFor } from "./AdminSidebar";
 
 const itemCount = (order: Order) => order.items.reduce((sum, item) => sum + item.quantity, 0);
@@ -151,10 +163,21 @@ export function OrdersScreen() {
 // ---------------------------------------------------------------------------
 // One order
 
-export function OrderDetailScreen({ id, placed }: { id: string; placed?: boolean }) {
+// `placed` is set straight after checkout; `paid` is what SSLCommerz sent the
+// shopper back with.
+export function OrderDetailScreen({ id, placed, paid }: { id: string; placed?: boolean; paid?: PaymentResult }) {
   const { data: order, isLoading, isError, error, refetch } = useGetMyOrderQuery(id);
+  const payment = useGetOrderPaymentQuery(id);
+  // While SSLCommerz hasn't reported back, keep asking; a second subscription
+  // to the same entry polls only while it's pending.
+  const awaiting = payment.data?.paymentStatus === "pending";
+  useGetOrderPaymentQuery(id, { skip: !awaiting, pollingInterval: PAYMENT_POLL_MS, skipPollingIfUnfocused: true });
   const [cancel, { isLoading: cancelling }] = useCancelOrderMutation();
-  const [feedback, setFeedback] = useState<{ tone: "good" | "danger"; text: string } | null>(null);
+  const [createPayment, { isLoading: starting }] = useCreatePaymentMutation();
+  const [leaving, setLeaving] = useState(false);
+  const [feedback, setFeedback] = useState<{ tone: "good" | "danger"; text: string } | null>(
+    paid ? PAYMENT_RESULT_NOTICE[paid] : null,
+  );
 
   const back = (
     <ButtonLink href={ORDERS_HREF} variant="ghost" size="sm">
@@ -163,12 +186,12 @@ export function OrderDetailScreen({ id, placed }: { id: string; placed?: boolean
     </ButtonLink>
   );
 
-  if (isLoading || isError || !order) {
+  if (isLoading || payment.isLoading || isError || !order) {
     return (
       <>
         <ScreenHeader title="Order" actions={back} />
         <Panel>
-          {isLoading ? (
+          {isLoading || payment.isLoading ? (
             <EmptyState title="Loading your order…" />
           ) : (
             <EmptyState
@@ -184,6 +207,20 @@ export function OrderDetailScreen({ id, placed }: { id: string; placed?: boolean
 
   const meta = ORDER_STATUS_META[order.orderStatus];
   const { shippingAddress: to } = order;
+  // If the payment status can't be read, assume it's unpaid; the backend refuses anything it shouldn't allow.
+  const paymentStatus = payment.data?.paymentStatus ?? null;
+  const paymentMeta = PAYMENT_STATUS_META[paymentStatus ?? "none"];
+
+  const pay = async () => {
+    setFeedback(null);
+    try {
+      const { checkoutUrl } = await createPayment({ orderId: order._id }).unwrap();
+      setLeaving(true);
+      window.location.assign(checkoutUrl);
+    } catch (problem) {
+      setFeedback({ tone: "danger", text: apiErrorMessage(problem, "Couldn't start the payment. Please try again.") });
+    }
+  };
 
   const cancelOrder = async () => {
     try {
@@ -205,7 +242,7 @@ export function OrderDetailScreen({ id, placed }: { id: string; placed?: boolean
       {placed && !feedback && (
         <p role="status" className="flex items-center gap-2 rounded-control bg-good-soft px-4 py-3 text-sm font-medium text-ink">
           <CircleCheck className="size-5 shrink-0 text-good" aria-hidden />
-          Thank you! Your order is placed. You&apos;ll pay in cash when it arrives.
+          Thank you! Your order is placed. Pay for it below and we&apos;ll confirm it.
         </p>
       )}
       <NoticeLine notice={feedback && { scope: "account", ...feedback }} />
@@ -238,11 +275,30 @@ export function OrderDetailScreen({ id, placed }: { id: string; placed?: boolean
           <Panel title="Status">
             <StatusPill label={meta.label} tone={meta.tone} />
             <p className="mt-2 text-sm text-ink-muted">{meta.blurb}</p>
-            {canCancel(order.orderStatus) && (
+            {canCancel(order.orderStatus, paymentStatus) && (
               <div className="mt-4" aria-busy={cancelling}>
                 <ConfirmAction label="Cancel order" confirmLabel="Yes, cancel it" cancelLabel="Keep it" onConfirm={cancelOrder} />
               </div>
             )}
+          </Panel>
+
+          <Panel title="Payment">
+            <StatusPill label={paymentMeta.label} tone={paymentMeta.tone} />
+            {payment.data?.paidAt && (
+              <p className="mt-2 text-sm text-ink-muted">Paid {formatDateTime(payment.data.paidAt)}</p>
+            )}
+            {payment.data && payment.data.refundedAmountBdt > 0 && (
+              <p className="mt-2 text-sm text-ink-muted">{formatPrice(payment.data.refundedAmountBdt)} refunded</p>
+            )}
+            {paymentStatus === "pending" && (
+              <p className="mt-2 text-sm text-ink-muted">We&apos;re waiting to hear back from SSLCommerz.</p>
+            )}
+            {canPay(order.orderStatus, paymentStatus) && (
+              <Button variant="primary" className="mt-4 w-full" onClick={pay} disabled={starting || leaving}>
+                {starting || leaving ? "Taking you to payment…" : `Pay ${formatPrice(order.totalAmount)} now`}
+              </Button>
+            )}
+            <p className="mt-3 text-xs text-ink-subtle">Paid online with SSLCommerz</p>
           </Panel>
 
           <Panel title="Summary">
@@ -260,7 +316,6 @@ export function OrderDetailScreen({ id, placed }: { id: string; placed?: boolean
                 <dd className="tabular-nums">{formatPrice(order.totalAmount)}</dd>
               </div>
             </dl>
-            <p className="mt-3 text-xs text-ink-subtle">Cash on delivery</p>
           </Panel>
 
           <Panel title="Delivering to">

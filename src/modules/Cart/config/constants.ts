@@ -31,7 +31,7 @@ export const cart_data: CartData = {
   errorTitle: "Couldn't load your basket",
   retry: "Try again",
 
-  note: "Everything in the basket is ordered together at checkout. You pay cash on delivery.",
+  note: "Everything in the basket is ordered together at checkout. You pay online with SSLCommerz.",
   clear: "Empty the basket",
   clearConfirm: "Remove everything?",
   keep: "Keep it",

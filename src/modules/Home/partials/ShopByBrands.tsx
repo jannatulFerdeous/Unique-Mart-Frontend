@@ -7,8 +7,8 @@ import {
   useState,
   type KeyboardEvent,
 } from "react";
-import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { BrandLogo } from "@/common/components/BrandLogo";
 import { ProductRail } from "@/common/components/ProductRail";
 import { SectionHeader } from "@/common/components/SectionHeader";
 import { cn } from "@/shared/utils/cn";
@@ -107,11 +107,7 @@ export function ShopByBrands({ items }: { items: BrandTab[] }) {
                       : "border-transparent opacity-70 hover:opacity-100",
                   )}
                 >
-                  <Image
-                    src={item.logo}
-                    alt=""
-                    className="max-h-11 w-full object-contain"
-                  />
+                  <BrandLogo brand={item} sizes="96px" className="p-1 text-xs" />
                   <span className="sr-only">{item.label}</span>
                 </button>
               );

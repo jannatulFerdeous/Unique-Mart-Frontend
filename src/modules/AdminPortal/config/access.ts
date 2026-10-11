@@ -7,15 +7,14 @@ import type { UserRole } from "@/redux/features/user/user.types";
 // The backend can't store per-person permissions yet, so moderators share one
 // list: edit MODERATOR_SECTIONS to change what every moderator can open.
 //
-// This only shapes what the dashboard shows. The backend doesn't check who is
-// calling yet, so it is not a security boundary.
+// Keep it within what the backend lets moderators do: hero banners, products,
+// coupons, refunds and the rest need an admin there, so listing them here only
+// shows moderators a screen that fails to save.
 
 export const ACCOUNT_HOME = "/account/profile";
 export const ADMIN_HOME = "/admin";
 
 export const MODERATOR_SECTIONS = [
-  "/admin/hero-banners",
-  "/admin/products",
   "/admin/brands",
   "/admin/main-categories",
   "/admin/categories",
