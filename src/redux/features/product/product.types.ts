@@ -80,6 +80,7 @@ export type ProductFields = {
   categoryId: string;
   subCategoryId: string;
   sku?: string;
+  brandId: string;
   attributes: ProductAttribute[];
   hasVariants: boolean;
   variants: VariantFields[];

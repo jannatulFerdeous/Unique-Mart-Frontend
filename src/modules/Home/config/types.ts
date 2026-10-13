@@ -1,6 +1,5 @@
 import type { ImgHTMLAttributes } from "react";
 import type { StaticImageData } from "next/image";
-import type { BrandMark } from "@/shared/config/brands";
 import type { TrustClaim } from "@/shared/config/trust";
 import type { Product } from "@/shared/config/catalog";
 
@@ -48,16 +47,14 @@ export type HomeRow = {
   href: string;
 };
 
-// `key` is the brand's slug in the admin; its products are filled in at render.
+// `key` is the brand's slug in the admin; `logo` is null when none was uploaded.
 export type BrandTab = {
   key: string;
   label: string;
-  logo: StaticImageData;
+  logo: StaticImageData | null;
   href: string;
   products: Product[];
 };
-
-export type BrandTabConfig = Omit<BrandTab, "products">;
 
 export type HomeData = {
   trust: TrustClaim[];
@@ -68,7 +65,6 @@ export type HomeData = {
   casesAndProtectors: HomeRow;
   brandWall: {
     title: string;
-    brands: BrandMark[];
   };
   promos: {
     brands: PromoBanner[];
@@ -78,7 +74,7 @@ export type HomeData = {
   brands: {
     title: string;
     href: string;
-    items: BrandTabConfig[];
+    tabs: number;
   };
   categories: {
     title: string;

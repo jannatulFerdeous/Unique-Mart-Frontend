@@ -8,6 +8,7 @@ import { apiErrorMessage } from "@/redux/api/errors";
 import { useGetAttributeGroupsQuery, useGetAttributesQuery } from "@/redux/features/attribute/attributeApi";
 import type { Attribute } from "@/redux/features/attribute/attribute.types";
 import {
+  useGetBrandsQuery,
   useGetCategoriesQuery,
   useGetMainCategoriesQuery,
   useGetSubCategoriesQuery,
@@ -160,7 +161,6 @@ const skuPart = (text: string, length = 12) => text.replace(/[^a-z0-9]/gi, "").s
 
 const suggestSku = (name: string, parts: string[]) =>
   [skuPart(name, 6), ...parts.map((part) => skuPart(part))].filter(Boolean).join("-");
-
 // Converts the attribute drafts that have a known definition; the rest are dropped.
 const specValues = (specs: Record<string, Draft>, byId: Map<string, Attribute>) => {
   const values: ProductAttribute[] = [];
@@ -258,6 +258,7 @@ type Base = Omit<ProductFields, "attributes" | "hasVariants" | "variants" | "sku
 type Errors = Partial<
   Record<
     | "name"
+    | "brandId"
     | "mainCategoryId"
     | "categoryId"
     | "subCategoryId"
@@ -286,6 +287,7 @@ function ProductForm({ product }: { product?: Product }) {
 
   const [name, setName] = useState(product?.name ?? "");
   const [description, setDescription] = useState(product?.description ?? "");
+  const [brandId, setBrandId] = useState(product ? refId(product.brandId) : "");
   const [mainCategoryId, setMainCategoryId] = useState(product ? refId(product.mainCategoryId) : "");
   const [categoryId, setCategoryId] = useState(product ? refId(product.categoryId) : "");
   const [subCategoryId, setSubCategoryId] = useState(product ? refId(product.subCategoryId) : "");
@@ -306,6 +308,9 @@ function ProductForm({ product }: { product?: Product }) {
 
   const saving = creating || updating || uploading;
 
+  const brands = useGetBrandsQuery({ status: "active" });
+  // A product may point at a brand that's gone; that counts as none chosen.
+  const brandKnown = (brands.data?.items ?? []).some((each) => each._id === brandId);
   const mainCategories = useGetMainCategoriesQuery({ status: "active" });
   const categories = useGetCategoriesQuery({ status: "active" });
   const subCategories = useGetSubCategoriesQuery({ status: "active" });
@@ -409,13 +414,14 @@ function ProductForm({ product }: { product?: Product }) {
 
   // Everything the form says, in the validator's shape. A variant product
   // has no SKU of its own and takes its price and stock from the variants.
+  // A single-version product sent without a SKU gets one from the backend.
   const collect = (drafts: Drafts, base: Base) => {
     const spec = specValues(drafts.specs, byId);
     const variant = variantValues(drafts.variants, drafts.variantAttributeIds, byId);
     const { sku: baseSku, ...rest } = base;
     const fields: ProductFields = {
       ...rest,
-      ...(drafts.hasVariants ? listingFrom(variant.variants) : { sku: baseSku }),
+      ...(drafts.hasVariants ? listingFrom(variant.variants) : baseSku ? { sku: baseSku } : {}),
       attributes: spec.values,
       hasVariants: drafts.hasVariants,
       variants: drafts.hasVariants ? variant.variants : [],
@@ -432,6 +438,7 @@ function ProductForm({ product }: { product?: Product }) {
       {
         name: name.trim(),
         description: description.trim(),
+        brandId,
         mainCategoryId,
         categoryId,
         subCategoryId,
@@ -448,10 +455,10 @@ function ProductForm({ product }: { product?: Product }) {
 
     const next: Errors = {
       name: fields.name ? undefined : "Give the product a name.",
+      brandId: brandKnown ? undefined : "Choose a brand.",
       mainCategoryId: mainCategoryId ? undefined : "Choose a main category.",
       categoryId: categoryId ? undefined : "Choose a category.",
       subCategoryId: subCategoryId ? undefined : "Choose a sub-category.",
-      sku: hasVariants || trimmedSku ? undefined : "Enter a SKU.",
       price: hasVariants || isMoney(priceValue) ? undefined : "Enter a price of 0 or more.",
       discount:
         hasVariants
@@ -477,6 +484,7 @@ function ProductForm({ product }: { product?: Product }) {
         const { fields: before } = collect(initial, {
           name: product.name,
           description: product.description ?? "",
+          brandId: refId(product.brandId),
           mainCategoryId: refId(product.mainCategoryId),
           categoryId: refId(product.categoryId),
           subCategoryId: refId(product.subCategoryId),
@@ -784,6 +792,24 @@ function ProductForm({ product }: { product?: Product }) {
           <fieldset disabled={saving} className="flex min-w-0 flex-col gap-4">
             <legend className="sr-only">Categories</legend>
             <Field
+              label="Brand"
+              hint={
+                brands.data && brands.data.items.length === 0
+                  ? "There are no active brands yet. Add one under Brands first."
+                  : undefined
+              }
+              error={errors.brandId}
+            >
+              <Select value={brandKnown ? brandId : ""} onChange={(event) => setBrandId(event.target.value)}>
+                <option value="">Choose a brand</option>
+                {brands.data?.items.map((each) => (
+                  <option key={each._id} value={each._id}>
+                    {each.name}
+                  </option>
+                ))}
+              </Select>
+            </Field>
+            <Field
               label="Main category"
               hint={product ? "Changing it clears the specs and variant options." : undefined}
               error={errors.mainCategoryId}
@@ -873,7 +899,7 @@ function ProductForm({ product }: { product?: Product }) {
               </dl>
             ) : (
               <>
-                <Field label="SKU" hint="Your stock code. Saved in capitals." error={errors.sku}>
+                <Field label="SKU" hint="Optional. Leave it empty and the shop makes one from the name. Saved in capitals." error={errors.sku}>
                   <Input value={sku} onChange={(event) => setSku(event.target.value)} className="font-mono uppercase" />
                 </Field>
                 <Field label="Price (Tk)" error={errors.price}>

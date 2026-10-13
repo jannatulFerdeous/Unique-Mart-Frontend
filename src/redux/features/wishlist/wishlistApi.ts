@@ -1,14 +1,34 @@
 import { baseApi, TAG } from "../../api/baseApi";
+import { cleanParams } from "../../api/list";
 import type { ApiResponse } from "../../api/types";
+import type { Ref } from "../catalog/catalog.types";
 import type { Product } from "../product/product.types";
 
 // What GET /wishlist populates; `null` once the product has been deleted.
 export type WishlistProduct = Pick<
   Product,
-  "_id" | "name" | "slug" | "images" | "price" | "discount" | "stock" | "isFeatured" | "isExclusive" | "status"
-> & { sku?: string };
+  | "_id"
+  | "name"
+  | "slug"
+  | "sku"
+  | "images"
+  | "price"
+  | "discount"
+  | "stock"
+  | "hasVariants"
+  | "variants"
+  | "isFeatured"
+  | "isExclusive"
+  | "isUpcoming"
+  | "status"
+> & { brandId?: Ref | null };
 
-export type WishlistEntry = { productId: WishlistProduct | null; addedAt: string };
+// A product with variants is saved one variant at a time.
+export type WishlistEntry = { productId: WishlistProduct | null; variantId?: string | null; addedAt: string };
+
+// The backend wants a variant for a product with variants and refuses one for
+// a simple product. Removing without a variant takes off every saved variant.
+export type WishlistArgs = { productId: string; variantId?: string };
 
 const WISHLIST = [TAG.wishlist];
 
@@ -22,14 +42,22 @@ export const wishlistApi = baseApi.injectEndpoints({
       providesTags: WISHLIST,
     }),
 
-    addToWishlist: build.mutation<null, string>({
-      query: (productId) => ({ url: `/wishlist/${productId}`, method: "POST" }),
+    addToWishlist: build.mutation<null, WishlistArgs>({
+      query: ({ productId, variantId }) => ({
+        url: `/wishlist/${productId}`,
+        method: "POST",
+        params: cleanParams({ variantId }),
+      }),
       transformResponse: () => null,
       invalidatesTags: WISHLIST,
     }),
 
-    removeFromWishlist: build.mutation<null, string>({
-      query: (productId) => ({ url: `/wishlist/${productId}`, method: "DELETE" }),
+    removeFromWishlist: build.mutation<null, WishlistArgs>({
+      query: ({ productId, variantId }) => ({
+        url: `/wishlist/${productId}`,
+        method: "DELETE",
+        params: cleanParams({ variantId }),
+      }),
       transformResponse: () => null,
       invalidatesTags: WISHLIST,
     }),

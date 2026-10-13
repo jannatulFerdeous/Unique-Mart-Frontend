@@ -1,10 +1,11 @@
-import Image from "next/image";
 import Link from "next/link";
+import { BrandLogo } from "@/common/components/BrandLogo";
 import { brandHref } from "@/shared/config/brands";
+import type { BrandMark } from "@/shared/libs/storefront/catalog";
 import { home_data } from "../config/constants";
 
-export function BrandWall() {
-  const { title, brands } = home_data.brandWall;
+export function BrandWall({ brands }: { brands: BrandMark[] }) {
+  const { title } = home_data.brandWall;
   const [first, second] = title.split(" ");
 
   return (
@@ -28,14 +29,13 @@ export function BrandWall() {
               <li key={brand.slug}>
                 <Link
                   href={brandHref(brand.slug)}
+                  aria-label={brand.label}
                   className="relative block aspect-3/2 bg-surface transition-shadow hover:shadow-card"
                 >
-                  <Image
-                    src={brand.logo}
-                    alt={brand.label}
-                    fill
+                  <BrandLogo
+                    brand={brand}
                     sizes="(min-width: 1024px) 8vw, (min-width: 768px) 15vw, 24vw"
-                    className="object-contain p-2"
+                    className="p-2 text-xs"
                   />
                 </Link>
               </li>

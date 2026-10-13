@@ -10,16 +10,6 @@ import macbookDesktop from "@/images/banners/macbook-neo-desktop.png";
 import macbookMobile from "@/images/banners/macbook-neo-mobile.png";
 import storeDesktop from "@/images/banners/store-locator-desktop.png";
 import storeMobile from "@/images/banners/store-locator-mobile.png";
-import appleLogo from "@/images/brands/logos/apple.png";
-import honorLogo from "@/images/brands/logos/honor.png";
-import infinixLogo from "@/images/brands/logos/infinix.png";
-import oneplusLogo from "@/images/brands/logos/oneplus.png";
-import oppoLogo from "@/images/brands/logos/oppo.png";
-import realmeLogo from "@/images/brands/logos/realme.png";
-import samsungLogo from "@/images/brands/logos/samsung.png";
-import tecnoLogo from "@/images/brands/logos/tecno.png";
-import vivoLogo from "@/images/brands/logos/vivo.png";
-import xiaomiLogo from "@/images/brands/logos/xiaomi.png";
 import promoAirpods from "@/images/promos/airpods-pro-3.png";
 import promoAppleWatch from "@/images/promos/apple-watch.png";
 import promoSpigen from "@/images/promos/spigen.png";
@@ -43,7 +33,6 @@ import router from "@/images/categories/router.png";
 import speaker from "@/images/categories/speaker.png";
 import tablets from "@/images/categories/tablets.png";
 import watches from "@/images/categories/watches.png";
-import { brandMarks } from "@/shared/config/brands";
 import { trustClaims } from "@/shared/config/trust";
 import type { HomeData } from "./types";
 
@@ -54,9 +43,9 @@ export const home_data: HomeData = {
     href: "/shop/exclusive",
   },
 
+  // Its logos are every brand the admin has added.
   brandWall: {
     title: "Exclusively Available",
-    brands: brandMarks,
   },
 
   promos: {
@@ -98,71 +87,11 @@ export const home_data: HomeData = {
     href: "/shop/top-selling",
   },
 
+  // A tab for each of the brands with the most products in the admin.
   brands: {
     title: "Shop By Brands",
     href: "/brands",
-    items: [
-      {
-        key: "samsung",
-        label: "Samsung",
-        logo: samsungLogo,
-        href: "/brands/samsung",
-      },
-      {
-        key: "apple",
-        label: "Apple",
-        logo: appleLogo,
-        href: "/brands/apple",
-      },
-      {
-        key: "oppo",
-        label: "Oppo",
-        logo: oppoLogo,
-        href: "/brands/oppo",
-      },
-      {
-        key: "vivo",
-        label: "vivo",
-        logo: vivoLogo,
-        href: "/brands/vivo",
-      },
-      {
-        key: "honor",
-        label: "HONOR",
-        logo: honorLogo,
-        href: "/brands/honor",
-      },
-      {
-        key: "oneplus",
-        label: "OnePlus",
-        logo: oneplusLogo,
-        href: "/brands/oneplus",
-      },
-      {
-        key: "tecno",
-        label: "Tecno",
-        logo: tecnoLogo,
-        href: "/brands/tecno",
-      },
-      {
-        key: "infinix",
-        label: "Infinix",
-        logo: infinixLogo,
-        href: "/brands/infinix",
-      },
-      {
-        key: "realme",
-        label: "realme",
-        logo: realmeLogo,
-        href: "/brands/realme",
-      },
-      {
-        key: "xiaomi",
-        label: "Xiaomi",
-        logo: xiaomiLogo,
-        href: "/brands/xiaomi",
-      },
-    ],
+    tabs: 10,
   },
 
   categories: {

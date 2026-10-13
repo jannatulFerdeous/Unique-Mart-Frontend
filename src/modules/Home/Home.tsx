@@ -2,11 +2,14 @@ import { getHeroSlides } from "@/shared/api/banners";
 import { getCatalog } from "@/shared/api/storefront";
 import {
   brandOf,
+  brandPageHref,
   findNode,
   findNodeBySlug,
   productsUnder,
+  toBrandMarks,
   toCard,
   type ApiProduct,
+  type BrandMark,
   type Catalog,
 } from "@/shared/libs/storefront/catalog";
 import { home_data } from "./config/constants";
@@ -58,16 +61,22 @@ const rowsFor = (catalog: Catalog) => {
   };
 };
 
-const brandTabs = (catalog: Catalog): BrandTab[] =>
-  home_data.brands.items
-    .map((tab) => ({
-      ...tab,
+// The brands with the most live products, each with a row of them.
+const brandTabs = (catalog: Catalog, brands: BrandMark[]): BrandTab[] =>
+  brands
+    .filter((brand) => brand.productCount > 0)
+    .sort((a, b) => b.productCount - a.productCount)
+    .slice(0, home_data.brands.tabs)
+    .map((brand) => ({
+      key: brand.slug,
+      label: brand.label,
+      logo: brand.logo,
+      href: brandPageHref(brand.slug),
       products: cards(
         catalog,
-        catalog.products.filter((product) => brandOf(catalog, product)?.slug === tab.key),
+        catalog.products.filter((product) => brandOf(catalog, product)?.slug === brand.slug),
       ),
-    }))
-    .filter((tab) => tab.products.length > 0);
+    }));
 
 // Category tiles whose link leads somewhere with products, pointed at the full address.
 const featuredCategories = (catalog: Catalog): FeaturedCategory[] =>
@@ -82,7 +91,8 @@ export async function Home() {
   // Backend down or no live banners → keep the bundled slides so the hero never disappears.
   const slides = fromAdmin?.length ? fromAdmin : home_data.hero.slides;
   const rows = rowsFor(catalog);
-  const brands = brandTabs(catalog);
+  const brandMarks = toBrandMarks(catalog);
+  const brands = brandTabs(catalog, brandMarks);
 
   return (
     <>
@@ -93,7 +103,7 @@ export async function Home() {
       {brands.length > 0 && <ShopByBrands items={brands} />}
       <TopSelling products={rows.topSelling} />
       <PromoBanners />
-      <BrandWall />
+      {brandMarks.length > 0 && <BrandWall brands={brandMarks} />}
       <NewArrival products={rows.newArrival} />
       <StrapBanner />
       <SoundSurround products={rows.soundSurround} />

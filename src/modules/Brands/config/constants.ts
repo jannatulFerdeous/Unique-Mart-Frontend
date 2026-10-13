@@ -1,4 +1,3 @@
-import { brandMarks } from "@/shared/config/brands";
 import type { BrandsData } from "./types";
 
 export const brands_data: BrandsData = {
@@ -9,5 +8,5 @@ export const brands_data: BrandsData = {
     placeholder: "Search brand...",
   },
   empty: "No brand found!",
-  items: brandMarks,
+  none: "Brands will show here as soon as they're added.",
 };

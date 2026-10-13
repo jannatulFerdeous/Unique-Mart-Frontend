@@ -350,7 +350,7 @@ export function ProductTop({ product, detail }: Props) {
             <span className="sr-only"> — {product.name}</span>
           </button>
 
-          <WishlistButton variant="inline" productId={product.id} name={product.name} />
+          <WishlistButton variant="inline" productId={product.id} variantId={chosen?.id} name={product.name} />
         </div>
 
         {failure ? (

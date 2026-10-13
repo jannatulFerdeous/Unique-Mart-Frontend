@@ -6,7 +6,6 @@ import { Heart } from "lucide-react";
 import { ProductBreadcrumb } from "@/modules/ProductDetails";
 import { apiErrorMessage } from "@/redux/api/errors";
 import { useClearWishlistMutation } from "@/redux/features/wishlist/wishlistApi";
-import { useShopProducts } from "@/shared/libs/storefront/useShopProducts";
 import { toast } from "@/shared/libs/toast";
 import { useSignInFirst } from "@/shared/libs/useSignInFirst";
 import { useWishlist } from "@/shared/libs/wishlist";
@@ -18,8 +17,6 @@ export function Wishlist() {
   const { entries, count, isLoading, isError, error, refetch } = useWishlist();
   const [clear, { isLoading: clearing }] = useClearWishlistMutation();
   const [confirming, setConfirming] = useState(false);
-  // Live cards (brand, sale price, whether options must be picked) for what's still sold.
-  const products = useShopProducts(entries.flatMap((entry) => (entry.productId ? [entry.productId.slug] : [])));
 
   const empty = async () => {
     setConfirming(false);
@@ -70,17 +67,12 @@ export function Wishlist() {
           <>
             <div className="mt-6 rounded-card border border-line bg-surface px-5">
               <ul>
-                {products === null ? (
-                  <li className="py-10 text-center text-ink-muted">{wishlist_data.loading}</li>
-                ) : (
-                  entries.map((entry, index) => (
-                    <WishlistRow
-                      key={entry.productId?._id ?? `gone-${index}`}
-                      entry={entry}
-                      card={entry.productId ? products.get(entry.productId.slug) : undefined}
-                    />
-                  ))
-                )}
+                {entries.map((entry, index) => (
+                  <WishlistRow
+                    key={entry.productId ? `${entry.productId._id}-${entry.variantId ?? ""}` : `gone-${index}`}
+                    entry={entry}
+                  />
+                ))}
               </ul>
             </div>
 

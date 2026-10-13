@@ -8,6 +8,7 @@ export type NavItem = {
 
 export type NavIcon =
   | "dashboard"
+  | "payments"
   | "banners"
   | "products"
   | "brands"
@@ -26,6 +27,8 @@ export type NavIcon =
   | "faq"
   | "coupons"
   | "newsletter"
+  | "refunds"
+  | "orderStatus"
   | "support";
 
 export type NavGroup = {

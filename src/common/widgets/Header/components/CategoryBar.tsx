@@ -16,7 +16,7 @@ export function CategoryBar({ nav: categoryNav }: { nav: NavItem[] }) {
       onMouseLeave={() => setOpenIndex(null)}
       onKeyDown={(event) => event.key === "Escape" && setOpenIndex(null)}
     >
-      <ul className="container-page flex items-start gap-[2%] py-3 pr-2">
+      <ul className="container-page flex flex-wrap items-start justify-center gap-x-[2%] gap-y-2 py-3">
         {categoryNav.map((category, index) => {
           const isOpen = openIndex === index;
 

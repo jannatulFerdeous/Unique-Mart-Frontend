@@ -3,6 +3,9 @@ import type { StaticImageData } from "next/image";
 export type Product = {
   // The backend product's _id: what the cart, wishlist and reviews refer to.
   id: string;
+  // For a product with variants, the one a card saves to the wishlist: the
+  // first in stock, else the first, as the product page starts on.
+  variantId?: string;
   slug: string;
   name: string;
   image: StaticImageData;

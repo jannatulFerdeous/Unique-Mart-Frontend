@@ -1,5 +1,3 @@
-import type { BrandMark } from "@/shared/config/brands";
-
 export type BrandsData = {
   title: string;
   intro: string;
@@ -8,5 +6,6 @@ export type BrandsData = {
     placeholder: string;
   };
   empty: string;
-  items: BrandMark[];
+  // When the admin hasn't added any brands yet.
+  none: string;
 };

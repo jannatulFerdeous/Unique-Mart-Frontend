@@ -8,7 +8,7 @@ export const wishlist_data: WishlistData = {
   countMany: "{n} products saved",
 
   addToCart: "Add to basket",
-  chooseOptions: "Choose options",
+  outOfStock: "Out of stock",
   remove: "Remove",
   removeOne: "Remove {name} from your wishlist",
   clear: "Clear the wishlist",

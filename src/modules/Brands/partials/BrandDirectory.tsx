@@ -1,13 +1,14 @@
 "use client";
 
 import { useId, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
+import { BrandLogo } from "@/common/components/BrandLogo";
 import { brandHref } from "@/shared/config/brands";
+import type { BrandMark } from "@/shared/libs/storefront/catalog";
 import { brands_data } from "../config/constants";
 
-export function BrandDirectory() {
-  const { title, intro, items, search, empty } = brands_data;
+export function BrandDirectory({ items }: { items: BrandMark[] }) {
+  const { title, intro, search, empty, none } = brands_data;
   const [query, setQuery] = useState("");
   const inputId = useId();
 
@@ -64,12 +65,10 @@ export function BrandDirectory() {
                   className="flex h-full flex-col items-center bg-surface p-4 transition-shadow hover:shadow-card"
                 >
                   <div className="relative size-24 md:size-28 lg:size-32">
-                    <Image
-                      src={brand.logo}
-                      alt=""
-                      fill
+                    <BrandLogo
+                      brand={brand}
+                      fallback="initial"
                       sizes="(min-width: 1024px) 128px, (min-width: 768px) 112px, 96px"
-                      className="object-contain"
                     />
                   </div>
 
@@ -81,7 +80,7 @@ export function BrandDirectory() {
             ))}
           </ul>
         ) : (
-          <p className="py-14 text-center text-ink-muted">{empty}</p>
+          <p className="py-14 text-center text-ink-muted">{items.length ? empty : none}</p>
         )}
       </div>
     </section>

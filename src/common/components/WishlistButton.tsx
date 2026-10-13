@@ -6,18 +6,22 @@ import { cn } from "@/shared/utils/cn";
 
 type Variant = "card" | "inline";
 
+// `variantId` is the version of a product with variants that the heart saves.
+// On a card any saved version fills the heart; inline, only `variantId` does.
 export function WishlistButton({
   productId,
+  variantId,
   name,
   variant = "card",
   className,
 }: {
   productId: string;
+  variantId?: string;
   name: string;
   variant?: Variant;
   className?: string;
 }) {
-  const { wished, toggle, busy } = useWishToggle(productId, name);
+  const { wished, toggle, busy } = useWishToggle({ productId, variantId, name, exact: variant === "inline" });
 
   const label = wished ? `Remove ${name} from your wishlist` : `Save ${name} to your wishlist`;
 

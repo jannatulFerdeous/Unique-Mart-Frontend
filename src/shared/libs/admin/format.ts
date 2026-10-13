@@ -36,7 +36,13 @@ const plain = new Intl.NumberFormat("en-IN", { maximumFractionDigits: 0 });
 export const formatMoney = (amount: number): string =>
   `${amount < 0 ? "-" : ""}Tk ${plain.format(Math.abs(amount))}`;
 
-export const formatCount = (value: number): string => plain.format(value);
+const exact = new Intl.NumberFormat("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+// To the paisa, for refunds and payments where partial amounts matter.
+export const formatMoneyExact = (amount: number): string =>
+  `${amount < 0 ? "-" : ""}Tk ${exact.format(Math.abs(amount))}`;
+
+export const formatCount =(value: number): string => plain.format(value);
 
 export const formatDelta = (percent: number | null): string => {
   if (percent === null) return "—";
