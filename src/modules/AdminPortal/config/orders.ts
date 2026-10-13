@@ -1,5 +1,7 @@
 import type { OrderStatus } from "@/redux/features/order/order.types";
 import type {
+  PaymentDetails,
+  PaymentMethod,
   PaymentRefunds,
   PaymentResult,
   PaymentStatus,
@@ -32,21 +34,83 @@ export const PAYMENT_STATUS_META: Record<PaymentStatus | "none", { label: string
   partially_refunded: { label: "Partly refunded", tone: "neutral" },
 };
 
+export const PAYMENT_METHOD_NAME: Record<PaymentMethod, string> = {
+  sslcommerz: "Paid online with SSLCommerz",
+  cod: "Cash on delivery",
+};
+
+// How an SSLCommerz payment was made, from what SSLCommerz reported once it
+// was verified. Null when it hasn't said (unpaid, or paid before it was kept).
+// card_type is "<network or wallet>-<bank or provider>", e.g. "VISA-Dutch
+// Bangla" or "BKASH-BKash"; card_brand is the kind: a card network,
+// "MOBILEBANKING" or "IB" (internet banking).
+export const paymentChannel = (details: PaymentDetails) => {
+  const brand = details.cardBrand?.trim().toUpperCase() ?? "";
+  const type = details.cardType?.trim() ?? "";
+  if (!brand && !type) return null;
+
+  const dash = type.indexOf("-");
+  const typeName = dash === -1 ? type : type.slice(0, dash).trim();
+  const typeProvider = dash === -1 ? "" : type.slice(dash + 1).trim();
+  const provider = typeProvider || details.cardIssuer || typeName;
+  const last4 = details.cardNumber?.match(/(\d{4})$/)?.[1];
+  const ending = last4 ? ` ····${last4}` : "";
+
+  if (brand === "MOBILEBANKING") {
+    return { kind: "Mobile banking", label: `Mobile banking · ${provider}`, customer: `Paid with ${provider}` };
+  }
+  if (brand === "IB" || brand === "INTERNETBANKING") {
+    return { kind: "Internet banking", label: `Internet banking · ${provider}`, customer: `Paid by internet banking (${provider})` };
+  }
+  const network = brand || typeName;
+  const bank = details.cardIssuer || typeProvider;
+  return {
+    kind: "Card",
+    label: `Card · ${network}${ending}${bank ? ` (${bank})` : ""}`,
+    customer: `Paid by ${network} card${ending}`,
+  };
+};
+
+// One line for how a payment is (or will be) made.
+export const paymentMethodLabel = (method: PaymentMethod, details: PaymentDetails) =>
+  method === "cod" ? "Cash on delivery" : (paymentChannel(details)?.label ?? "SSLCommerz");
+
+// A cash-on-delivery payment is pending until the order is delivered, which
+// isn't "in progress" the way an SSLCommerz payment is.
+export const paymentMetaFor = (status: PaymentStatus | null, method: PaymentMethod | null) =>
+  method === "cod" && status === "pending"
+    ? { label: "Pay on delivery", tone: "warning" as Tone }
+    : PAYMENT_STATUS_META[status ?? "none"];
+
+// What a pending order is waiting for.
+export const orderBlurbFor = (status: OrderStatus, method: PaymentMethod | null) =>
+  status === "pending" && method === "cod"
+    ? "We'll confirm your order soon. Pay in cash when it arrives."
+    : ORDER_STATUS_META[status].blurb;
+
 export const ADMIN_ORDERS_HREF = "/admin/orders";
 
 // What staff can move an order to; it starts out pending.
 export const STAFF_ORDER_STATUSES = ["confirmed", "processing", "shipped", "delivered", "cancelled"] as const satisfies readonly OrderStatus[];
 
 // Why the backend would refuse this move given the payment, or null if it
-// wouldn't. `payment` is null when the customer never started paying.
-export const statusBlockedBy = (next: OrderStatus, payment: PaymentStatus | null): string | null => {
-  if (next === "confirmed" && payment !== "paid") return "Only paid orders can be confirmed.";
-  if (next === "cancelled" && payment === "pending") return "A payment is in progress. Wait for its result.";
+// wouldn't. `payment` is null when the customer never started paying. Cash on
+// delivery orders can be confirmed or cancelled while their payment is pending.
+export const statusBlockedBy = (
+  next: OrderStatus,
+  payment: PaymentStatus | null,
+  method: PaymentMethod | null,
+): string | null => {
+  const cod = method === "cod";
+  if (next === "confirmed" && payment !== "paid" && !cod) return "Only paid orders can be confirmed.";
+  if (next === "cancelled" && payment === "pending" && !cod) return "A payment is in progress. Wait for its result.";
   if (next === "cancelled" && (payment === "paid" || payment === "partially_refunded")) return "Refund the payment in full first.";
   return null;
 };
 
 export const REFUNDS_HREF = "/admin/refunds";
+
+export const PAYMENTS_HREF = "/admin/payments";
 
 export const REFUND_STATUS_META: Record<RefundStatus, { label: string; tone: Tone }> = {
   pending: { label: "Not sent yet", tone: "warning" },
@@ -87,16 +151,21 @@ export const PAYMENT_RESULT_NOTICE: Record<PaymentResult, { tone: "good" | "dang
   cancelled: { tone: "danger", text: "You cancelled the payment. Pay below whenever you're ready." },
 };
 
-// The backend starts a payment only for a pending order with no payment, or
-// one whose last attempt failed or was cancelled.
-export const canPay = (status: OrderStatus, payment: PaymentStatus | null) =>
-  status === "pending" && (payment === null || payment === "failed" || payment === "cancelled");
+// The backend starts a payment for a pending order that isn't paid. A pending
+// payment may be one the shopper left (reloaded or closed SSLCommerz): the
+// backend asks SSLCommerz about it first and records it if it was paid. Never
+// for cash on delivery.
+export const canPay = (status: OrderStatus, payment: PaymentStatus | null, method: PaymentMethod | null) =>
+  method !== "cod" &&
+  status === "pending" &&
+  (payment === null || payment === "pending" || payment === "failed" || payment === "cancelled");
 
 // The backend won't cancel a shipped, delivered or cancelled order, nor one
-// that's being paid for or has been paid (that needs a refund first).
-export const canCancel = (status: OrderStatus, payment: PaymentStatus | null) =>
+// that's being paid for or has been paid (that needs a refund first). A cash
+// on delivery payment is pending until delivery, so it doesn't block.
+export const canCancel = (status: OrderStatus, payment: PaymentStatus | null, method: PaymentMethod | null) =>
   !["shipped", "delivered", "cancelled"].includes(status) &&
-  !(payment === "pending" || payment === "paid" || payment === "partially_refunded");
+  !((payment === "pending" && method !== "cod") || payment === "paid" || payment === "partially_refunded");
 
 // Short, readable order number from the Mongo id.
 export const orderNumber = (id: string) => `#${id.slice(-8).toUpperCase()}`;

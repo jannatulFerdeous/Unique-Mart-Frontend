@@ -11,6 +11,7 @@ import type { PaymentResult } from "@/redux/features/payment/payment.types";
 import { formatDate, formatDateTime } from "@/shared/libs/admin/format";
 import { productImage } from "@/shared/libs/storefront/catalog";
 import { cn } from "@/shared/utils/cn";
+import { goToPayment, openPaymentWindow, usePaymentPopup } from "@/shared/libs/paymentPopup";
 import { formatPrice } from "@/shared/utils/price";
 import { Button, ButtonLink } from "../components/Button";
 import { ConfirmAction } from "../components/ConfirmAction";
@@ -23,12 +24,15 @@ import {
   ORDERS_HREF,
   ORDERS_PAGE_SIZE,
   ORDER_STATUS_META,
+  PAYMENT_METHOD_NAME,
   PAYMENT_POLL_MS,
   PAYMENT_RESULT_NOTICE,
-  PAYMENT_STATUS_META,
   canCancel,
   canPay,
+  orderBlurbFor,
   orderNumber,
+  paymentChannel,
+  paymentMetaFor,
 } from "../config/orders";
 import { blurbFor } from "./AdminSidebar";
 
@@ -168,9 +172,11 @@ export function OrdersScreen() {
 export function OrderDetailScreen({ id, placed, paid }: { id: string; placed?: boolean; paid?: PaymentResult }) {
   const { data: order, isLoading, isError, error, refetch } = useGetMyOrderQuery(id);
   const payment = useGetOrderPaymentQuery(id);
+  const method = payment.data?.paymentMethod ?? null;
   // While SSLCommerz hasn't reported back, keep asking; a second subscription
-  // to the same entry polls only while it's pending.
-  const awaiting = payment.data?.paymentStatus === "pending";
+  // to the same entry polls only while it's pending. Cash on delivery stays
+  // pending until delivery, so there's nothing to ask.
+  const awaiting = payment.data?.paymentStatus === "pending" && method !== "cod";
   useGetOrderPaymentQuery(id, { skip: !awaiting, pollingInterval: PAYMENT_POLL_MS, skipPollingIfUnfocused: true });
   const [cancel, { isLoading: cancelling }] = useCancelOrderMutation();
   const [createPayment, { isLoading: starting }] = useCreatePaymentMutation();
@@ -178,6 +184,7 @@ export function OrderDetailScreen({ id, placed, paid }: { id: string; placed?: b
   const [feedback, setFeedback] = useState<{ tone: "good" | "danger"; text: string } | null>(
     paid ? PAYMENT_RESULT_NOTICE[paid] : null,
   );
+  const popup = usePaymentPopup((_orderId, result) => setFeedback(PAYMENT_RESULT_NOTICE[result]));
 
   const back = (
     <ButtonLink href={ORDERS_HREF} variant="ghost" size="sm">
@@ -209,15 +216,23 @@ export function OrderDetailScreen({ id, placed, paid }: { id: string; placed?: b
   const { shippingAddress: to } = order;
   // If the payment status can't be read, assume it's unpaid; the backend refuses anything it shouldn't allow.
   const paymentStatus = payment.data?.paymentStatus ?? null;
-  const paymentMeta = PAYMENT_STATUS_META[paymentStatus ?? "none"];
+  const paymentMeta = paymentMetaFor(paymentStatus, method);
+  const cod = method === "cod";
+  // The pop-up from this page is still open.
+  const paying = Boolean(popup.orderId) && !popup.closed;
 
   const pay = async () => {
     setFeedback(null);
+    // Opened now, during the click, or the browser blocks it.
+    const opened = openPaymentWindow();
     try {
       const { checkoutUrl } = await createPayment({ orderId: order._id }).unwrap();
-      setLeaving(true);
-      window.location.assign(checkoutUrl);
+      // A blocked pop-up sends this whole tab to SSLCommerz instead.
+      goToPayment(opened, checkoutUrl);
+      if (opened) popup.start(order._id, opened);
+      else setLeaving(true);
     } catch (problem) {
+      opened?.close();
       setFeedback({ tone: "danger", text: apiErrorMessage(problem, "Couldn't start the payment. Please try again.") });
     }
   };
@@ -242,7 +257,9 @@ export function OrderDetailScreen({ id, placed, paid }: { id: string; placed?: b
       {placed && !feedback && (
         <p role="status" className="flex items-center gap-2 rounded-control bg-good-soft px-4 py-3 text-sm font-medium text-ink">
           <CircleCheck className="size-5 shrink-0 text-good" aria-hidden />
-          Thank you! Your order is placed. Pay for it below and we&apos;ll confirm it.
+          {cod
+            ? "Thank you! Your order is placed. Pay in cash when it arrives."
+            : "Thank you! Your order is placed. Pay for it below and we'll confirm it."}
         </p>
       )}
       <NoticeLine notice={feedback && { scope: "account", ...feedback }} />
@@ -274,8 +291,8 @@ export function OrderDetailScreen({ id, placed, paid }: { id: string; placed?: b
         <div className="flex flex-col gap-5">
           <Panel title="Status">
             <StatusPill label={meta.label} tone={meta.tone} />
-            <p className="mt-2 text-sm text-ink-muted">{meta.blurb}</p>
-            {canCancel(order.orderStatus, paymentStatus) && (
+            <p className="mt-2 text-sm text-ink-muted">{orderBlurbFor(order.orderStatus, method)}</p>
+            {canCancel(order.orderStatus, paymentStatus, method) && (
               <div className="mt-4" aria-busy={cancelling}>
                 <ConfirmAction label="Cancel order" confirmLabel="Yes, cancel it" cancelLabel="Keep it" onConfirm={cancelOrder} />
               </div>
@@ -290,15 +307,35 @@ export function OrderDetailScreen({ id, placed, paid }: { id: string; placed?: b
             {payment.data && payment.data.refundedAmountBdt > 0 && (
               <p className="mt-2 text-sm text-ink-muted">{formatPrice(payment.data.refundedAmountBdt)} refunded</p>
             )}
-            {paymentStatus === "pending" && (
-              <p className="mt-2 text-sm text-ink-muted">We&apos;re waiting to hear back from SSLCommerz.</p>
+            {paymentStatus === "pending" && !cod && (
+              <p className="mt-2 text-sm text-ink-muted">
+                {paying
+                  ? "Finish paying in the SSLCommerz window."
+                  : "We haven't heard from SSLCommerz yet. If you didn't finish paying, you can try again."}
+              </p>
             )}
-            {canPay(order.orderStatus, paymentStatus) && (
-              <Button variant="primary" className="mt-4 w-full" onClick={pay} disabled={starting || leaving}>
-                {starting || leaving ? "Taking you to payment…" : `Pay ${formatPrice(order.totalAmount)} now`}
+            {cod && paymentStatus === "pending" && (
+              <p className="mt-2 text-sm text-ink-muted">
+                Have {formatPrice(order.totalAmount)} ready in cash when your order arrives.
+              </p>
+            )}
+            {paying && (
+              <Button className="mt-4 w-full" onClick={popup.focus}>
+                Show the payment window
               </Button>
             )}
-            <p className="mt-3 text-xs text-ink-subtle">Paid online with SSLCommerz</p>
+            {!paying && canPay(order.orderStatus, paymentStatus, method) && (
+              <Button variant="primary" className="mt-4 w-full" onClick={pay} disabled={starting || leaving}>
+                {starting || leaving
+                  ? "Opening SSLCommerz…"
+                  : paymentStatus === "pending"
+                    ? `Try paying ${formatPrice(order.totalAmount)} again`
+                    : `Pay ${formatPrice(order.totalAmount)} now`}
+              </Button>
+            )}
+            <p className="mt-3 text-xs text-ink-subtle">
+              {(payment.data && paymentChannel(payment.data)?.customer) ?? PAYMENT_METHOD_NAME[method ?? "sslcommerz"]}
+            </p>
           </Panel>
 
           <Panel title="Summary">

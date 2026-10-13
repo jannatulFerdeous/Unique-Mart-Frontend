@@ -9,8 +9,8 @@ import { Button } from "./Button";
 import { Field, Input } from "./Field";
 import { Panel } from "./Panel";
 
-// The backend has no all-orders route, so staff open a customer's order by its
-// id. The id found goes into the address (?order=…) so the page can be shared.
+// Opens a customer's order by its id, e.g. one pasted from SSLCommerz. The id
+// found goes into the address (?order=…) so the page can be shared.
 export function OrderLookup({
   title,
   href,

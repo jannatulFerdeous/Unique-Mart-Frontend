@@ -18,9 +18,28 @@ export const checkout_data = {
   needAddress: "Choose or add a delivery address to place your order.",
 
   paymentHeading: "Payment",
-  payOnline: "Pay online with SSLCommerz",
-  payOnlineNote: "Card, mobile banking or internet banking. You'll finish paying on SSLCommerz's secure page.",
+  methods: {
+    sslcommerz: {
+      label: "Full payment",
+      note: "Pay the whole amount now by card, mobile banking or internet banking. SSLCommerz opens in a pop-up window.",
+      place: "Place order and pay",
+      placing: "Opening SSLCommerz…",
+    },
+    cod: {
+      label: "Cash on delivery",
+      note: "Pay in cash when your order arrives.",
+      place: "Place order",
+      placing: "Placing your order…",
+    },
+  },
 
-  place: "Place order and pay",
-  placing: "Taking you to payment…",
+  payingHeading: "Finish paying in the SSLCommerz window",
+  payingBody: "Your order is placed. Complete the payment in the pop-up window and this page will update when it's done.",
+  payingClosed:
+    "The payment window was closed. If you finished paying, this page will update in a moment. If not, you can pay from your order.",
+  unpaidHeading: "Your order is placed, but SSLCommerz didn't open",
+  unpaidBody: "Nothing has been charged. You can pay for it from your order.",
+  unpaidFallback: "Couldn't start the payment.",
+  showWindow: "Show the payment window",
+  viewOrder: "Go to my order",
 } as const;

@@ -1,15 +1,23 @@
 import type { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { baseApi, TAG } from "../../api/baseApi";
+import { cleanParams, toPaged } from "../../api/list";
 import type { ApiResponse } from "../../api/types";
 import type {
   CreatePaymentArgs,
   CreateRefundArgs,
   Payment,
+  PaymentList,
+  PaymentListParams,
+  StaffPayment,
   PaymentRefunds,
   PaymentSession,
   Refund,
   RefundArgs,
 } from "./payment.types";
+
+// The order a payment belongs to, whether or not the backend filled it in.
+export const paymentOrderId = (payment: StaffPayment) =>
+  !payment.orderId ? "" : typeof payment.orderId === "string" ? payment.orderId : payment.orderId._id;
 
 export const paymentApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
@@ -22,6 +30,16 @@ export const paymentApi = baseApi.injectEndpoints({
         return { data: (result.data as ApiResponse<Payment>).data };
       },
       providesTags: (_result, _error, orderId) => [{ type: TAG.payment, id: orderId }],
+    }),
+
+    // Every payment, newest first, with its order and customer (admins only).
+    getPayments: build.query<PaymentList, PaymentListParams>({
+      query: (params) => ({ url: "/payments", params: cleanParams({ ...params, sort: "-createdAt" }) }),
+      transformResponse: toPaged<StaffPayment>,
+      providesTags: (result) => [
+        { type: TAG.payment, id: "LIST" },
+        ...(result?.items ?? []).map((each) => ({ type: TAG.payment, id: paymentOrderId(each) })),
+      ],
     }),
 
     // Starts an SSLCommerz session for a pending order. The payment is
@@ -65,6 +83,7 @@ export const paymentApi = baseApi.injectEndpoints({
 });
 
 export const {
+  useGetPaymentsQuery,
   useGetOrderPaymentQuery,
   useCreatePaymentMutation,
   useGetRefundsQuery,

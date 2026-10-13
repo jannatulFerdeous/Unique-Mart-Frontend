@@ -26,6 +26,7 @@ import {
   Undo2,
   UserRound,
   Users,
+  Wallet,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { useSession } from "@/shared/libs/session";
@@ -36,6 +37,7 @@ import type { NavGroup, NavIcon } from "../config/types";
 
 const ICONS: Record<NavIcon, LucideIcon> = {
   dashboard: LayoutDashboard,
+  payments: Wallet,
   banners: GalleryHorizontalEnd,
   products: Package,
   brands: Tag,

@@ -106,7 +106,13 @@ export const admin_data: AdminData = {
           href: "/admin/orders",
           label: "Orders",
           icon: "orderStatus",
-          blurb: "Move a customer's order along, from confirmed to delivered, or cancel it.",
+          blurb: "Every customer's order. Open one to move it along, from confirmed to delivered, or cancel it.",
+        },
+        {
+          href: "/admin/payments",
+          label: "Payments",
+          icon: "payments",
+          blurb: "Every payment, online and cash on delivery, with what's been paid, is waiting or was refunded.",
         },
         {
           href: "/admin/refunds",
