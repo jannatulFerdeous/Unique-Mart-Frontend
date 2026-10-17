@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { StoreProvider } from "@/redux/StoreProvider";
 import { site } from "@/shared/config/site";
 import { fontVariables } from "@/shared/libs/fonts";
@@ -11,6 +11,11 @@ export const metadata: Metadata = {
     template: `%s | ${site.name}`,
   },
   description: site.tagline,
+};
+
+// Phone browsers tint their address bar to match the dark shop header.
+export const viewport: Viewport = {
+  themeColor: "#1a1a1a",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

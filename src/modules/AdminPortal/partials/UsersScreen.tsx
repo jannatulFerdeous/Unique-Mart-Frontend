@@ -21,7 +21,9 @@ import { cn } from "@/shared/utils/cn";
 import { initials } from "@/shared/utils/initials";
 import { Button, ButtonLink } from "../components/Button";
 import { ConfirmAction } from "../components/ConfirmAction";
+import { ExcelActions } from "../components/ExcelActions";
 import { FilterSelect, Input, Select } from "../components/Field";
+import { downloadUsers, userImporter } from "../config/excel/users";
 import { EmptyState, Panel, ScreenHeader } from "../components/Panel";
 import { StatusPill } from "../components/StatusPill";
 import { Table, TableScroll, Td, Th, Tr } from "../components/Table";
@@ -89,10 +91,18 @@ export function UsersScreen() {
         title="Users"
         blurb="Customers and staff accounts, their roles and whether they can sign in."
         actions={
-          <ButtonLink href={`${USERS_HREF}/new`} variant="primary">
-            <Plus className="size-4" aria-hidden />
-            Add user
-          </ButtonLink>
+          <div className="flex flex-wrap items-center gap-2">
+            <ExcelActions
+              onDownload={() =>
+                downloadUsers(dispatch, { searchTerm, role: role || undefined, status: tab === "all" ? undefined : tab })
+              }
+              importer={userImporter(dispatch)}
+            />
+            <ButtonLink href={`${USERS_HREF}/new`} variant="primary">
+              <Plus className="size-4" aria-hidden />
+              Add user
+            </ButtonLink>
+          </div>
         }
       />
 

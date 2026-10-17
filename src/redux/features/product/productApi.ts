@@ -39,6 +39,13 @@ export const productApi = baseApi.injectEndpoints({
       onQueryStarted: refreshShop,
     }),
 
+    // Removes the product for good, photos and all. Past orders keep their own copy.
+    deleteProduct: build.mutation<unknown, string>({
+      query: (id) => ({ url: `/products/${id}`, method: "DELETE" }),
+      invalidatesTags: (_result, _error, id) => [LIST, { type: TAG.product, id }],
+      onQueryStarted: refreshShop,
+    }),
+
     updateProduct: build.mutation<Product, UpdateProductArgs>({
       query: ({ id, changes }) => ({ url: `/products/${id}`, method: "PATCH", body: changes }),
       transformResponse: (response: ApiResponse<Product>) => response.data,
@@ -65,5 +72,6 @@ export const {
   useGetProductQuery,
   useCreateProductMutation,
   useUpdateProductMutation,
+  useDeleteProductMutation,
   useUploadProductImagesMutation,
 } = productApi;

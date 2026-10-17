@@ -5,6 +5,7 @@ import { CategoryBar } from "./components/CategoryBar";
 import { HeaderActions } from "./components/HeaderActions";
 import { Logo } from "./components/Logo";
 import { MobileNav } from "./components/MobileNav";
+import { MobileSearchPanel, MobileSearchProvider, MobileSearchToggle } from "./components/MobileSearch";
 import { SearchBar } from "./components/SearchBar";
 
 const structuredData = {
@@ -40,7 +41,10 @@ export async function Header() {
   const nav = navFromTree((await getCatalog()).tree);
 
   return (
-    <header className="sticky top-0 z-50">
+    // The dark strip above it (::before) covers the hairline a scaled phone
+    // screen can leave between the very top and the stuck header; the header
+    // itself stays at top: 0 so nothing about its position jitters.
+    <header className="sticky top-0 z-50 before:pointer-events-none before:absolute before:inset-x-0 before:bottom-full before:h-4 before:bg-inverse">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -55,17 +59,22 @@ export async function Header() {
         Skip to content
       </a>
 
-      <div className="bg-inverse">
-        <div className="container-page">
-          <div className="flex items-center gap-3 py-2 lg:min-h-16.5 lg:gap-4 lg:py-3">
-            <MobileNav nav={nav} />
-            <Logo />
-            <SearchBar className="hidden flex-1 lg:flex" />
-            <HeaderActions />
+      <MobileSearchProvider>
+        <div className="bg-inverse">
+          <div className="container-page">
+            <div className="flex items-center gap-3 py-2 lg:min-h-16.5 lg:gap-4 lg:py-3">
+              <Logo />
+              <SearchBar className="hidden flex-1 lg:flex" />
+              <HeaderActions />
+              <MobileSearchToggle />
+              <MobileNav nav={nav} />
+            </div>
           </div>
-          <SearchBar id="site-search-mobile" className="pb-2 lg:hidden" />
+          <MobileSearchPanel>
+            <SearchBar id="site-search-mobile" className="px-1 pt-1 pb-3" />
+          </MobileSearchPanel>
         </div>
-      </div>
+      </MobileSearchProvider>
 
       <CategoryBar nav={nav} />
     </header>

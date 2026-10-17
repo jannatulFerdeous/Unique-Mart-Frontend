@@ -1,5 +1,6 @@
 import type { ComponentProps, ReactNode } from "react";
 import { cn } from "@/shared/utils/cn";
+import { Dropdown } from "./Dropdown";
 
 const control =
   "w-full rounded-control border border-line-strong bg-surface px-3 py-2 text-sm text-ink placeholder:text-ink-subtle focus:border-tertiary focus:outline-none";
@@ -38,32 +39,62 @@ export function Textarea({ className, ...rest }: ComponentProps<"textarea">) {
   return <textarea className={cn(control, "min-h-24 resize-y", className)} {...rest} />;
 }
 
-export function Select({ className, children, ...rest }: ComponentProps<"select">) {
+// A dropdown in the dashboard's own style (see Dropdown), used like <select>.
+export function Select({
+  className,
+  children,
+  value,
+  defaultValue,
+  onChange,
+  disabled,
+  name,
+  id,
+  "aria-label": ariaLabel,
+  "aria-describedby": describedBy,
+}: ComponentProps<"select">) {
   return (
-    <select className={cn(control, "pr-8", className)} {...rest}>
+    <Dropdown
+      value={value}
+      defaultValue={defaultValue}
+      onChange={onChange}
+      disabled={disabled}
+      name={name}
+      id={id}
+      aria-label={ariaLabel}
+      aria-describedby={describedBy}
+      className={className}
+    >
       {children}
-    </select>
+    </Dropdown>
   );
 }
 
+// A list filter: its label beside a compact dropdown.
 export function FilterSelect({
   label,
   className,
   children,
-  ...rest
+  value,
+  defaultValue,
+  onChange,
+  disabled,
+  name,
+  id,
 }: ComponentProps<"select"> & { label: string }) {
   return (
     <label className="inline-flex items-center gap-2 text-sm text-ink-muted">
       <span className="whitespace-nowrap">{label}</span>
-      <select
-        className={cn(
-          "rounded-control border border-line-strong bg-surface px-2.5 py-1.5 text-sm text-ink focus:border-tertiary focus:outline-none",
-          className,
-        )}
-        {...rest}
+      <Dropdown
+        value={value}
+        defaultValue={defaultValue}
+        onChange={onChange}
+        disabled={disabled}
+        name={name}
+        id={id}
+        className={cn("w-auto min-w-36 py-1.5 pr-2.5 pl-3", className)}
       >
         {children}
-      </select>
+      </Dropdown>
     </label>
   );
 }

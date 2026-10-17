@@ -11,17 +11,24 @@ import {
 } from "@/redux/features/catalog/catalogApi";
 import { refId, refName } from "@/redux/features/catalog/catalog.types";
 import { selectNotice, showNotice } from "@/redux/features/notice/noticeSlice";
-import { useGetProductsQuery, useUpdateProductMutation } from "@/redux/features/product/productApi";
+import {
+  useDeleteProductMutation,
+  useGetProductsQuery,
+  useUpdateProductMutation,
+} from "@/redux/features/product/productApi";
 import { salePrice, type Product } from "@/redux/features/product/product.types";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { formatMoney } from "@/shared/libs/admin/format";
 import { cn } from "@/shared/utils/cn";
 import { Button, ButtonLink } from "../components/Button";
+import { ExcelActions } from "../components/ExcelActions";
 import { FilterSelect } from "../components/Field";
+import { downloadProducts, productImporter } from "../config/excel/products";
 import { NoticeLine, SearchBox } from "../components/ListControls";
 import { EmptyState, Panel, ScreenHeader } from "../components/Panel";
 import { StatusPill } from "../components/StatusPill";
 import { Table, TableScroll, Td, Th, Tr } from "../components/Table";
+import { ConfirmAction } from "../components/ConfirmAction";
 import { StatusSwitch } from "../components/StatusSwitch";
 import { LOW_STOCK, PRODUCTS_HREF, PRODUCTS_PAGE_SIZE } from "../config/catalog";
 
@@ -93,10 +100,18 @@ export function ProductsScreen() {
         title="Products"
         blurb="Everything for sale: prices, stock, specs, variants and where each product is filed."
         actions={
-          <ButtonLink href={`${PRODUCTS_HREF}/new`} variant="primary">
-            <Plus className="size-4" aria-hidden />
-            Add product
-          </ButtonLink>
+          <div className="flex flex-wrap items-center gap-2">
+            <ExcelActions
+              onDownload={() =>
+                downloadProducts(dispatch, { searchTerm, mainCategory, category, featured: featured ? "true" : undefined })
+              }
+              importer={productImporter(dispatch)}
+            />
+            <ButtonLink href={`${PRODUCTS_HREF}/new`} variant="primary">
+              <Plus className="size-4" aria-hidden />
+              Add product
+            </ButtonLink>
+          </div>
         }
       />
 
@@ -244,6 +259,7 @@ function StockPill({ stock }: { stock: number }) {
 
 function ProductRow({ product, report }: { product: Product; report: Report }) {
   const [update, { isLoading: saving }] = useUpdateProductMutation();
+  const [remove, { isLoading: removing }] = useDeleteProductMutation();
   const photo = product.images[0]?.url;
   const live = product.status === "active";
   const mainCategory = refName(product.mainCategoryId);
@@ -260,8 +276,17 @@ function ProductRow({ product, report }: { product: Product; report: Report }) {
     }
   };
 
+  const deleteProduct = async () => {
+    try {
+      await remove(product._id).unwrap();
+      report("good", `${product.name} was deleted.`);
+    } catch (problem) {
+      report("danger", apiErrorMessage(problem));
+    }
+  };
+
   return (
-    <Tr aria-busy={saving}>
+    <Tr aria-busy={saving || removing}>
       <Td className="max-w-0">
         <div className="flex items-center gap-3">
           <span className="grid size-12 shrink-0 place-items-center overflow-hidden rounded-control border border-line bg-surface">
@@ -334,10 +359,14 @@ function ProductRow({ product, report }: { product: Product; report: Report }) {
         />
       </Td>
       <Td className="text-right">
-        <ButtonLink href={`${PRODUCTS_HREF}/${product.slug}/edit`} size="sm" aria-label={`Edit ${product.name}`}>
-          <Pencil className="size-3.5" aria-hidden />
-          Edit
-        </ButtonLink>
+        <div className="flex items-center justify-end gap-2">
+          <ButtonLink href={`${PRODUCTS_HREF}/${product.slug}/edit`} size="sm" aria-label={`Edit ${product.name}`}>
+            <Pencil className="size-3.5" aria-hidden />
+            Edit
+          </ButtonLink>
+          {/* For good: the backend removes it and its photos. */}
+          <ConfirmAction label="Delete" confirmLabel="Delete for good" cancelLabel="Keep" onConfirm={deleteProduct} />
+        </div>
       </Td>
     </Tr>
   );

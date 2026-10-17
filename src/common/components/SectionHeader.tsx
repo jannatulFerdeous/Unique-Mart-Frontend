@@ -21,7 +21,8 @@ export function SectionHeader({
         id={id}
         className={cn(
           "flex-1 font-sans font-medium text-ink",
-          align === "center" ? "text-center" : "text-left",
+          // Centred from md up; on phones the title sits left, by its "Show All".
+          align === "center" ? "text-left md:text-center" : "text-left",
         )}
       >
         {title}

@@ -29,11 +29,14 @@ export function HeaderActions() {
           Store Locator
         </Link>
 
-        <WishlistLink className={iconButton} />
+        {/* On phones these sit in the bottom bar instead. */}
+        <div className="hidden lg:contents">
+          <WishlistLink className={iconButton} />
 
-        <CartLink className={iconButton} />
+          <CartLink className={iconButton} />
 
-        <AccountLink className={iconButton} />
+          <AccountLink className={iconButton} />
+        </div>
       </div>
     </div>
   );

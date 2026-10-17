@@ -19,6 +19,7 @@ export const admin_data: AdminData = {
     signOut: "Sign out",
     menu: "Menu",
     closeMenu: "Close menu",
+    menuTitle: "Menu",
     signedInAs: "Signed in as",
   },
 

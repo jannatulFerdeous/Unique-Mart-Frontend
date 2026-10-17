@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { NotFoundScreen } from "@/common/components/NotFoundScreen";
+import { BottomNav } from "@/common/widgets/BottomNav";
 import { Footer } from "@/common/widgets/Footer";
 import { Header } from "@/common/widgets/Header";
 
@@ -15,6 +16,7 @@ export default function NotFound() {
         <NotFoundScreen />
       </main>
       <Footer />
+      <BottomNav />
     </>
   );
 }

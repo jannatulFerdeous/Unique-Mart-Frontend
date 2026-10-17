@@ -1,13 +1,16 @@
 "use client";
 
-import { useState, useSyncExternalStore, type ReactNode } from "react";
+import { useEffect, useState, useSyncExternalStore, type ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { ExternalLink, Lock, LogOut, Menu, X } from "lucide-react";
+// White lettering for the dark sidebar; dark lettering for the light top bar.
+import logoDark from "@/images/brand/logo.png";
 import logoLight from "@/images/brand/logo-light.png";
 import { useAccount } from "@/modules/Auth/hooks/useAccount";
 import { encodeBack, useSession, type SessionUser } from "@/shared/libs/session";
+import { cn } from "@/shared/utils/cn";
 import { initials } from "@/shared/utils/initials";
 import { ROLE_LABEL, canOpen, homeFor } from "../config/access";
 import { admin_data } from "../config/constants";
@@ -44,6 +47,17 @@ function Shell({ user, children }: { user: SessionUser; children: ReactNode }) {
     router.push("/");
   };
 
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onKey = (event: KeyboardEvent) => event.key === "Escape" && setMenuOpen(false);
+    document.body.style.overflow = "hidden";
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = "";
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [menuOpen]);
+
   return (
     <div className="flex flex-1 bg-canvas">
       <div className="hidden w-60 shrink-0 bg-inverse px-3 lg:block">
@@ -53,30 +67,40 @@ function Shell({ user, children }: { user: SessionUser; children: ReactNode }) {
         </div>
       </div>
 
-      {menuOpen && (
-        <div className="fixed inset-0 z-50 flex lg:hidden">
-          <div className="w-64 max-w-[80%] overflow-y-auto bg-inverse px-3">
-            <div className="flex items-center justify-between gap-2 pt-4">
-              <Brand role={user.role} />
-              <button
-                type="button"
-                onClick={() => setMenuOpen(false)}
-                aria-label={shell.closeMenu}
-                className="rounded-control p-2 text-ink-inverse-muted hover:bg-inverse-raised hover:text-ink-inverse"
-              >
-                <X className="size-5" aria-hidden />
-              </button>
-            </div>
-            <AdminSidebar onNavigate={() => setMenuOpen(false)} onSignOut={leave} />
+      {/* Phones: the menu slides in from the left over a fading backdrop. */}
+      <div
+        inert={!menuOpen}
+        className={cn("fixed inset-0 z-50 lg:hidden", menuOpen ? "visible" : "invisible delay-300")}
+      >
+        <button
+          type="button"
+          aria-label={shell.closeMenu}
+          onClick={() => setMenuOpen(false)}
+          className={cn(
+            "absolute inset-0 size-full bg-inverse-deep/60 backdrop-blur-[2px] transition-opacity duration-300 ease-out motion-reduce:transition-none",
+            menuOpen ? "opacity-100" : "opacity-0",
+          )}
+        />
+        <div
+          className={cn(
+            "absolute inset-y-0 left-0 flex w-72 max-w-[85%] flex-col overflow-y-auto bg-inverse px-3 shadow-2xl transition-transform duration-300 ease-out motion-reduce:transition-none",
+            menuOpen ? "translate-x-0" : "-translate-x-full",
+          )}
+        >
+          <div className="sticky top-0 z-10 flex items-center justify-between gap-2 bg-inverse px-3 pt-4 pb-2">
+            <p className="text-xs font-bold tracking-widest text-ink-inverse-muted uppercase">{shell.menuTitle}</p>
+            <button
+              type="button"
+              onClick={() => setMenuOpen(false)}
+              aria-label={shell.closeMenu}
+              className="grid size-9 place-items-center rounded-full bg-inverse-raised text-ink-inverse-muted transition-colors hover:bg-inverse-hover hover:text-ink-inverse"
+            >
+              <X className="size-5" aria-hidden />
+            </button>
           </div>
-          <button
-            type="button"
-            aria-label={shell.closeMenu}
-            onClick={() => setMenuOpen(false)}
-            className="flex-1 bg-inverse-deep/50"
-          />
+          <AdminSidebar onNavigate={() => setMenuOpen(false)} onSignOut={leave} />
         </div>
-      )}
+      </div>
 
       <div className="flex min-w-0 flex-1 flex-col">
         <header className="sticky top-0 z-40 flex items-center gap-3 border-b border-line bg-surface/95 px-4 py-2.5 backdrop-blur md:px-6">
@@ -90,7 +114,14 @@ function Shell({ user, children }: { user: SessionUser; children: ReactNode }) {
           </button>
 
           <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-semibold text-ink">{shell.subtitle}</p>
+            <Link
+              href={homeFor(user.role)}
+              aria-label={`${shell.brand} ${shell.subtitle}`}
+              className="inline-flex lg:hidden"
+            >
+              <Image src={logoDark} alt="" priority sizes="80px" className="h-8 w-auto" />
+            </Link>
+            <p className="hidden truncate text-sm font-semibold text-ink lg:block">{shell.subtitle}</p>
           </div>
 
           <Link
