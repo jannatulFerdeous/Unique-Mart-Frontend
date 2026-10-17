@@ -33,7 +33,7 @@ export function WishlistButton({
         disabled={busy}
         aria-pressed={wished}
         className={cn(
-          "inline-flex items-center gap-2 rounded-control border px-5 py-3.5 font-bold transition-colors",
+          "inline-flex shrink-0 items-center justify-center gap-2 rounded-control border px-5 py-3.5 font-bold whitespace-nowrap transition-colors",
           wished
             ? "border-tertiary bg-tertiary-soft text-tertiary"
             : "border-line-strong text-ink hover:border-line-strong hover:bg-surface-muted",

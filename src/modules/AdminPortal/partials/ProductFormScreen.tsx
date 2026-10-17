@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Plus, Sparkles, Trash2 } from "lucide-react";
+import { ArrowLeft, Plus, Sparkles, Trash2, X } from "lucide-react";
 import { apiErrorMessage } from "@/redux/api/errors";
 import { useGetAttributeGroupsQuery, useGetAttributesQuery } from "@/redux/features/attribute/attributeApi";
 import type { Attribute } from "@/redux/features/attribute/attribute.types";
@@ -197,8 +197,8 @@ const variantValues = (rows: VariantRow[], ids: string[], byId: Map<string, Attr
     const discount = toNumber(row.discount || "0");
     const stock = toNumber(row.stock);
 
-    if (!sku) error ??= `${label}: enter a SKU.`;
-    else if (skus.has(sku)) error ??= `${label}: SKU ${sku} is used twice.`;
+    // No SKU: the backend makes one.
+    if (sku && skus.has(sku)) error ??= `${label}: SKU ${sku} is used twice.`;
     if (!isMoney(price)) error ??= `${label}: enter a price of 0 or more.`;
     if (!isMoney(discount)) error ??= `${label}: enter a discount of 0 or more.`;
     else if (isMoney(price) && discount > price) error ??= `${label}: the discount can't be more than the price.`;
@@ -207,9 +207,9 @@ const variantValues = (rows: VariantRow[], ids: string[], byId: Map<string, Attr
     const combo = JSON.stringify(attributes.map((each) => each.value));
     if (attributes.length && combos.has(combo)) error ??= `${label} repeats another variant's options.`;
 
-    skus.add(sku);
+    if (sku) skus.add(sku);
     combos.add(combo);
-    variants.push({ sku, attributes, price, discount, stock });
+    variants.push({ ...(sku ? { sku } : {}), attributes, price, discount, stock });
   });
 
   if (ids.length === 0) error ??= "Choose at least one attribute the variants differ by.";
@@ -242,14 +242,16 @@ function usePickedFiles() {
     [],
   );
 
-  const replace = (files: File[]) => {
-    setPicked((previous) => {
-      for (const each of previous) URL.revokeObjectURL(each.url);
-      return files.map((file) => ({ file, url: URL.createObjectURL(file) }));
-    });
+  const add = (files: File[]) => {
+    setPicked((previous) => [...previous, ...files.map((file) => ({ file, url: URL.createObjectURL(file) }))]);
   };
 
-  return [picked, replace] as const;
+  const remove = (url: string) => {
+    URL.revokeObjectURL(url);
+    setPicked((previous) => previous.filter((each) => each.url !== url));
+  };
+
+  return [picked, add, remove] as const;
 }
 
 // The plain fields; `sku`, price and stock are only used for a single-version product.
@@ -303,7 +305,9 @@ function ProductForm({ product }: { product?: Product }) {
   const [isExclusive, setIsExclusive] = useState(product?.isExclusive ?? false);
   const [isUpcoming, setIsUpcoming] = useState(product?.isUpcoming ?? false);
   const [status, setStatus] = useState<CatalogStatus>(product?.status ?? "active");
-  const [photos, setPhotos] = usePickedFiles();
+  const [photos, addPhotos, removePhoto] = usePickedFiles();
+  // The product's current photos that stay; new picks go after them.
+  const [kept, setKept] = useState(() => product?.images ?? []);
   const [errors, setErrors] = useState<Errors>({});
 
   const saving = creating || updating || uploading;
@@ -405,11 +409,11 @@ function ProductForm({ product }: { product?: Product }) {
   const pickPhotos = (list: FileList | null) => {
     const files = Array.from(list ?? []);
     const problem =
-      files.length > PRODUCT_IMAGES_MAX
-        ? `Choose up to ${PRODUCT_IMAGES_MAX} photos.`
+      kept.length + photos.length + files.length > PRODUCT_IMAGES_MAX
+        ? `A product can have up to ${PRODUCT_IMAGES_MAX} photos. Remove one first.`
         : (files.map(checkImageFile).find(Boolean) ?? null);
     setErrors((current) => ({ ...current, images: problem ?? undefined }));
-    setPhotos(problem ? [] : files);
+    if (!problem) addPhotos(files);
   };
 
   // Everything the form says, in the validator's shape. A variant product
@@ -418,9 +422,10 @@ function ProductForm({ product }: { product?: Product }) {
   const collect = (drafts: Drafts, base: Base) => {
     const spec = specValues(drafts.specs, byId);
     const variant = variantValues(drafts.variants, drafts.variantAttributeIds, byId);
-    const { sku: baseSku, ...rest } = base;
+    const { sku: baseSku, subCategoryId: baseShelf, ...rest } = base;
     const fields: ProductFields = {
       ...rest,
+      ...(baseShelf ? { subCategoryId: baseShelf } : {}),
       ...(drafts.hasVariants ? listingFrom(variant.variants) : baseSku ? { sku: baseSku } : {}),
       attributes: spec.values,
       hasVariants: drafts.hasVariants,
@@ -458,7 +463,6 @@ function ProductForm({ product }: { product?: Product }) {
       brandId: brandKnown ? undefined : "Choose a brand.",
       mainCategoryId: mainCategoryId ? undefined : "Choose a main category.",
       categoryId: categoryId ? undefined : "Choose a category.",
-      subCategoryId: subCategoryId ? undefined : "Choose a sub-category.",
       price: hasVariants || isMoney(priceValue) ? undefined : "Enter a price of 0 or more.",
       discount:
         hasVariants
@@ -513,9 +517,19 @@ function ProductForm({ product }: { product?: Product }) {
         saved = await create(fields).unwrap();
       }
 
-      if (photos.length) {
+      // Which current photos stay, by publicId (or url when there's none).
+      const keptIds = kept.map((each) => each.publicId ?? each.url);
+      const photosChanged =
+        photos.length > 0 ||
+        (product !== undefined &&
+          JSON.stringify(keptIds) !== JSON.stringify(product.images.map((each) => each.publicId ?? each.url)));
+      if (photosChanged) {
         try {
-          saved = await upload({ id: saved._id, images: photos.map((each) => each.file) }).unwrap();
+          saved = await upload({
+            id: saved._id,
+            images: photos.map((each) => each.file),
+            keep: product ? keptIds : undefined,
+          }).unwrap();
         } catch (problem) {
           dispatch(
             showNotice({
@@ -536,7 +550,7 @@ function ProductForm({ product }: { product?: Product }) {
     }
   };
 
-  const current = product?.images ?? [];
+  const photoCount = kept.length + photos.length;
   const specError = errors.spec ?? {};
 
   return (
@@ -662,6 +676,7 @@ function ProductForm({ product }: { product?: Product }) {
                               <Input
                                 aria-label={`Variant ${index + 1} SKU`}
                                 value={row.sku}
+                                placeholder="Auto"
                                 onChange={(event) => editRow(row.key, { sku: event.target.value })}
                                 className="px-2 py-1.5 font-mono text-xs uppercase"
                               />
@@ -728,7 +743,7 @@ function ProductForm({ product }: { product?: Product }) {
                         Add every combination ({combinations})
                       </Button>
                     )}
-                    <p className="text-xs text-ink-subtle">Discount is an amount off, not a percentage. SKUs are saved in capitals.</p>
+                    <p className="text-xs text-ink-subtle">Discount is an amount off, not a percentage. SKUs are saved in capitals; leave one empty and the shop makes it.</p>
                   </div>
                 </>
               )}
@@ -744,45 +759,61 @@ function ProductForm({ product }: { product?: Product }) {
 
         <Panel
           title="Photos"
-          description={
-            product && current.length
-              ? `Optional. Choosing new photos replaces ${current.length === 1 ? "the current photo" : `all ${current.length} current photos`}. Up to ${PRODUCT_IMAGES_MAX}.`
-              : `Optional. Up to ${PRODUCT_IMAGES_MAX}; the first one is the main photo in the shop.`
-          }
+          description={`Optional. Up to ${PRODUCT_IMAGES_MAX}; the first one is the main photo in the shop.`}
         >
           <fieldset disabled={saving} className="flex min-w-0 flex-col gap-3">
             <legend className="sr-only">Photos</legend>
             <ul className="grid grid-cols-3 gap-2 sm:grid-cols-5">
-              {(photos.length ? photos.map((each) => each.url) : current.map((each) => each.url)).map((url, index) => (
-                <li key={url} className="relative aspect-square overflow-hidden rounded-control border border-line bg-surface">
+              {[
+                ...kept.map((each) => ({ key: each.publicId ?? each.url, url: each.url, drop: () => setKept((list) => list.filter((item) => item !== each)) })),
+                ...photos.map((each) => ({ key: each.url, url: each.url, drop: () => removePhoto(each.url) })),
+              ].map((photo, index) => (
+                <li key={photo.key} className="relative aspect-square overflow-hidden rounded-control border border-line bg-surface">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={url} alt="" className="h-full w-full object-contain" />
+                  <img src={photo.url} alt="" className="h-full w-full object-contain" />
                   {index === 0 && (
                     <span className="absolute top-1 left-1 rounded-control bg-inverse px-1.5 py-0.5 text-[10px] font-medium text-ink-inverse">
                       Main
                     </span>
                   )}
+                  <button
+                    type="button"
+                    onClick={photo.drop}
+                    aria-label={`Remove photo ${index + 1}`}
+                    className="absolute top-1 right-1 grid size-6 place-items-center rounded-full bg-surface/90 text-ink shadow-sm transition-colors hover:bg-danger hover:text-white"
+                  >
+                    <X className="size-3.5" aria-hidden />
+                  </button>
                 </li>
               ))}
-              {photos.length === 0 && current.length === 0 && (
+              {photoCount === 0 && (
                 <li className="col-span-full grid h-24 place-items-center rounded-control border border-dashed border-line-strong text-sm text-ink-subtle">
                   No photos yet
                 </li>
               )}
             </ul>
-            <Field
-              label={product && current.length ? "Replace photos" : "Choose photos"}
-              hint="PNG, JPG, WebP or AVIF, up to 5 MB each."
-              error={errors.images}
-            >
-              <input
-                type="file"
-                accept={IMAGE_ACCEPT}
-                multiple
-                onChange={(event) => pickPhotos(event.target.files)}
-                className="block w-full text-sm text-ink-muted file:mr-3 file:cursor-pointer file:rounded-control file:border file:border-line-strong file:bg-surface file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-ink hover:file:bg-surface-muted"
-              />
-            </Field>
+            {photoCount < PRODUCT_IMAGES_MAX && (
+              <Field
+                label={photoCount ? "Add more photos" : "Add photos"}
+                hint={`PNG, JPG, WebP or AVIF, up to 5 MB each. ${PRODUCT_IMAGES_MAX - photoCount} more allowed.`}
+                error={errors.images}
+              >
+                <input
+                  type="file"
+                  accept={IMAGE_ACCEPT}
+                  multiple
+                  onChange={(event) => {
+                    pickPhotos(event.target.files);
+                    // Lets the same file be picked again after removing it.
+                    event.target.value = "";
+                  }}
+                  className="block w-full text-sm text-ink-muted file:mr-3 file:cursor-pointer file:rounded-control file:border file:border-line-strong file:bg-surface file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-ink hover:file:bg-surface-muted"
+                />
+              </Field>
+            )}
+            {photoCount >= PRODUCT_IMAGES_MAX && errors.images && (
+              <p role="alert" className="text-sm font-medium text-danger">{errors.images}</p>
+            )}
           </fieldset>
         </Panel>
       </div>
@@ -846,11 +877,15 @@ function ProductForm({ product }: { product?: Product }) {
             </Field>
             <Field
               label="Sub-category"
-              hint={categoryId && shelves.length === 0 ? "This category has no active sub-categories yet." : undefined}
+              hint={
+                categoryId && shelves.length === 0
+                  ? "Optional. This category has no active sub-categories yet."
+                  : "Optional."
+              }
               error={errors.subCategoryId}
             >
               <Select value={subCategoryId} disabled={!categoryId} onChange={(event) => setSubCategoryId(event.target.value)}>
-                <option value="">{categoryId ? "Choose a sub-category" : "Choose a category first"}</option>
+                <option value="">{categoryId ? "None" : "Choose a category first"}</option>
                 {shelves.map((each) => (
                   <option key={each._id} value={each._id}>
                     {each.name}

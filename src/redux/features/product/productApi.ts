@@ -46,12 +46,12 @@ export const productApi = baseApi.injectEndpoints({
       onQueryStarted: refreshShop,
     }),
 
-    // A multipart PATCH with nothing but files passes the validator untouched.
+    // A multipart PATCH: the new photos, and which current ones to keep.
     uploadProductImages: build.mutation<Product, UploadProductImagesArgs>({
-      query: ({ id, images }) => ({
+      query: ({ id, images, keep }) => ({
         url: `/products/${id}`,
         method: "PATCH",
-        body: toFormData({}, { field: "images", list: images }),
+        body: toFormData({ keepImages: keep ? JSON.stringify(keep) : undefined }, { field: "images", list: images }),
       }),
       transformResponse: (response: ApiResponse<Product>) => response.data,
       invalidatesTags: (_result, _error, { id }) => [LIST, { type: TAG.product, id }],

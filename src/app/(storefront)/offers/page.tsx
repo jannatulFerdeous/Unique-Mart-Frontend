@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Offers } from "@/modules/Offers";
-import { getCatalog } from "@/shared/api/storefront";
-import { toOffers } from "@/shared/libs/storefront/catalog";
+import { getActiveCoupons, getCatalog } from "@/shared/api/storefront";
+import { toCouponOffers, toOffers } from "@/shared/libs/storefront/catalog";
 
 export const metadata: Metadata = {
   title: "Offers",
@@ -10,5 +10,6 @@ export const metadata: Metadata = {
 };
 
 export default async function OffersPage() {
-  return <Offers offers={toOffers(await getCatalog())} />;
+  const [catalog, coupons] = await Promise.all([getCatalog(), getActiveCoupons()]);
+  return <Offers offers={toOffers(catalog)} coupons={toCouponOffers(catalog, coupons)} />;
 }

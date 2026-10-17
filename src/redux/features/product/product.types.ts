@@ -65,7 +65,8 @@ export type ProductListParams = {
 };
 
 export type VariantFields = {
-  sku: string;
+  // Optional: left out, the backend makes one.
+  sku?: string;
   attributes: ProductAttribute[];
   price: number;
   discount: number;
@@ -78,7 +79,8 @@ export type ProductFields = {
   description: string;
   mainCategoryId: string;
   categoryId: string;
-  subCategoryId: string;
+  // Optional: a product can sit directly in a category.
+  subCategoryId?: string;
   sku?: string;
   brandId: string;
   attributes: ProductAttribute[];
@@ -96,7 +98,9 @@ export type ProductFields = {
 export type UpdateProductArgs = { id: string; changes: Partial<ProductFields> };
 
 // Any new photos replace all current ones (backend behaviour).
-export type UploadProductImagesArgs = { id: string; images: File[] };
+// `keep`: the current photos that stay, in order, by publicId (or url). Without
+// it the new photos replace them all.
+export type UploadProductImagesArgs = { id: string; images: File[]; keep?: string[] };
 
 export const salePrice = (item: Pick<Product, "price" | "discount">) => Math.max(0, item.price - item.discount);
 

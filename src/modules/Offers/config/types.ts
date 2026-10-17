@@ -16,4 +16,13 @@ export type OffersData = {
 
   empty: string;
   saveLabel: string;
+
+  couponsTitle: string;
+  couponsBody: string;
+  couponCode: string;
+  copy: string;
+  copied: string;
+  appliesTo: string;
+  appliesEverything: string;
+  seeAll: string;
 };

@@ -29,4 +29,13 @@ export const offers_data: OffersData = {
 
   empty: "No offers match that filter.",
   saveLabel: "Save",
+
+  couponsTitle: "Coupons",
+  couponsBody: "Codes running right now, and what they take money off.",
+  couponCode: "Code",
+  copy: "Copy",
+  copied: "Copied",
+  appliesTo: "On",
+  appliesEverything: "Everything in the shop",
+  seeAll: "See all {n} products",
 };

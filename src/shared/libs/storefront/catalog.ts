@@ -14,6 +14,7 @@ import {
 } from "@/redux/features/catalog/catalog.types";
 import type { AttributeValue, Product as ApiProduct, ProductVariant } from "@/redux/features/product/product.types";
 import type { NavItem } from "@/shared/config/navigation";
+import { formatPrice } from "@/shared/utils/price";
 import type {
   DescriptionBlock,
   Product,
@@ -235,6 +236,89 @@ export const toOffers = (catalog: Catalog): Offer[] =>
         : [],
     )
     .sort((a, b) => b.percent - a.percent || b.saving - a.saving);
+
+// What GET /coupons/active answers: coupons a shopper can use right now.
+// Products come as ids; categories with their names.
+export type ActiveCoupon = {
+  _id: string;
+  code: string;
+  description?: string | null;
+  discountType: "percentage" | "fixed";
+  discountValue: number;
+  minimumOrderAmount?: number | null;
+  maximumDiscountAmount?: number | null;
+  applicableProducts: string[];
+  applicableCategories: { _id: string; name: string; slug: string }[];
+  applicableMainCategories: { _id: string; name: string; slug: string }[];
+  startDate: string;
+  endDate: string;
+};
+
+export type CouponOffer = {
+  id: string;
+  code: string;
+  description: string | null;
+  // e.g. "15% off" or "Tk. 500 off"
+  headline: string;
+  // e.g. ["On orders over Tk. 2,000", "Up to Tk. 500 off", "Ends 31 Oct 2026"]
+  terms: string[];
+  // Where it applies, linked; empty with no products means everything.
+  places: { name: string; href: string }[];
+  // The first few products it applies to, and how many there are in all.
+  products: Product[];
+  productCount: number;
+};
+
+// How many of a coupon's products the offers page shows before "See all".
+const COUPON_PRODUCTS_SHOWN = 8;
+
+const longDate = (iso: string) =>
+  new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "Asia/Dhaka" });
+
+// Coupons as the offers page shows them, with their products from the
+// catalogue (products that are off or hidden are left out).
+export const toCouponOffers = (catalog: Catalog, coupons: ActiveCoupon[]): CouponOffer[] => {
+  const byId = new Map(catalog.products.map((product) => [product._id, product]));
+  return coupons.map((coupon) => {
+    // Products named on the coupon first, then the rest of its categories'.
+    const named = coupon.applicableProducts.flatMap((id) => {
+      const product = byId.get(String(id));
+      return product ? [product] : [];
+    });
+    const categoryIds = new Set(coupon.applicableCategories.map((each) => each._id));
+    const mainIds = new Set(coupon.applicableMainCategories.map((each) => each._id));
+    const inPlaces = catalog.products.filter(
+      (product) =>
+        !named.includes(product) &&
+        (categoryIds.has(refId(product.categoryId)) || mainIds.has(refId(product.mainCategoryId))),
+    );
+    const matching = [...named, ...inPlaces];
+    const places = [...coupon.applicableMainCategories, ...coupon.applicableCategories].flatMap((each) => {
+      const node = catalog.nodeById.get(each._id);
+      return node ? [{ name: node.name, href: node.href }] : [];
+    });
+
+    return {
+      id: coupon._id,
+      code: coupon.code,
+      description: coupon.description?.trim() || null,
+      headline:
+        coupon.discountType === "percentage"
+          ? `${coupon.discountValue}% off`
+          : `${formatPrice(coupon.discountValue)} off`,
+      terms: [
+        ...(coupon.minimumOrderAmount ? [`On orders over ${formatPrice(coupon.minimumOrderAmount)}`] : []),
+        ...(coupon.discountType === "percentage" && coupon.maximumDiscountAmount
+          ? [`Up to ${formatPrice(coupon.maximumDiscountAmount)} off`]
+          : []),
+        `Ends ${longDate(coupon.endDate)}`,
+      ],
+      places,
+      products: matching.slice(0, COUPON_PRODUCTS_SHOWN).map((product) => toCard(catalog, product)),
+      productCount: matching.length,
+    };
+  });
+};
 
 // "Resolution (Display)" is stored that way to keep names unique; under the
 // Display heading it only needs to say "Resolution".
