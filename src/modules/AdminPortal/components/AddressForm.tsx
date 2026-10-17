@@ -10,13 +10,15 @@ import {
   type AddressFields,
   type AddressLabel,
 } from "@/redux/features/address/address.types";
+import { BANGLADESH, BD_DISTRICTS, BD_DIVISIONS, COUNTRIES } from "@/shared/config/locations";
 import { useSession } from "@/shared/libs/session";
 import { Button } from "./Button";
 import { Field, Input, Select, Textarea } from "./Field";
+import { SearchSelect } from "./SearchSelect";
 
 export const ADDRESS_LABEL_NAME: Record<AddressLabel, string> = { home: "Home", office: "Office", other: "Other" };
 
-const DEFAULT_COUNTRY = "Bangladesh";
+const DEFAULT_COUNTRY = BANGLADESH;
 
 type TextField = keyof typeof ADDRESS_LIMITS;
 
@@ -94,6 +96,28 @@ export function AddressForm({
     }
   };
 
+  const inBangladesh = fields.country === BANGLADESH;
+  // An older address may hold a city or country that isn't in the lists; keep
+  // it on offer so editing doesn't lose it.
+  const oddDistrict = inBangladesh && fields.city && !BD_DISTRICTS.includes(fields.city) ? fields.city : null;
+  const oddCountry = fields.country && !COUNTRIES.includes(fields.country) ? fields.country : null;
+
+  const chooseCountry = (country: string) =>
+    setFields((current) => ({
+      ...current,
+      country,
+      // Into Bangladesh: keep the city only if it's a district. Out of it:
+      // start the city afresh.
+      city:
+        country === BANGLADESH
+          ? BD_DISTRICTS.includes(current.city)
+            ? current.city
+            : ""
+          : current.country === BANGLADESH
+            ? ""
+            : current.city,
+    }));
+
   const text = (key: TextField, props: { type?: string; autoComplete?: string } = {}) => (
     <Field label={NAMES[key]} error={errors[key]}>
       <Input
@@ -123,9 +147,34 @@ export function AddressForm({
           />
         </Field>
 
-        {text("city", { autoComplete: "address-level2" })}
+        <SearchSelect
+          label={NAMES.country}
+          value={fields.country}
+          onChange={chooseCountry}
+          groups={[{ options: oddCountry ? [oddCountry, ...COUNTRIES] : COUNTRIES }]}
+          placeholder="Choose a country"
+          searchPlaceholder="Search countries"
+          error={errors.country}
+        />
+
+        {inBangladesh ? (
+          <SearchSelect
+            label="District"
+            value={fields.city}
+            onChange={(district) => set("city", district)}
+            groups={[
+              ...(oddDistrict ? [{ options: [oddDistrict] }] : []),
+              ...BD_DIVISIONS.map(({ division, districts }) => ({ label: `${division} division`, options: districts })),
+            ]}
+            placeholder="Choose a district"
+            searchPlaceholder="Search districts"
+            error={errors.city && "Choose a district."}
+          />
+        ) : (
+          text("city", { autoComplete: "address-level2" })
+        )}
+
         {text("postalCode", { autoComplete: "postal-code" })}
-        {text("country", { autoComplete: "country-name" })}
 
         <Field label="Label">
           <Select value={fields.label} onChange={(event) => set("label", event.target.value as AddressLabel)}>

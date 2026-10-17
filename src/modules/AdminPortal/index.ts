@@ -20,6 +20,7 @@ export { CouponsScreen } from "./partials/CouponsScreen";
 export { MyReviewsScreen } from "./partials/MyReviewsScreen";
 export { NewsletterScreen } from "./partials/NewsletterScreen";
 export { OrderDetailScreen, OrdersScreen } from "./partials/OrdersScreen";
+export { DashboardError } from "./partials/DashboardError";
 export { OrderStatusScreen } from "./partials/OrderStatusScreen";
 export { PaymentsScreen } from "./partials/PaymentsScreen";
 export { RefundsScreen } from "./partials/RefundsScreen";

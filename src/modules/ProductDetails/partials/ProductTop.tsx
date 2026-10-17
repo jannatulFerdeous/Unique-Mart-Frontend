@@ -327,7 +327,7 @@ export function ProductTop({ product, detail }: Props) {
               type="button"
               onClick={async () => setAdded(await addLine())}
               disabled={!available || adding}
-              className="rounded-control bg-surface-muted px-6 py-3.5 font-bold text-ink transition-colors hover:bg-line disabled:cursor-not-allowed disabled:opacity-50 sm:px-12"
+              className="flex-1 rounded-control bg-surface-muted px-6 py-3.5 font-bold whitespace-nowrap text-ink transition-colors hover:bg-line disabled:cursor-not-allowed disabled:opacity-50"
             >
               {labels.addToCart}
               <span className="sr-only"> — {product.name}</span>
@@ -344,7 +344,7 @@ export function ProductTop({ product, detail }: Props) {
               if (await addLine()) router.push("/cart");
             }}
             disabled={!available || adding}
-            className="rounded-control bg-tertiary px-6 py-3.5 font-bold text-tertiary-contrast transition-colors hover:bg-tertiary-hover disabled:cursor-not-allowed disabled:opacity-50 sm:px-12"
+            className="flex-1 rounded-control bg-tertiary px-6 py-3.5 font-bold whitespace-nowrap text-tertiary-contrast transition-colors hover:bg-tertiary-hover disabled:cursor-not-allowed disabled:opacity-50"
           >
             {labels.buyNow}
             <span className="sr-only"> — {product.name}</span>

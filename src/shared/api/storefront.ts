@@ -3,7 +3,7 @@ import type { ApiMeta, ApiResponse } from "@/redux/api/types";
 import type { Attribute } from "@/redux/features/attribute/attribute.types";
 import type { Brand, Category, MainCategory, SubCategory } from "@/redux/features/catalog/catalog.types";
 import { API_BASE_URL } from "@/shared/config/api";
-import { buildCatalog, type ApiProduct, type Catalog } from "@/shared/libs/storefront/catalog";
+import { buildCatalog, type ActiveCoupon, type ApiProduct, type Catalog } from "@/shared/libs/storefront/catalog";
 
 // Cache tag for everything the shop reads from the backend; the admin clears
 // it after every save (storefront.actions.ts).
@@ -70,6 +70,11 @@ export const getCatalog = cache(async (): Promise<Catalog> => {
   ]);
   return buildCatalog({ products, brands, mains, categories, subs, attributes });
 });
+
+// Coupons shoppers can use right now; none when the backend can't be reached.
+export const getActiveCoupons = cache(
+  async (): Promise<ActiveCoupon[]> => (await read<ApiResponse<ActiveCoupon[]>>("/coupons/active"))?.data ?? [],
+);
 
 // One product with its specs and variant options filled in, or null when it
 // doesn't exist or is switched off.
