@@ -88,6 +88,17 @@
   --animate-float: float 4s ease-in-out infinite;
   --animate-float-slow: float 6s ease-in-out infinite;
 
+  @keyframes dropdown-in {
+    from {
+      opacity: 0;
+      transform: translateY(-4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
   @keyframes float {
     0%,
     100% {
@@ -202,6 +213,13 @@
     background-color: var(--color-canvas);
     color: var(--color-ink);
     font-family: var(--font-sans);
+  }
+
+  /* Shop pages: what shows when the page is pulled past its top or bottom
+     (overscroll) matches the dark header and footer instead of flashing the
+     light page colour. The body keeps its own colour. */
+  html:has(#site-search-mobile) {
+    background-color: var(--color-inverse);
   }
 
   h1,

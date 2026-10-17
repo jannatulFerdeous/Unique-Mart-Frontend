@@ -19,7 +19,9 @@ import { productImage } from "@/shared/libs/storefront/catalog";
 import { cn } from "@/shared/utils/cn";
 import { formatPrice } from "@/shared/utils/price";
 import { Button, ButtonLink } from "../components/Button";
+import { ExcelActions } from "../components/ExcelActions";
 import { FilterSelect } from "../components/Field";
+import { downloadOrders, orderImporter } from "../config/excel/orders";
 import { NoticeLine } from "../components/ListControls";
 import { OrderLookup } from "../components/OrderLookup";
 import { EmptyState, Panel, ScreenHeader } from "../components/Panel";
@@ -84,6 +86,7 @@ export function OrderStatusScreen({ initialOrder }: { initialOrder?: string }) {
 // Every customer's orders
 
 function AllOrders() {
+  const dispatch = useAppDispatch();
   const [page, setPage] = useState(1);
   const [status, setStatus] = useState<OrderStatus | "">("");
   const { data, isLoading, isFetching, isError, error, refetch } = useGetStaffOrdersQuery({
@@ -100,21 +103,27 @@ function AllOrders() {
     <Panel
       title="All orders"
       actions={
-        <FilterSelect
-          label="Status"
-          value={status}
-          onChange={(event) => {
-            setStatus(event.target.value as OrderStatus | "");
-            setPage(1);
-          }}
-        >
-          <option value="">All orders</option>
-          {ORDER_STATUSES.map((value) => (
-            <option key={value} value={value}>
-              {ORDER_STATUS_META[value].label}
-            </option>
-          ))}
-        </FilterSelect>
+        <div className="flex flex-wrap items-center gap-2">
+          <ExcelActions
+            onDownload={() => downloadOrders(dispatch, status || undefined)}
+            importer={orderImporter(dispatch)}
+          />
+          <FilterSelect
+            label="Status"
+            value={status}
+            onChange={(event) => {
+              setStatus(event.target.value as OrderStatus | "");
+              setPage(1);
+            }}
+          >
+            <option value="">All orders</option>
+            {ORDER_STATUSES.map((value) => (
+              <option key={value} value={value}>
+                {ORDER_STATUS_META[value].label}
+              </option>
+            ))}
+          </FilterSelect>
+        </div>
       }
       bodyClassName="py-0 md:py-0"
     >
@@ -192,7 +201,10 @@ function AllOrders() {
             </Table>
           </TableScroll>
 
-          <nav aria-label="Pages" className="-mx-4 flex flex-wrap items-center justify-end gap-2 px-4 py-3 text-sm md:-mx-5 md:px-5">
+          <nav
+            aria-label="Pages"
+            className="-mx-4 flex flex-wrap items-center justify-end gap-2 px-4 py-3 text-sm md:-mx-5 md:px-5"
+          >
             <Button size="sm" disabled={page === 1 || isFetching} onClick={() => setPage(page - 1)}>
               <ChevronLeft className="size-4" aria-hidden />
               Previous
@@ -221,7 +233,8 @@ function ManageOrder({ orderId }: { orderId: string }) {
   const [armed, setArmed] = useState(false);
 
   // 404 on the payment just means nobody has started paying.
-  const noPayment = payment.isError && typeof payment.error === "object" && "status" in payment.error && payment.error.status === 404;
+  const noPayment =
+    payment.isError && typeof payment.error === "object" && "status" in payment.error && payment.error.status === 404;
   if (fetched.isLoading || payment.isLoading || fetched.isError || !fetched.data || (payment.isError && !noPayment)) {
     const problem = fetched.isError ? fetched : payment;
     return (
@@ -267,7 +280,13 @@ function ManageOrder({ orderId }: { orderId: string }) {
         }),
       );
     } catch (problem) {
-      dispatch(showNotice({ scope: "orders", tone: "danger", text: apiErrorMessage(problem) }));
+      dispatch(
+        showNotice({
+          scope: "orders",
+          tone: "danger",
+          text: apiErrorMessage(problem),
+        }),
+      );
     }
   };
 
@@ -316,7 +335,9 @@ function ManageOrder({ orderId }: { orderId: string }) {
               return (
                 <label
                   key={status}
-                  className={reason ? "flex items-start gap-2 text-sm text-ink-subtle" : "flex items-start gap-2 text-sm text-ink"}
+                  className={
+                    reason ? "flex items-start gap-2 text-sm text-ink-subtle" : "flex items-start gap-2 text-sm text-ink"
+                  }
                 >
                   <input
                     type="radio"
@@ -437,7 +458,10 @@ function OrderSummary({ order }: { order: StaffOrder }) {
             <>
               <p className="mt-0.5 font-medium text-ink">{customer.name}</p>
               {customer.email && (
-                <a href={`mailto:${customer.email}`} className="block break-all text-ink-muted hover:text-tertiary hover:underline">
+                <a
+                  href={`mailto:${customer.email}`}
+                  className="block break-all text-ink-muted hover:text-tertiary hover:underline"
+                >
                   {customer.email}
                 </a>
               )}

@@ -1,4 +1,5 @@
 import { Toaster } from "@/common/components/Toaster";
+import { BottomNav } from "@/common/widgets/BottomNav";
 import { Footer } from "@/common/widgets/Footer";
 import { Header } from "@/common/widgets/Header";
 
@@ -10,6 +11,7 @@ export default function StorefrontLayout({ children }: LayoutProps<"/">) {
         {children}
       </main>
       <Footer />
+      <BottomNav />
       <Toaster />
     </>
   );

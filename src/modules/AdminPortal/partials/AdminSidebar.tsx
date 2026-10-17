@@ -87,14 +87,14 @@ export function AdminSidebar({
   const { user } = useSession();
 
   return (
-    <nav aria-label="Dashboard sections" className="flex flex-col gap-6 py-4">
+    <nav aria-label="Dashboard sections" className="flex flex-col gap-5 py-4">
       {navFor(user?.role).map((group) => (
         <div key={group.title}>
-          <p className="px-3 text-xs font-semibold tracking-wide text-ink-inverse-muted uppercase">
+          <p className="px-3 text-[0.6875rem] font-semibold tracking-[0.14em] text-ink-inverse-muted/70 uppercase">
             {group.title}
           </p>
 
-          <ul className="mt-2 flex flex-col gap-0.5">
+          <ul className="mt-2 flex flex-col gap-1">
             {group.items.map((item) => {
               const Icon = ICONS[item.icon];
               const current = isCurrent(pathname, item.href, item.exact);
@@ -106,14 +106,24 @@ export function AdminSidebar({
                     onClick={onNavigate}
                     aria-current={current ? "page" : undefined}
                     className={cn(
-                      "flex items-center gap-2.5 rounded-control px-3 py-2 text-sm transition-colors",
+                      // The current page: a blue icon tile on a soft blue wash.
+                      "group relative flex items-center gap-3 rounded-lg px-2 py-1.5 text-sm transition-all duration-200 ease-out motion-reduce:transition-none",
                       current
-                        ? "bg-inverse-raised font-semibold text-ink-inverse"
-                        : "text-ink-inverse-muted hover:bg-inverse-raised/60 hover:text-ink-inverse",
+                        ? "bg-tertiary/15 font-semibold text-ink-inverse"
+                        : "text-ink-inverse-muted hover:translate-x-0.5 hover:bg-inverse-raised hover:text-ink-inverse motion-reduce:hover:translate-x-0",
                     )}
                   >
-                    <Icon className="size-4 shrink-0" aria-hidden />
-                    {item.label}
+                    <span
+                      className={cn(
+                        "grid size-8 shrink-0 place-items-center rounded-md transition-colors duration-200",
+                        current
+                          ? "bg-tertiary text-tertiary-contrast shadow-[0_4px_12px_-2px_rgb(1_113_208/0.6)]"
+                          : "bg-inverse-raised text-ink-inverse-muted group-hover:bg-inverse-hover group-hover:text-ink-inverse",
+                      )}
+                    >
+                      <Icon className="size-4" aria-hidden />
+                    </span>
+                    <span className="truncate">{item.label}</span>
                   </Link>
                 </li>
               );
@@ -122,14 +132,18 @@ export function AdminSidebar({
         </div>
       ))}
 
-      <button
-        type="button"
-        onClick={onSignOut}
-        className="flex items-center gap-2.5 rounded-control px-3 py-2 text-left text-sm text-ink-inverse-muted transition-colors hover:bg-inverse-raised/60 hover:text-ink-inverse"
-      >
-        <LogOut className="size-4 shrink-0" aria-hidden />
-        {admin_data.shell.signOut}
-      </button>
+      <div className="border-t border-line-inverse pt-4">
+        <button
+          type="button"
+          onClick={onSignOut}
+          className="group flex w-full items-center gap-3 rounded-lg px-2 py-1.5 text-left text-sm text-ink-inverse-muted transition-colors duration-200 hover:bg-danger/15 hover:text-ink-inverse"
+        >
+          <span className="grid size-8 shrink-0 place-items-center rounded-md bg-inverse-raised transition-colors duration-200 group-hover:bg-danger group-hover:text-ink-inverse">
+            <LogOut className="size-4" aria-hidden />
+          </span>
+          {admin_data.shell.signOut}
+        </button>
+      </div>
     </nav>
   );
 }

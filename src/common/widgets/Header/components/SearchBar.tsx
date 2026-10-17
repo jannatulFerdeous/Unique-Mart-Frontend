@@ -25,7 +25,7 @@ export function SearchBar({
         type="search"
         autoComplete="off"
         placeholder="Search products"
-        className="h-10 w-full rounded-full bg-surface pr-14 pl-6 text-sm text-ink placeholder:text-ink-subtle focus-visible:outline-ink-inverse"
+        className="h-10 w-full rounded-full bg-surface pr-14 pl-6 text-sm text-ink placeholder:text-ink-subtle focus-visible:outline-tertiary focus-visible:outline-offset-0"
       />
       <button
         type="submit"

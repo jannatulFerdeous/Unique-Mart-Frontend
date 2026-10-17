@@ -15,7 +15,10 @@ import { formatDate, formatDateTime } from "@/shared/libs/admin/format";
 import { cn } from "@/shared/utils/cn";
 import { formatPrice } from "@/shared/utils/price";
 import { Button, ButtonLink } from "../components/Button";
+import { ExcelActions } from "../components/ExcelActions";
 import { FilterSelect } from "../components/Field";
+import { downloadPayments } from "../config/excel/payments";
+import { useAppDispatch } from "@/redux/hooks";
 import { EmptyState, Panel, ScreenHeader } from "../components/Panel";
 import { StatusPill } from "../components/StatusPill";
 import { Table, TableScroll, Td, TdNum, Th, ThNum, Tr } from "../components/Table";
@@ -47,6 +50,7 @@ const refundable = (payment: StaffPayment) =>
     payment.paymentStatus === "refunded");
 
 export function PaymentsScreen() {
+  const dispatch = useAppDispatch();
   const [page, setPage] = useState(1);
   const [status, setStatus] = useState<PaymentStatus | "">("");
   const [method, setMethod] = useState<PaymentMethod | "">("");
@@ -68,7 +72,12 @@ export function PaymentsScreen() {
         title="Payments"
         blurb={blurbFor(PAYMENTS_HREF)}
         actions={
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-wrap items-center gap-3">
+            <ExcelActions
+              onDownload={() =>
+                downloadPayments(dispatch, { paymentStatus: status || undefined, paymentMethod: method || undefined })
+              }
+            />
             <FilterSelect
               label="Status"
               value={status}

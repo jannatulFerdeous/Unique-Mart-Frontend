@@ -67,6 +67,7 @@ export type AdminData = {
     signOut: string;
     menu: string;
     closeMenu: string;
+    menuTitle: string;
     signedInAs: string;
   };
 
