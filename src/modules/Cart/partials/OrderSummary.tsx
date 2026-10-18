@@ -7,12 +7,25 @@ import { lineTotal, type CartLine } from "@/shared/libs/cart";
 import { formatPrice } from "@/shared/utils/price";
 import { cart_data } from "../config/constants";
 
-// The backend charges no delivery and orders the whole cart at the price
-// shown, so the total here is what the order will come to.
-export function OrderSummary({ lines, action }: { lines: CartLine[]; action?: ReactNode }) {
+// Delivery depends on the address's district, so the basket leaves it to
+// checkout. Checkout passes the charge, and any coupon with the box to enter it.
+export function OrderSummary({
+  lines,
+  action,
+  delivery,
+  discount,
+  coupon,
+}: {
+  lines: CartLine[];
+  action?: ReactNode;
+  delivery?: number;
+  discount?: { code: string; amount: number } | null;
+  coupon?: ReactNode;
+}) {
   const sold = lines.filter((line) => !line.missing);
   const subtotal = sold.reduce((sum, line) => sum + lineTotal(line), 0);
   const blocked = sold.length !== lines.length;
+  const total = Math.max(0, subtotal - (discount?.amount ?? 0)) + (delivery ?? 0);
 
   return (
     <aside aria-labelledby="order-summary" className="rounded-card border border-line bg-surface p-5 lg:sticky lg:top-6">
@@ -49,6 +62,8 @@ export function OrderSummary({ lines, action }: { lines: CartLine[]; action?: Re
         })}
       </ul>
 
+      {coupon}
+
       <dl className="mt-4 space-y-2">
         <div className="flex items-baseline justify-between gap-4">
           <dt className="text-ink-muted">{cart_data.subtotal}</dt>
@@ -56,13 +71,21 @@ export function OrderSummary({ lines, action }: { lines: CartLine[]; action?: Re
         </div>
         <div className="flex items-baseline justify-between gap-4">
           <dt className="text-ink-muted">{cart_data.delivery}</dt>
-          <dd className="font-medium text-ink">{cart_data.deliveryFree}</dd>
+          <dd className="font-medium text-ink tabular-nums">
+            {delivery === undefined ? cart_data.deliveryLater : formatPrice(delivery)}
+          </dd>
         </div>
+        {discount && (
+          <div className="flex items-baseline justify-between gap-4">
+            <dt className="text-ink-muted">{cart_data.coupon.replace("{code}", discount.code)}</dt>
+            <dd className="font-medium text-tertiary tabular-nums">−{formatPrice(discount.amount)}</dd>
+          </div>
+        )}
       </dl>
 
       <div className="mt-4 flex items-baseline justify-between gap-4 border-t border-line pt-4">
         <span className="font-sans font-bold text-ink">{cart_data.total}</span>
-        <span className="font-sans text-xl font-bold text-ink tabular-nums">{formatPrice(subtotal)}</span>
+        <span className="font-sans text-xl font-bold text-ink tabular-nums">{formatPrice(total)}</span>
       </div>
 
       {blocked ? (

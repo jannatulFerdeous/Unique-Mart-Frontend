@@ -61,7 +61,7 @@ export type StaffOrderList = { items: StaffOrder[]; meta: ApiMeta };
 // Mirrors the backend `createOrderValidationSchema`. The backend accepts a
 // coupon code but doesn't apply it yet, so the checkout doesn't send one.
 // `cod` also records a pending cash-on-delivery payment; no method means online.
-export type CreateOrderArgs = { shippingAddressId: string; paymentMethod?: PaymentMethod };
+export type CreateOrderArgs = { shippingAddressId: string; couponCode?: string; paymentMethod?: PaymentMethod };
 
 // Mirrors the backend `updateOrderStatusValidationSchema` (staff only).
 export type UpdateOrderStatusArgs = { id: string; orderStatus: OrderStatus };

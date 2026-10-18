@@ -23,7 +23,6 @@ export type NavIcon =
   | "orders"
   | "reviews"
   | "addresses"
-  | "rewards"
   | "faq"
   | "coupons"
   | "newsletter"

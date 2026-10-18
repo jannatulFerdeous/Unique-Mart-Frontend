@@ -14,11 +14,14 @@ import type { Address } from "@/redux/features/address/address.types";
 import { useCreateOrderMutation } from "@/redux/features/order/orderApi";
 import { useCreatePaymentMutation } from "@/redux/features/payment/paymentApi";
 import { PAYMENT_METHODS, type PaymentMethod } from "@/redux/features/payment/payment.types";
+import { deliveryChargeFor } from "@/shared/config/shipping";
 import { useCart, type CartLine } from "@/shared/libs/cart";
 import { goToPayment, openPaymentWindow, usePaymentPopup } from "@/shared/libs/paymentPopup";
 import { useSignInFirst } from "@/shared/libs/useSignInFirst";
 import { cn } from "@/shared/utils/cn";
-import { checkout_data as copy } from "./config/constants";
+import { formatPrice } from "@/shared/utils/price";
+import { COUPONS_AT_CHECKOUT, checkout_data as copy } from "./config/constants";
+import { CouponBox, type AppliedCoupon } from "./partials/CouponBox";
 
 const primaryAction =
   "mt-2 rounded-control bg-tertiary px-6 py-3 font-bold text-tertiary-contrast transition-colors hover:bg-tertiary-hover";
@@ -93,6 +96,7 @@ function CheckoutForm({
   const [chosen, setChosen] = useState<string | null>(null);
   const [adding, setAdding] = useState(addresses.length === 0);
   const [method, setMethod] = useState<PaymentMethod>("sslcommerz");
+  const [coupon, setCoupon] = useState<AppliedCoupon | null>(null);
   const [failure, setFailure] = useState<string | null>(null);
   const [leaving, setLeaving] = useState(false);
   // An order that went in but whose payment couldn't be started.
@@ -102,6 +106,8 @@ function CheckoutForm({
 
   // The pick, else the default address, else the first one.
   const selected = addresses.find((each) => each._id === chosen) ?? addresses.find((each) => each.isDefault) ?? addresses[0];
+  // Set by the address's district; unknown until there is one.
+  const delivery = selected ? deliveryChargeFor(selected) : undefined;
 
   // Places the order (the backend empties the cart). Cash on delivery goes
   // straight to the order; full payment hands over to SSLCommerz in a pop-up.
@@ -114,7 +120,11 @@ function CheckoutForm({
     onHold(lines);
     let orderId: string;
     try {
-      orderId = (await createOrder({ shippingAddressId: selected._id, paymentMethod: method }).unwrap())._id;
+      orderId = (await createOrder({
+          shippingAddressId: selected._id,
+          paymentMethod: method,
+          ...(coupon && { couponCode: coupon.code }),
+        }).unwrap())._id;
     } catch (problem) {
       popup?.close();
       onHold(null);
@@ -184,6 +194,8 @@ function CheckoutForm({
 
         <OrderSummary
           lines={lines}
+          delivery={delivery}
+          discount={coupon}
           action={unpaid ? false : <p className="mt-5 text-sm text-ink-muted">{copy.methods.sslcommerz.placing}</p>}
         />
       </div>
@@ -241,6 +253,9 @@ function CheckoutForm({
                         {address.address}, {address.city} {address.postalCode}, {address.country}
                       </span>
                       <span className="block text-ink-muted">{address.phone}</span>
+                      <span className="mt-1 block font-medium text-ink tabular-nums">
+                        {copy.deliveryTo.replace("{price}", formatPrice(deliveryChargeFor(address)))}
+                      </span>
                     </span>
                   </label>
                 );
@@ -308,6 +323,9 @@ function CheckoutForm({
       <div>
         <OrderSummary
           lines={lines}
+          delivery={delivery}
+          discount={coupon}
+          coupon={COUPONS_AT_CHECKOUT && <CouponBox lines={lines} applied={coupon} onApplied={setCoupon} />}
           action={
             <button
               type="button"

@@ -70,8 +70,14 @@ export type ProductDetail = {
   variants?: VariantOffer[];
   emi?: { months: number; perMonth: number };
   specs: SpecGroup[];
+  // The scraped reference details (config/product-details) use these blocks.
   description?: {
     title: string;
     blocks: DescriptionBlock[];
+  };
+  // The admin's rich-text description, sanitised on the server.
+  richDescription?: {
+    title: string;
+    html: string;
   };
 };

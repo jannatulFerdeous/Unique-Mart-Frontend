@@ -4,7 +4,7 @@ import { useEffect, useState, useSyncExternalStore, type ReactNode } from "react
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { ExternalLink, Lock, LogOut, Menu, X } from "lucide-react";
+import { Lock, LogOut, Menu, Store, X } from "lucide-react";
 // White lettering for the dark sidebar; dark lettering for the light top bar.
 import logoDark from "@/images/brand/logo.png";
 import logoLight from "@/images/brand/logo-light.png";
@@ -124,12 +124,14 @@ function Shell({ user, children }: { user: SessionUser; children: ReactNode }) {
             <p className="hidden truncate text-sm font-semibold text-ink lg:block">{shell.subtitle}</p>
           </div>
 
+          {/* Phones: the icon alone, like Sign out. */}
           <Link
             href="/"
-            className="hidden items-center gap-1.5 rounded-control px-2.5 py-1.5 text-sm text-ink-muted hover:bg-surface-muted hover:text-ink sm:inline-flex"
+            aria-label={shell.viewSite}
+            className="inline-flex items-center gap-1.5 rounded-control p-2 text-sm text-ink-muted hover:bg-surface-muted hover:text-ink sm:px-2.5 sm:py-1.5"
           >
-            <ExternalLink className="size-4" aria-hidden />
-            {shell.viewSite}
+            <Store className="size-5 sm:size-4" aria-hidden />
+            <span className="hidden sm:inline">{shell.viewSite}</span>
           </Link>
 
           <Link href="/account/profile" className="flex items-center gap-2 border-l border-line pl-3">

@@ -4,6 +4,7 @@ import { ProductDetails, type Crumb } from "@/modules/ProductDetails";
 import { refId } from "@/redux/features/catalog/catalog.types";
 import { getCatalog, getProduct } from "@/shared/api/storefront";
 import { toCard, toDetail, type ApiProduct, type Catalog } from "@/shared/libs/storefront/catalog";
+import { descriptionHtml } from "@/shared/libs/storefront/description";
 import { formatPrice } from "@/shared/utils/price";
 
 const SIMILAR = 4;
@@ -47,11 +48,12 @@ export default async function ProductPage({
   const { slug } = await params;
   const [product, catalog] = await Promise.all([getProduct(slug), getCatalog()]);
   if (!product) notFound();
+  const html = descriptionHtml(product.description);
 
   return (
     <ProductDetails
       product={toCard(catalog, product)}
-      detail={toDetail(catalog, product)}
+      detail={{ ...toDetail(catalog, product), richDescription: html ? { title: product.name, html } : undefined }}
       similar={similarTo(catalog, product)}
       trail={trailFor(catalog, product)}
     />

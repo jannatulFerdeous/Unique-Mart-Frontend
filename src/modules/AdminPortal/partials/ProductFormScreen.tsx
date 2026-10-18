@@ -35,7 +35,8 @@ import { cn } from "@/shared/utils/cn";
 import { AttributeInput, toDraft, toValue, type Draft } from "../components/AttributeInput";
 import { Button, ButtonLink } from "../components/Button";
 import { ChoiceChips } from "../components/ChoiceChips";
-import { Field, Input, Select, Textarea } from "../components/Field";
+import { Field, Input, Select } from "../components/Field";
+import { RichTextEditor } from "../components/RichTextEditor";
 import { EmptyState, Panel, ScreenHeader } from "../components/Panel";
 import { Table, TableScroll, Td, Th } from "../components/Table";
 import {
@@ -562,9 +563,22 @@ function ProductForm({ product }: { product?: Product }) {
             <Field label="Product name" hint="The shop's web address for it is made from the name." error={errors.name}>
               <Input value={name} onChange={(event) => setName(event.target.value)} placeholder="iPhone 17 Pro Max" />
             </Field>
-            <Field label="Description" hint="Optional.">
-              <Textarea value={description} onChange={(event) => setDescription(event.target.value)} className="min-h-36" />
-            </Field>
+            {/* Not a <Field>: its <label> would pass clicks on to the toolbar buttons. */}
+            <div>
+              <span id="product-description-label" className="mb-1.5 block text-sm font-medium text-ink">
+                Description
+              </span>
+              <RichTextEditor
+                value={description}
+                onChange={setDescription}
+                labelledBy="product-description-label"
+                describedBy="product-description-hint"
+                disabled={saving}
+              />
+              <span id="product-description-hint" className="mt-1 block text-xs text-ink-subtle">
+                Optional. Shown under the Description tab on the product page.
+              </span>
+            </div>
           </fieldset>
         </Panel>
 
