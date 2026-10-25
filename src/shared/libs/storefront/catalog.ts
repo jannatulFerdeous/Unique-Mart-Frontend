@@ -448,10 +448,25 @@ export const toDetail = (catalog: Catalog, product: ApiProduct): ProductDetail =
     }))
     .filter((group) => group.rows.length);
 
+  // Each colour's own photos, keyed by the label its option button shows.
+  const colorGroup = [...groups.values()].find((group) => /colou?r/i.test(group.label));
+  const colorGallery = Object.fromEntries(
+    colorGroup
+      ? (product.colorImages ?? []).flatMap(({ value, images }) => {
+          const shots = images.flatMap((key) => {
+            const image = product.images.find((each) => (each.publicId ?? each.url) === key);
+            return image ? [productImage(image.url)] : [];
+          });
+          return shots.length ? [[valueLabels(colorGroup.attribute, value).join(", "), shots]] : [];
+        })
+      : [],
+  );
+
   return {
     gallery: product.images.length ? product.images.map((image) => productImage(image.url)) : [productImage()],
     inStock: inStock(product),
     highlights: [],
+    colorGallery: Object.keys(colorGallery).length ? colorGallery : undefined,
     options: options.length ? options : undefined,
     variants: variants.length ? variants : undefined,
     specs,

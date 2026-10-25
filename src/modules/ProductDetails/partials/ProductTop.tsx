@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Minus, Plus } from "lucide-react";
@@ -38,8 +39,6 @@ export function ProductTop({ product, detail }: Props) {
   const [added, setAdded] = useState(false);
   const [emi, setEmi] = useState(false);
 
-  const gallery = detail?.gallery?.length ? detail.gallery : [product.image];
-
   // Options pick a variant; the variant sets the price, stock and SKU.
   const groups = detail?.options ?? [];
   const variants = detail?.variants ?? [];
@@ -55,12 +54,25 @@ export function ProductTop({ product, detail }: Props) {
   const compareAt = variants.length ? chosen?.compareAt : product.compareAt;
   const available = variants.length ? Boolean(chosen && chosen.stock > 0) : detail?.inStock !== false;
 
+  const gallery = detail?.gallery?.length ? detail.gallery : [product.image];
+  // Every photo stays listed; picking a colour brings its first photo up big.
+  const colorGroup = groups.find((group) => /colou?r/i.test(group.label));
+  const colorShot = (choice: Record<string, string>) => {
+    const first = colorGroup ? detail?.colorGallery?.[choice[colorGroup.label]]?.[0] : undefined;
+    return first ? gallery.findIndex((each) => each.src === first.src) : -1;
+  };
+
   // Picking a value with no variant for the other picks jumps to one that has it.
   const pick = (label: string, value: string) => {
     const next = { ...picks, [label]: value };
     const fallback = variants.find((variant) => variant.options[label] === value);
-    setPicks(variants.length && !matches(next) && fallback ? fallback.options : next);
+    const settled = variants.length && !matches(next) && fallback ? fallback.options : next;
+    setPicks(settled);
     setAdded(false);
+    if (colorGroup && settled[colorGroup.label] !== picks[colorGroup.label]) {
+      const shot = colorShot(settled);
+      if (shot >= 0) setImage(shot);
+    }
   };
   const offered = (label: string, value: string) =>
     !variants.length ||
@@ -191,6 +203,47 @@ export function ProductTop({ product, detail }: Props) {
 
         {groups.map((group) => {
           const current = picks[group.label];
+          const shots = group === colorGroup ? detail?.colorGallery : undefined;
+
+          // Colours with photos pick by photo; the name shows beside the label.
+          if (shots && group.values.some((value) => shots[value]?.length)) {
+            return (
+              <div key={group.label} className="mt-5">
+                <p className="text-ink-muted">
+                  {group.label}: <span className="font-medium text-ink">{current}</span>
+                </p>
+                <ul className="mt-2 flex flex-wrap gap-3">
+                  {group.values.map((value) => {
+                    const shot = shots[value]?.[0];
+                    return (
+                      <li key={value}>
+                        <button
+                          type="button"
+                          onClick={() => pick(group.label, value)}
+                          aria-pressed={value === current}
+                          title={value}
+                          className={cn(
+                            "grid size-20 place-items-center overflow-hidden rounded-control border bg-surface transition-colors",
+                            value === current
+                              ? "border-2 border-tertiary"
+                              : "border-line hover:border-line-strong",
+                            !offered(group.label, value) && "border-dashed opacity-60",
+                          )}
+                        >
+                          {shot ? (
+                            <Image src={shot} alt="" sizes="80px" className="size-full object-contain p-1.5" />
+                          ) : (
+                            <span className="px-1 text-center text-xs text-ink-muted">{value}</span>
+                          )}
+                          <span className="sr-only">{value}</span>
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            );
+          }
 
           return (
             <div

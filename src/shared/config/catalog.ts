@@ -66,6 +66,8 @@ export type ProductDetail = {
   inStock: boolean;
   highlights: string[];
   colors?: ColorOption[];
+  // Photos for a colour variant option, keyed by its label.
+  colorGallery?: Record<string, StaticImageData[]>;
   options?: VariantGroup[];
   variants?: VariantOffer[];
   emi?: { months: number; perMonth: number };
