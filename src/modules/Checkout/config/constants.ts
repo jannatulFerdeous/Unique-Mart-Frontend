@@ -1,3 +1,6 @@
+// The coupon list at checkout. Set false to hide it.
+export const COUPONS_AT_CHECKOUT = true;
+
 export const checkout_data = {
   title: "Checkout",
 
@@ -16,6 +19,22 @@ export const checkout_data = {
   firstAddress: "Where should we deliver? Add an address to continue.",
   default: "Default",
   needAddress: "Choose or add a delivery address to place your order.",
+  deliveryTo: "Delivery {price}",
+
+  couponsHeading: "Coupons",
+  couponsLoading: "Finding coupons for your basket…",
+  couponSaves: "You save {amount}",
+  couponUse: "Apply",
+  couponInUse: "Applied",
+  couponsMore: "Show {n} more",
+  couponsLess: "Show fewer",
+  couponHaveCode: "Have a code?",
+  couponLabel: "Coupon code",
+  couponPlaceholder: "Enter a code",
+  couponApply: "Apply",
+  couponApplying: "Checking…",
+  couponRemove: "Remove",
+  couponFailed: "Couldn't check that code. Please try again.",
 
   paymentHeading: "Payment",
   methods: {

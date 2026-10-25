@@ -13,7 +13,8 @@ export type CartData = {
   summary: string;
   subtotal: string;
   delivery: string;
-  deliveryFree: string;
+  deliveryLater: string;
+  coupon: string;
   total: string;
   checkout: string;
   missingBlocks: string;

@@ -35,7 +35,8 @@ import { cn } from "@/shared/utils/cn";
 import { AttributeInput, toDraft, toValue, type Draft } from "../components/AttributeInput";
 import { Button, ButtonLink } from "../components/Button";
 import { ChoiceChips } from "../components/ChoiceChips";
-import { Field, Input, Select, Textarea } from "../components/Field";
+import { Field, Input, Select } from "../components/Field";
+import { RichTextEditor } from "../components/RichTextEditor";
 import { EmptyState, Panel, ScreenHeader } from "../components/Panel";
 import { Table, TableScroll, Td, Th } from "../components/Table";
 import {
@@ -308,6 +309,10 @@ function ProductForm({ product }: { product?: Product }) {
   const [photos, addPhotos, removePhoto] = usePickedFiles();
   // The product's current photos that stay; new picks go after them.
   const [kept, setKept] = useState(() => product?.images ?? []);
+  // Colour option value → its photos' keys (publicId or url; a blob url for a new pick).
+  const [colorPhotos, setColorPhotos] = useState<Record<string, string[]>>(() =>
+    Object.fromEntries((product?.colorImages ?? []).map((each) => [each.value, each.images])),
+  );
   const [errors, setErrors] = useState<Errors>({});
 
   const saving = creating || updating || uploading;
@@ -361,6 +366,25 @@ function ProductForm({ product }: { product?: Product }) {
 
   const built = variantValues(variants, variantAttributeIds, byId);
   const listing = listingFrom(built.variants);
+
+  // Picking a colour in the shop shows the photos chosen for it here.
+  const colorAttribute = !hasVariants
+    ? undefined
+    : variantColumns.find((each) => each.type === "select" && /colou?r/i.test(each.name));
+  const colors = colorAttribute
+    ? (colorAttribute.options ?? []).filter((option) =>
+        variants.some((row) => row.values[colorAttribute._id] === option.value),
+      )
+    : [];
+  const gallery = [
+    ...kept.map((each) => ({ key: each.publicId ?? each.url, url: each.url })),
+    ...photos.map((each) => ({ key: each.url, url: each.url })),
+  ];
+  const toggleColorPhoto = (color: string, key: string) =>
+    setColorPhotos((current) => {
+      const list = current[color] ?? [];
+      return { ...current, [color]: list.includes(key) ? list.filter((each) => each !== key) : [...list, key] };
+    });
 
   const priceValue = toNumber(price);
   const discountValue = toNumber(discount || "0");
@@ -543,6 +567,35 @@ function ProductForm({ product }: { product?: Product }) {
         }
       }
 
+      // Colour photos go last: a new photo only has an id once it's uploaded,
+      // and it lands after the kept ones in the order it was picked.
+      const ids = new Map([
+        ...kept.map((each, index) => [each.publicId ?? each.url, saved.images[index]] as const),
+        ...photos.map((each, index) => [each.url, saved.images[kept.length + index]] as const),
+      ]);
+      const colorImages = colors.flatMap((option) => {
+        const images = (colorPhotos[option.value] ?? []).flatMap((key) => {
+          const image = ids.get(key);
+          return image ? [image.publicId ?? image.url] : [];
+        });
+        return images.length ? [{ value: option.value, images }] : [];
+      });
+      if (JSON.stringify(colorImages) !== JSON.stringify(product?.colorImages ?? [])) {
+        try {
+          saved = await update({ id: saved._id, changes: { colorImages } }).unwrap();
+        } catch (problem) {
+          dispatch(
+            showNotice({
+              scope: "products",
+              tone: "danger",
+              text: `${fields.name} was saved, but its colour photos weren't: ${apiErrorMessage(problem)}`,
+            }),
+          );
+          router.push(`${PRODUCTS_HREF}/${saved.slug}/edit`);
+          return;
+        }
+      }
+
       dispatch(showNotice({ scope: "products", tone: "good", text: `${fields.name} ${product ? "saved" : "added"}.` }));
       router.push(PRODUCTS_HREF);
     } catch (problem) {
@@ -562,9 +615,22 @@ function ProductForm({ product }: { product?: Product }) {
             <Field label="Product name" hint="The shop's web address for it is made from the name." error={errors.name}>
               <Input value={name} onChange={(event) => setName(event.target.value)} placeholder="iPhone 17 Pro Max" />
             </Field>
-            <Field label="Description" hint="Optional.">
-              <Textarea value={description} onChange={(event) => setDescription(event.target.value)} className="min-h-36" />
-            </Field>
+            {/* Not a <Field>: its <label> would pass clicks on to the toolbar buttons. */}
+            <div>
+              <span id="product-description-label" className="mb-1.5 block text-sm font-medium text-ink">
+                Description
+              </span>
+              <RichTextEditor
+                value={description}
+                onChange={setDescription}
+                labelledBy="product-description-label"
+                describedBy="product-description-hint"
+                disabled={saving}
+              />
+              <span id="product-description-hint" className="mt-1 block text-xs text-ink-subtle">
+                Optional. Shown under the Description tab on the product page.
+              </span>
+            </div>
           </fieldset>
         </Panel>
 
@@ -813,6 +879,55 @@ function ProductForm({ product }: { product?: Product }) {
             )}
             {photoCount >= PRODUCT_IMAGES_MAX && errors.images && (
               <p role="alert" className="text-sm font-medium text-danger">{errors.images}</p>
+            )}
+            {colorAttribute && colors.length > 0 && gallery.length > 0 && (
+              <div className="flex flex-col gap-2 border-t border-line pt-3">
+                <div>
+                  <p className="text-sm font-medium text-ink">Photos for each {colorAttribute.name.toLowerCase()}</p>
+                  <p className="text-xs text-ink-subtle">
+                    The shop lists every photo; choosing a {colorAttribute.name.toLowerCase()} there shows its photo 1
+                    big. One with none leaves the big photo as it is.
+                  </p>
+                </div>
+                <ul className="flex flex-col gap-2">
+                  {colors.map((option) => (
+                    <li key={option.value} className="flex flex-wrap items-center gap-2">
+                      <span className="w-24 truncate text-sm text-ink-muted" title={option.label}>
+                        {option.label}
+                      </span>
+                      <div role="group" aria-label={`Photos for ${option.label}`} className="flex flex-wrap gap-1.5">
+                        {gallery.map((photo, index) => {
+                          const place = (colorPhotos[option.value] ?? [])
+                            .filter((key) => gallery.some((each) => each.key === key))
+                            .indexOf(photo.key);
+                          const on = place >= 0;
+                          return (
+                            <button
+                              key={photo.key}
+                              type="button"
+                              onClick={() => toggleColorPhoto(option.value, photo.key)}
+                              aria-pressed={on}
+                              aria-label={`Photo ${index + 1}`}
+                              className={cn(
+                                "relative size-12 overflow-hidden rounded-control border-2 bg-surface transition-colors",
+                                on ? "border-tertiary" : "border-line opacity-60 hover:border-line-strong hover:opacity-100",
+                              )}
+                            >
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
+                              <img src={photo.url} alt="" className="h-full w-full object-contain" />
+                              {on && (
+                                <span className="absolute top-0.5 right-0.5 grid size-4 place-items-center rounded-full bg-tertiary text-[10px] font-medium text-tertiary-contrast tabular-nums">
+                                  {place + 1}
+                                </span>
+                              )}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             )}
           </fieldset>
         </Panel>

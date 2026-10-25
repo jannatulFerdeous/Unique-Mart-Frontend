@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState, type FormEvent } from "react";
-import { Clock } from "lucide-react";
 import { FaqAccordion } from "@/common/components/FaqAccordion";
 import { apiErrorMessage } from "@/redux/api/errors";
 import { useGetUserQuery, useUpdateUserMutation } from "@/redux/features/user/userApi";
@@ -191,37 +190,6 @@ function ProfileForm({ user }: { user: User }) {
         </Button>
       </div>
     </form>
-  );
-}
-
-// ---------------------------------------------------------------------------
-// Sections the backend has no module for yet
-
-const UNAVAILABLE: Record<string, { title: string; body: string }> = {
-  "/account/rewards": {
-    title: "Reward Points",
-    body: "Points you earn on purchases will show here once the store starts a rewards programme.",
-  },
-};
-
-export function UnavailableScreen({ href }: { href: keyof typeof UNAVAILABLE | string }) {
-  const page = UNAVAILABLE[href];
-  return (
-    <>
-      <ScreenHeader title={page?.title ?? "Coming soon"} blurb={blurb(href)} />
-      <Panel>
-        <div className="flex flex-col items-center gap-2 px-4 py-14 text-center">
-          <span className="grid size-11 place-items-center rounded-full bg-surface-muted">
-            <Clock className="size-5 text-ink-subtle" aria-hidden />
-          </span>
-          <p className="mt-1 font-sans font-bold text-ink">Not available yet</p>
-          <p className="max-w-md text-sm text-ink-muted">{page?.body}</p>
-          <ButtonLink href="/" className="mt-2">
-            Continue shopping
-          </ButtonLink>
-        </div>
-      </Panel>
-    </>
   );
 }
 

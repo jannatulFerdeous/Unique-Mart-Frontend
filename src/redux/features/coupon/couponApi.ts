@@ -1,4 +1,5 @@
 import { baseApi, TAG } from "../../api/baseApi";
+import { refreshShop } from "../../api/refresh";
 import type { ApiResponse } from "../../api/types";
 import type { Coupon, SaveCouponArgs } from "./coupon.types";
 
@@ -26,6 +27,8 @@ export const couponApi = baseApi.injectEndpoints({
         id ? { url: `/coupons/${id}`, method: "PATCH", body: fields } : { url: "/coupons", method: "POST", body: fields },
       transformResponse: (response: ApiResponse<Coupon>) => response.data,
       invalidatesTags: (_result, _error, { id }) => [LIST, ...(id ? [{ type: TAG.coupon, id }] : [])],
+      // The offers page lists active coupons and counts them in its banner.
+      onQueryStarted: refreshShop,
     }),
   }),
 });

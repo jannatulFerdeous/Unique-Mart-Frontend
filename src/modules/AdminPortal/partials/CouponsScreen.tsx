@@ -56,11 +56,6 @@ export function CouponsScreen() {
         <SearchBox value={search} onChange={setSearch} label="Search codes" />
       </div>
 
-      <p className="text-sm text-ink-muted">
-        Codes can be set up here, but checkout doesn&apos;t take them yet: the store&apos;s order service accepts a
-        code and ignores it.
-      </p>
-
       <Panel bodyClassName="py-0 md:py-0">
         {isLoading ? (
           <EmptyState title="Loading coupons…" />

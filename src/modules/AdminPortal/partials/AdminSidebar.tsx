@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  Award,
   FolderTree,
   GalleryHorizontalEnd,
   Layers,
@@ -52,7 +51,6 @@ const ICONS: Record<NavIcon, LucideIcon> = {
   orders: ListChecks,
   reviews: Star,
   addresses: MapPin,
-  rewards: Award,
   faq: MessageCircleQuestion,
   coupons: TicketPercent,
   newsletter: Mail,

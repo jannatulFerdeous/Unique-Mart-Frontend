@@ -142,6 +142,167 @@
   }
 }
 
+/* HTML from the rich-text editor: product descriptions in the shop, and the
+   editor itself in the admin. Headings sit a step below the section's own h2. */
+@utility rich-text {
+  & > * + * {
+    margin-block-start: 1em;
+  }
+
+  & h2,
+  & h3,
+  & h4,
+  & h5 {
+    margin-block-start: 1.5em;
+    font-family: var(--font-sans);
+    font-weight: 700;
+    color: var(--color-ink);
+  }
+
+  & h2 {
+    font-size: var(--text-h3);
+  }
+
+  & h3 {
+    font-size: var(--text-h4);
+  }
+
+  & h4 {
+    font-size: var(--text-h5);
+  }
+
+  & h5 {
+    font-size: var(--text-h6);
+  }
+
+  & > :first-child {
+    margin-block-start: 0;
+  }
+
+  & strong,
+  & b {
+    font-weight: 700;
+    color: var(--color-ink);
+  }
+
+  & a {
+    color: var(--color-tertiary);
+    text-decoration: underline;
+  }
+
+  & ul,
+  & ol {
+    padding-inline-start: 1.5em;
+  }
+
+  & ul {
+    list-style: disc;
+  }
+
+  & ol {
+    list-style: decimal;
+  }
+
+  & li + li {
+    margin-block-start: 0.35em;
+  }
+
+  & li > p {
+    margin: 0;
+  }
+
+  & blockquote {
+    border-inline-start: 3px solid var(--color-line-strong);
+    padding-inline-start: 1em;
+    font-style: italic;
+  }
+
+  & hr {
+    border-color: var(--color-line);
+  }
+
+  & mark {
+    background: var(--color-tertiary-soft);
+    color: inherit;
+    padding-inline: 0.1em;
+  }
+
+  & sup,
+  & sub {
+    font-size: 0.75em;
+    line-height: 0;
+  }
+
+  & :not(pre) > code {
+    border-radius: 0.25rem;
+    background: var(--color-surface-muted);
+    padding: 0.1em 0.35em;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.875em;
+    color: var(--color-ink);
+  }
+
+  & pre {
+    overflow-x: auto;
+    border-radius: var(--radius-card);
+    background: var(--color-inverse);
+    padding: 1em;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.875em;
+    line-height: 1.6;
+    color: var(--color-ink-inverse);
+  }
+
+  /* Task lists. The editor shows real checkboxes; the shop's copy has none,
+     so it draws a box, ticked when data-checked is "true". */
+  & ul[data-type="taskList"] {
+    list-style: none;
+    padding-inline-start: 0;
+  }
+
+  & li[data-type="taskItem"] {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5em;
+  }
+
+  & li[data-type="taskItem"] > label {
+    flex-shrink: 0;
+    margin-block-start: 0.3em;
+  }
+
+  & li[data-type="taskItem"] > div {
+    flex: 1;
+    min-width: 0;
+  }
+
+  & li[data-type="taskItem"]:not(:has(input))::before {
+    content: "";
+    flex-shrink: 0;
+    margin-block-start: 0.35em;
+    inline-size: 1em;
+    block-size: 1em;
+    border: 1.5px solid var(--color-line-strong);
+    border-radius: 0.2em;
+  }
+
+  & li[data-type="taskItem"][data-checked="true"]:not(:has(input))::before {
+    border-color: var(--color-tertiary);
+    background: var(--color-tertiary)
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3.5 8.5l3 3 6-7'/%3E%3C/svg%3E")
+      center / 80% no-repeat;
+  }
+
+  /* Full width of the text, but never stretched past the image's own size. */
+  & img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin-inline: auto;
+    border-radius: var(--radius-card);
+  }
+}
+
 @utility no-scrollbar {
   scrollbar-width: none;
 

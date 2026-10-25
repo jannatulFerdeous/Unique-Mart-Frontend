@@ -18,7 +18,7 @@ export function ProductTabs({ productId, detail }: Props) {
 
   const tabs = product_details_data.tabs.filter((tab) => {
     if (tab.id === "specification") return Boolean(detail?.specs?.length);
-    if (tab.id === "description") return Boolean(detail?.description?.blocks.length);
+    if (tab.id === "description") return Boolean(detail?.richDescription);
     return true;
   });
   const [active, setActive] = useState(tabs[0]?.id ?? "reviews");
@@ -109,7 +109,7 @@ export function ProductTabs({ productId, detail }: Props) {
         </div>
       ) : null}
 
-      {active === "description" && detail?.description ? (
+      {active === "description" && detail?.richDescription ? (
         <div
           id="panel-description"
           role="tabpanel"
@@ -117,23 +117,14 @@ export function ProductTabs({ productId, detail }: Props) {
           className="mt-6"
         >
           <h2 className="font-sans font-bold text-ink">
-            {detail.description.title}
+            {detail.richDescription.title}
           </h2>
 
-          <div className="mt-4 space-y-5 leading-[1.85] text-ink-muted">
-            {detail.description.blocks.map((block) => (
-              <div key={block.heading ?? block.paragraphs[0]}>
-                {block.heading ? (
-                  <h3 className="mb-2 font-sans font-bold text-ink">
-                    {block.heading}
-                  </h3>
-                ) : null}
-                {block.paragraphs.map((text) => (
-                  <p key={text}>{text}</p>
-                ))}
-              </div>
-            ))}
-          </div>
+          {/* Sanitised on the server (shared/libs/storefront/description.ts). */}
+          <div
+            className="rich-text mt-4 leading-[1.85] text-ink-muted"
+            dangerouslySetInnerHTML={{ __html: detail.richDescription.html }}
+          />
         </div>
       ) : null}
 

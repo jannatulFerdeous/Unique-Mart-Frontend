@@ -16,7 +16,6 @@ import type { AttributeValue, Product as ApiProduct, ProductVariant } from "@/re
 import type { NavItem } from "@/shared/config/navigation";
 import { formatPrice } from "@/shared/utils/price";
 import type {
-  DescriptionBlock,
   Product,
   ProductDetail,
   SpecGroup,
@@ -260,6 +259,8 @@ export type CouponOffer = {
   description: string | null;
   // e.g. "15% off" or "Tk. 500 off"
   headline: string;
+  // The percentage off, for percentage coupons; null for a fixed amount.
+  percent: number | null;
   // e.g. ["On orders over Tk. 2,000", "Up to Tk. 500 off", "Ends 31 Oct 2026"]
   terms: string[];
   // Where it applies, linked; empty with no products means everything.
@@ -274,6 +275,19 @@ const COUPON_PRODUCTS_SHOWN = 8;
 
 const longDate = (iso: string) =>
   new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "Asia/Dhaka" });
+
+// e.g. "15% off" or "Tk. 500 off".
+export const couponHeadline = (coupon: ActiveCoupon) =>
+  coupon.discountType === "percentage" ? `${coupon.discountValue}% off` : `${formatPrice(coupon.discountValue)} off`;
+
+// e.g. ["On orders over Tk. 2,000", "Up to Tk. 500 off", "Ends 31 Oct 2026"].
+export const couponTerms = (coupon: ActiveCoupon) => [
+  ...(coupon.minimumOrderAmount ? [`On orders over ${formatPrice(coupon.minimumOrderAmount)}`] : []),
+  ...(coupon.discountType === "percentage" && coupon.maximumDiscountAmount
+    ? [`Up to ${formatPrice(coupon.maximumDiscountAmount)} off`]
+    : []),
+  `Ends ${longDate(coupon.endDate)}`,
+];
 
 // Coupons as the offers page shows them, with their products from the
 // catalogue (products that are off or hidden are left out).
@@ -302,17 +316,9 @@ export const toCouponOffers = (catalog: Catalog, coupons: ActiveCoupon[]): Coupo
       id: coupon._id,
       code: coupon.code,
       description: coupon.description?.trim() || null,
-      headline:
-        coupon.discountType === "percentage"
-          ? `${coupon.discountValue}% off`
-          : `${formatPrice(coupon.discountValue)} off`,
-      terms: [
-        ...(coupon.minimumOrderAmount ? [`On orders over ${formatPrice(coupon.minimumOrderAmount)}`] : []),
-        ...(coupon.discountType === "percentage" && coupon.maximumDiscountAmount
-          ? [`Up to ${formatPrice(coupon.maximumDiscountAmount)} off`]
-          : []),
-        `Ends ${longDate(coupon.endDate)}`,
-      ],
+      headline: couponHeadline(coupon),
+      percent: coupon.discountType === "percentage" ? coupon.discountValue : null,
+      terms: couponTerms(coupon),
       places,
       products: matching.slice(0, COUPON_PRODUCTS_SHOWN).map((product) => toCard(catalog, product)),
       productCount: matching.length,
@@ -442,19 +448,27 @@ export const toDetail = (catalog: Catalog, product: ApiProduct): ProductDetail =
     }))
     .filter((group) => group.rows.length);
 
-  const blocks: DescriptionBlock[] = (product.description ?? "")
-    .split(/\n{2,}/)
-    .map((paragraph) => paragraph.trim())
-    .filter(Boolean)
-    .map((paragraph) => ({ paragraphs: [paragraph] }));
+  // Each colour's own photos, keyed by the label its option button shows.
+  const colorGroup = [...groups.values()].find((group) => /colou?r/i.test(group.label));
+  const colorGallery = Object.fromEntries(
+    colorGroup
+      ? (product.colorImages ?? []).flatMap(({ value, images }) => {
+          const shots = images.flatMap((key) => {
+            const image = product.images.find((each) => (each.publicId ?? each.url) === key);
+            return image ? [productImage(image.url)] : [];
+          });
+          return shots.length ? [[valueLabels(colorGroup.attribute, value).join(", "), shots]] : [];
+        })
+      : [],
+  );
 
   return {
     gallery: product.images.length ? product.images.map((image) => productImage(image.url)) : [productImage()],
     inStock: inStock(product),
     highlights: [],
+    colorGallery: Object.keys(colorGallery).length ? colorGallery : undefined,
     options: options.length ? options : undefined,
     variants: variants.length ? variants : undefined,
     specs,
-    description: blocks.length ? { title: product.name, blocks } : undefined,
   };
 };

@@ -15,6 +15,10 @@ export type ProductVariant = {
   stock: number;
 };
 
+// The photos shown for one colour option: its value, and the photos by
+// publicId (or url when there's none).
+export type ColorImages = { value: string; images: string[] };
+
 // The single-product route swaps `attributes` for these, grouped by attribute group.
 export type ProductSpecification = {
   group: Ref;
@@ -41,6 +45,8 @@ export type Product = {
   hasVariants: boolean;
   variants: ProductVariant[];
   images: { url: string; publicId: string | null }[];
+  // Saved before the field existed → missing.
+  colorImages?: ColorImages[];
   price: number;
   // An amount off the price (not a percentage), never more than the price.
   discount: number;
@@ -86,6 +92,7 @@ export type ProductFields = {
   attributes: ProductAttribute[];
   hasVariants: boolean;
   variants: VariantFields[];
+  colorImages?: ColorImages[];
   price: number;
   discount: number;
   stock: number;

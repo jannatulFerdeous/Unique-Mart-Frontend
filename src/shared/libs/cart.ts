@@ -15,6 +15,8 @@ export const MAX_QUANTITY = 99;
 export type CartLine = {
   // The cart item's _id, which quantity changes and removal refer to.
   id: string;
+  // The product's _id; null once it has been deleted.
+  productId: string | null;
   slug: string | null;
   name: string;
   image: StaticImageData | null;
@@ -48,6 +50,7 @@ const toLine = (item: CartItem, attributeById: Map<string, Attribute>): CartLine
 
   return {
     id: item._id,
+    productId: product?._id ?? null,
     slug: product?.slug ?? null,
     name: product?.name ?? "A product that is no longer sold",
     image: product?.images[0]?.url ? productImage(product.images[0].url) : null,
