@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { ProductCard } from "@/common/components/ProductCard";
+import { SortMenu } from "@/common/components/SortMenu";
 import type { Offer } from "@/shared/libs/storefront/catalog";
 import { cn } from "@/shared/utils/cn";
 import { formatPrice } from "@/shared/utils/price";
@@ -42,20 +43,7 @@ export function OffersBrowser({ offers }: { offers: Offer[] }) {
             {title}
           </h2>
 
-          <label className="flex items-center gap-2 text-ink-muted">
-            <span className="shrink-0">{sortLabel}</span>
-            <select
-              value={sort}
-              onChange={(event) => setSort(event.target.value as OfferSortId)}
-              className="rounded-control border border-line-strong bg-surface p-2 text-ink"
-            >
-              {sorts.map((option) => (
-                <option key={option.id} value={option.id}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          </label>
+          <SortMenu label={sortLabel} options={sorts} value={sort} onChange={setSort} />
         </div>
 
         {live.length > 1 && (

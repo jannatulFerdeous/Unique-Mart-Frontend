@@ -29,8 +29,8 @@ export async function generateMetadata({
   return {
     title: `${node.name} Price in Bangladesh`,
     description: prices.length
-      ? `${node.name} at Unique Mart, starting from ${formatPrice(Math.min(...prices))}. Official products, 0% EMI on eligible purchases, nationwide delivery.`
-      : `${node.name} at Unique Mart. Official products, 0% EMI on eligible purchases, nationwide delivery.`,
+      ? `${node.name} at Unique Mart, starting from ${formatPrice(Math.min(...prices))}. Official products, nationwide delivery.`
+      : `${node.name} at Unique Mart. Official products, nationwide delivery.`,
   };
 }
 

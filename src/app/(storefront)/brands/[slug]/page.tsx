@@ -26,7 +26,7 @@ export async function generateMetadata({ params }: PageProps<"/brands/[slug]">):
   if (!brand) return {};
   return {
     title: `${brand.name} Price in Bangladesh`,
-    description: `Official ${brand.name} products at Unique Mart. 0% EMI on eligible purchases, nationwide delivery.`,
+    description: `Official ${brand.name} products at Unique Mart. Official products, nationwide delivery.`,
   };
 }
 

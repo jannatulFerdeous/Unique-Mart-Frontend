@@ -6,7 +6,7 @@ export const offers_data: OffersData = {
   heroBody:
     "{n} products are reduced right now, from cases to flagship phones. Prices below are what you pay online.",
   heroNote:
-    "0% EMI on eligible purchases through partner banks, and exchange on eligible products.",
+    "Exchange is available on eligible products.",
 
   title: "All offers",
   countOne: "1 offer",

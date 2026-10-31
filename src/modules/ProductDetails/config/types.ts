@@ -16,9 +16,6 @@ export type ProductDetailsData = {
     viewCart: string;
     cashPrice: string;
     cashNote: string;
-    emiPrice: string;
-    emiFrom: string;
-    emiNote: string;
     similar: string;
     trust: string;
     noSpecs: string;

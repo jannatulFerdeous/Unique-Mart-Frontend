@@ -37,7 +37,6 @@ export function ProductTop({ product, detail }: Props) {
   const [quantity, setQuantity] = useState(1);
   const [nagging, setNagging] = useState(false);
   const [added, setAdded] = useState(false);
-  const [emi, setEmi] = useState(false);
 
   // Options pick a variant; the variant sets the price, stock and SKU.
   const groups = detail?.options ?? [];
@@ -275,64 +274,19 @@ export function ProductTop({ product, detail }: Props) {
           );
         })}
 
-        <fieldset className="mt-7">
-          <legend className="sr-only">Payment option</legend>
-          <div className="grid gap-3 sm:grid-cols-2">
-            <button
-              type="button"
-              onClick={() => setEmi(false)}
-              aria-pressed={!emi}
-              className={cn(
-                "border p-4 text-left transition-colors",
-                !emi
-                  ? "border-tertiary bg-tertiary-soft"
-                  : "border-line bg-surface hover:border-line-strong",
-              )}
-            >
-              <span className="block font-bold text-tertiary">
-                {formatPrice(price)}
-              </span>
-              <span className="mt-1 block font-medium text-ink">
-                {labels.cashPrice}
-              </span>
-              <span className="mt-0.5 block text-sm text-ink-muted">
-                {labels.cashNote}
-              </span>
-            </button>
-
-            {detail?.emi ? (
-              <button
-                type="button"
-                onClick={() => setEmi(true)}
-                aria-pressed={emi}
-                className={cn(
-                  "border p-4 text-left transition-colors",
-                  emi
-                    ? "border-tertiary bg-tertiary-soft"
-                    : "border-line bg-surface hover:border-line-strong",
-                )}
-              >
-                <span className="block text-sm text-ink-muted">
-                  {labels.emiFrom}
-                </span>
-                <span className="block font-bold text-tertiary">
-                  {formatPrice(detail.emi.perMonth)}/month
-                </span>
-                <span className="mt-1 block font-medium text-ink">
-                  {labels.emiPrice}:{" "}
-                  {formatPrice(compareAt ?? price)}
-                </span>
-                <span className="mt-0.5 block text-sm text-ink-muted">
-                  Up to {detail.emi.months} months
-                </span>
-              </button>
-            ) : null}
+        <div className="mt-7 grid gap-3 sm:grid-cols-2">
+          <div className="border border-tertiary bg-tertiary-soft p-4">
+            <span className="block font-bold text-tertiary">
+              {formatPrice(price)}
+            </span>
+            <span className="mt-1 block font-medium text-ink">
+              {labels.cashPrice}
+            </span>
+            <span className="mt-0.5 block text-sm text-ink-muted">
+              {labels.cashNote}
+            </span>
           </div>
-        </fieldset>
-
-        {detail?.emi ? (
-          <p className="mt-3 text-sm text-ink-subtle">{labels.emiNote}</p>
-        ) : null}
+        </div>
 
         {!needsColor ? (
           <div className="mt-6 flex items-center gap-3">
