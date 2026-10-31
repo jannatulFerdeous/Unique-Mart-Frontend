@@ -39,8 +39,7 @@ export function AboutCopy() {
             </Link>{" "}
             and the accessories that keep all of it running. Every product we
             list is 100% authentic and an official product, with secure payment,
-            0% EMI on eligible purchases, exchange options and fast delivery
-            nationwide.
+            exchange options and fast delivery nationwide.
           </p>
 
           <h3 className="pt-4 font-sans font-bold text-ink">
@@ -59,8 +58,8 @@ export function AboutCopy() {
             </Link>{" "}
             range runs from flagships to dependable everyday handsets. Whichever
             side you land on, the unit you receive is an official device meant
-            for this market — not grey-market stock — and you can spread the
-            cost with 0% EMI or trade in what you are already carrying.
+            for this market — not grey-market stock — and you can trade in what
+            you are already carrying.
           </p>
 
           <h3 className="pt-4 font-sans font-bold text-ink">

@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { SlidersHorizontal, X } from "lucide-react";
 import { ProductCard } from "@/common/components/ProductCard";
+import { SortMenu } from "@/common/components/SortMenu";
 import { cn } from "@/shared/utils/cn";
 import { category_data } from "../config/constants";
 import type { FacetGroupView, FacetOption, ListingProduct, SortId } from "../config/types";
@@ -148,6 +149,9 @@ export function CategoryBrowser({ name, items, facetGroups, childLabels }: Props
   const current = Math.min(page, pages);
   const visible = filtered.slice((current - 1) * pageSize, current * pageSize);
 
+  // One price and no groups leaves nothing to filter by.
+  const filterable = bounds.min !== bounds.max || groups.length > 0;
+
   const sidebar = (
     <CategoryFilters
       bounds={bounds}
@@ -165,8 +169,8 @@ export function CategoryBrowser({ name, items, facetGroups, childLabels }: Props
   );
 
   return (
-    <div className="lg:grid lg:grid-cols-[16rem_minmax(0,1fr)] lg:items-start lg:gap-10">
-      <aside className="hidden lg:block">{sidebar}</aside>
+    <div className={cn(filterable && "lg:grid lg:grid-cols-[16rem_minmax(0,1fr)] lg:items-start lg:gap-10")}>
+      {filterable && <aside className="hidden lg:block">{sidebar}</aside>}
 
       <div className="min-w-0">
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line pb-4">
@@ -177,32 +181,26 @@ export function CategoryBrowser({ name, items, facetGroups, childLabels }: Props
           </p>
 
           <div className="flex items-center gap-3">
-            <button
-              type="button"
-              onClick={() => setOpen(true)}
-              className="flex items-center gap-2 rounded-control border border-line px-3 py-2 font-medium text-ink transition-colors hover:border-line-strong lg:hidden"
-            >
-              <SlidersHorizontal aria-hidden className="size-4" />
-              {filtersToggle}
-            </button>
-
-            <label className="flex items-center gap-2 text-ink-muted">
-              <span className="shrink-0">{sortLabel}</span>
-              <select
-                value={sort}
-                onChange={(event) => {
-                  setSort(event.target.value as SortId);
-                  setPage(1);
-                }}
-                className="rounded-control border border-line-strong bg-surface p-2 text-ink"
+            {filterable && (
+              <button
+                type="button"
+                onClick={() => setOpen(true)}
+                className="flex items-center gap-2 rounded-control border border-line px-3 py-2 font-medium text-ink transition-colors hover:border-line-strong lg:hidden"
               >
-                {sorts.map((option) => (
-                  <option key={option.id} value={option.id}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </label>
+                <SlidersHorizontal aria-hidden className="size-4" />
+                {filtersToggle}
+              </button>
+            )}
+
+            <SortMenu
+              label={sortLabel}
+              options={sorts}
+              value={sort}
+              onChange={(id) => {
+                setSort(id);
+                setPage(1);
+              }}
+            />
           </div>
         </div>
 
@@ -270,7 +268,7 @@ export function CategoryBrowser({ name, items, facetGroups, childLabels }: Props
         )}
       </div>
 
-      {open && (
+      {open && filterable && (
         <div className="fixed inset-0 z-50 lg:hidden">
           <button
             type="button"

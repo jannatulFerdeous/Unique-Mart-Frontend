@@ -3,7 +3,6 @@ import {
   BadgeCheck,
   PackageCheck,
   ShieldCheck,
-  TicketPercent,
   Truck,
   type LucideIcon,
 } from "lucide-react";
@@ -26,12 +25,6 @@ export const trustClaims: TrustClaim[] = [
     label: "Official Product",
     detail:
       "The unit that reaches you is the one the manufacturer intended for this market, not an import meant for somewhere else.",
-  },
-  {
-    icon: TicketPercent,
-    label: "0% EMI",
-    detail:
-      "Eligible purchases can be spread across instalments at 0% interest through partner banks. Duration and eligibility depend on the card, the product and the current campaign.",
   },
   {
     icon: ArrowRightLeft,

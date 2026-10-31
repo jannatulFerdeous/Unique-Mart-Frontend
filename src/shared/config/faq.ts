@@ -71,24 +71,13 @@ export const faqGroups: FaqGroup[] = [
   },
   {
     id: "payment",
-    title: "Payment and EMI",
+    title: "Payment",
     items: [
       {
         id: "payment-methods",
         question: "What payment methods can I use?",
         answer:
           "The methods available to you are shown at checkout. Whichever you pick, payment runs over encrypted, established channels, so your details are never handled in the clear.",
-      },
-      {
-        id: "emi",
-        question: "Do you offer 0% EMI?",
-        answer:
-          "Eligible purchases qualify for 0% EMI through partner banks. The available duration and the cards accepted depend on the product and the campaign running at the time.",
-      },
-      {
-        id: "emi-eligible",
-        question: "How do I know if a product is EMI eligible?",
-        answer: `Eligibility varies by product, card and campaign, so it is worth checking rather than assuming. Ask us on ${site.phone} about a specific product and we will confirm what applies to it today.`,
       },
       {
         id: "payment-safe",
@@ -181,7 +170,7 @@ export const faqPath = "/faq";
 
 export const faqItems: FaqItem[] = faqGroups.flatMap((group) => group.items);
 
-const featuredIds = ["showroom", "delivery-where", "genuine", "emi", "exchange"];
+const featuredIds = ["showroom", "delivery-where", "genuine", "payment-safe", "exchange"];
 
 export const featuredFaqs: FaqItem[] = featuredIds.map((id) => {
   const item = faqItems.find((faq) => faq.id === id);
