@@ -5,7 +5,7 @@ export const auth_data: AuthData = {
   registerTab: "Register",
 
   login: {
-    title: "Log in to Unique Mart",
+    title: "Log in to Unique & Smart",
     identifier: "Email address",
     password: "Password",
     forgot: "Forgot Password?",
@@ -16,7 +16,7 @@ export const auth_data: AuthData = {
   },
 
   register: {
-    title: "Create a Unique Mart account",
+    title: "Create a Unique & Smart account",
     name: "Name",
     email: "Email",
     phone: "Phone",

@@ -1,3 +1,4 @@
+import { deliveryChargeSummary } from "./shipping";
 import { site } from "./site";
 
 export type FaqItem = {
@@ -21,13 +22,12 @@ export const faqGroups: FaqGroup[] = [
         id: "how-to-order",
         question: "How do I place an order?",
         answer:
-          "Find what you want in the catalogue, add it to your cart and check out. Everything happens online — there is no branch to visit and no form to collect.",
+          "Find what you want in the catalogue, add it to your cart and check out. You need an account to order, and checkout asks for your delivery address and how you want to pay. You can also buy in person at our shop.",
       },
       {
         id: "showroom",
-        question: `Does ${site.name} have a showroom?`,
-        answer:
-          "No. We are online only, which is a deliberate choice rather than a stage we are passing through. It keeps our overheads down, and it means the catalogue and the price are the same for everyone.",
+        question: `Does ${site.name} have a shop I can visit?`,
+        answer: `Yes. Our shop is at ${site.address}, open ${site.hours.toLowerCase()}. You can see products in person there before buying, or buy on the spot. Online orders have the same prices and are delivered anywhere in Bangladesh.`,
       },
       {
         id: "not-sure-which",
@@ -37,7 +37,7 @@ export const faqGroups: FaqGroup[] = [
       {
         id: "change-order",
         question: "Can I change or cancel an order after placing it?",
-        answer: `Contact us on ${site.phone} as soon as you can. What is still possible depends on how far along the order is, so the sooner you reach us the more we can do.`,
+        answer: `You can cancel an order yourself from your account until it is shipped, as long as it has not been paid online. If you paid online, or want to change something, call ${site.phone} as soon as you can. The sooner you reach us, the more we can do.`,
       },
     ],
   },
@@ -59,13 +59,13 @@ export const faqGroups: FaqGroup[] = [
       {
         id: "delivery-charge",
         question: "Is there a delivery charge?",
-        answer: `Any charge depends on the destination and is shown before you confirm the order. If you want to know the charge to a specific address first, ask us on ${site.phone}.`,
+        answer: `Yes: ${deliveryChargeSummary}. Checkout shows the charge for your address before you place the order.`,
       },
       {
         id: "delivery-outside-dhaka",
-        question: "Do you deliver outside Dhaka?",
+        question: "Do I need to live near the shop to order?",
         answer:
-          "Yes. Nationwide means nationwide — the same catalogue and the same prices apply wherever in the country you are ordering from.",
+          "Yes. We deliver anywhere in Bangladesh, and the catalogue and prices are the same wherever you order from.",
       },
     ],
   },
@@ -77,13 +77,13 @@ export const faqGroups: FaqGroup[] = [
         id: "payment-methods",
         question: "What payment methods can I use?",
         answer:
-          "The methods available to you are shown at checkout. Whichever you pick, payment runs over encrypted, established channels, so your details are never handled in the clear.",
+          "Two ways: pay in full online through SSLCOMMERZ, by card, mobile banking or internet banking, or pay cash on delivery when the order arrives. At our shop you can pay in person.",
       },
       {
         id: "payment-safe",
         question: "Is it safe to pay online?",
         answer:
-          "Yes. Checkout runs over encrypted, established payment channels — the same infrastructure your bank already uses — and your card details are not ours to keep.",
+          "Yes. Online payments go through SSLCOMMERZ over an encrypted connection. You enter your card or mobile banking details on SSLCOMMERZ's page, not ours, so we never see or store them.",
       },
     ],
   },
@@ -155,7 +155,7 @@ export const faqGroups: FaqGroup[] = [
       {
         id: "contact",
         question: "How do I get in touch?",
-        answer: `Call ${site.phone} or email ${site.email}. A short conversation beats a returned parcel, so please use them before ordering if anything is unclear.`,
+        answer: `Call ${site.phone}, email ${site.email}, or visit our shop at ${site.address} (open ${site.hours.toLowerCase()}). A short conversation beats a returned parcel, so please get in touch before ordering if anything is unclear.`,
       },
       {
         id: "since",

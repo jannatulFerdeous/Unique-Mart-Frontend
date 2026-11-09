@@ -135,9 +135,9 @@ export function AboutCopy() {
           </p>
 
           <p className="pt-4">
-            Ordering is online and delivery reaches the whole country, so
-            wherever you are in Bangladesh the same catalogue and the same
-            prices apply. If you are unsure which model suits you, reach us on{" "}
+            Visit our shop at {site.address}, open {site.hours.toLowerCase()},
+            or order online for delivery anywhere in Bangladesh at the same
+            prices. If you are unsure which model suits you, reach us on{" "}
             <Link href={telHref} className={LINK}>
               {site.phone}
             </Link>{" "}

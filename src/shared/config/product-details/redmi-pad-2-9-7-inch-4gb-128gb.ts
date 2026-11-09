@@ -126,7 +126,7 @@ export const redmiPad297Inch4gb128gb: ProductDetail = {
         ],
       },
       {
-        heading: "Buying the REDMI Pad 2 9.7\" (4/128GB) from Unique Mart",
+        heading: "Buying the REDMI Pad 2 9.7\" (4/128GB) from Unique & Smart",
         paragraphs: [
           "Every unit we list is sourced through official channels and intended for this market. Eligible purchases qualify for 0% EMI through partner banks, exchange is available on eligible products, and delivery is nationwide across Bangladesh.",
         ],

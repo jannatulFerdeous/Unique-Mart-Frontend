@@ -3,7 +3,7 @@ import { Auth } from "@/modules/Auth";
 
 export const metadata: Metadata = {
   title: "Register",
-  description: "Create a Unique Mart account.",
+  description: "Create a Unique & Smart account.",
 };
 
 export default async function RegisterPage({

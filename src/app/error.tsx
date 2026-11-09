@@ -11,7 +11,7 @@ export default function RootError(props: { error: Error & { digest?: string }; r
   return (
     <main id="main" className="flex flex-1 flex-col items-center justify-center bg-canvas">
       <Link href="/" className="mt-12">
-        <Image src={logo} alt="Unique Mart" className="h-12 w-auto" priority />
+        <Image src={logo} alt="Unique & Smart" className="h-12 w-auto" priority />
       </Link>
       <ShopError {...props} />
     </main>

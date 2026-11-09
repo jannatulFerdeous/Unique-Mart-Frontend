@@ -79,7 +79,7 @@ export const ipadAir13InchWifiM3ChipDisplayUnit: ProductDetail = {
     title: "iPad Air 13\" WiFi M3 Chip 128GB Space Gray (Display Unit)",
     blocks: [
       {
-        heading: "Buying the iPad Air 13\" WiFi M3 Chip 128GB Space Gray (Display Unit) from Unique Mart",
+        heading: "Buying the iPad Air 13\" WiFi M3 Chip 128GB Space Gray (Display Unit) from Unique & Smart",
         paragraphs: [
           "Every unit we list is sourced through official channels and intended for this market. Eligible purchases qualify for 0% EMI through partner banks, exchange is available on eligible products, and delivery is nationwide across Bangladesh.",
         ],

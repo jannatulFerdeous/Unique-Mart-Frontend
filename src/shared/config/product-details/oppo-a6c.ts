@@ -172,7 +172,7 @@ export const oppoA6c: ProductDetail = {
         ],
       },
       {
-        heading: "Buying the Oppo A6c 4/64GB from Unique Mart",
+        heading: "Buying the Oppo A6c 4/64GB from Unique & Smart",
         paragraphs: [
           "Every unit we list is sourced through official channels and intended for this market. Eligible purchases qualify for 0% EMI through partner banks, exchange is available on eligible products, and delivery is nationwide across Bangladesh.",
         ],

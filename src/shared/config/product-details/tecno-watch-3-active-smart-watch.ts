@@ -109,7 +109,7 @@ export const tecnoWatch3ActiveSmartWatch: ProductDetail = {
         ],
       },
       {
-        heading: "Buying the TECNO Watch 3 Active Smart Watch from Unique Mart",
+        heading: "Buying the TECNO Watch 3 Active Smart Watch from Unique & Smart",
         paragraphs: [
           "Every unit we list is sourced through official channels and intended for this market. Eligible purchases qualify for 0% EMI through partner banks, exchange is available on eligible products, and delivery is nationwide across Bangladesh.",
         ],

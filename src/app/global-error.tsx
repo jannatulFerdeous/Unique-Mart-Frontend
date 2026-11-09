@@ -18,11 +18,11 @@ export default function GlobalError({ error, retry }: { error: Error & { digest?
   return (
     <html lang="en" className={`${fontVariables} h-full antialiased`}>
       <body className="flex min-h-full flex-col bg-canvas">
-        <title>Something went wrong | Unique Mart</title>
+        <title>Something went wrong | Unique & Smart</title>
         <main className="flex flex-1 flex-col items-center justify-center">
           {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
           <a href="/" className="mt-12">
-            <Image src={logo} alt="Unique Mart" className="h-12 w-auto" priority />
+            <Image src={logo} alt="Unique & Smart" className="h-12 w-auto" priority />
           </a>
           <ErrorScreen {...error_copy.failed} art={<UnpluggedArt />} reference={error.digest}>
             <button type="button" onClick={() => retry()} className={primaryButton}>

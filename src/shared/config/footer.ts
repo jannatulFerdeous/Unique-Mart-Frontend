@@ -1,8 +1,7 @@
 import type { ComponentType, SVGProps } from "react";
 import { FacebookIcon } from "@/common/components/icons/FacebookIcon";
 import { InstagramIcon } from "@/common/components/icons/InstagramIcon";
-import { LinkedinIcon } from "@/common/components/icons/LinkedinIcon";
-import { YoutubeIcon } from "@/common/components/icons/YoutubeIcon";
+import { TiktokIcon } from "@/common/components/icons/TiktokIcon";
 import { brandsPath } from "./brands";
 import { faqPath } from "./faq";
 import type { NavItem } from "./navigation";
@@ -26,7 +25,6 @@ export const footerColumns: FooterColumn[] = [
     items: [
       { label: "FAQ", href: faqPath },
       { label: "Terms & Conditions", href: "/terms" },
-      { label: "Loyalty Program", href: "/loyalty" },
     ],
   },
   {
@@ -45,8 +43,7 @@ export type SocialLink = {
 };
 
 export const socialLinks: SocialLink[] = [
-  { label: "Facebook", href: "https://facebook.com/uniquemart", Icon: FacebookIcon },
-  { label: "Instagram", href: "https://instagram.com/uniquemart", Icon: InstagramIcon },
-  { label: "YouTube", href: "https://youtube.com/@uniquemart", Icon: YoutubeIcon },
-  { label: "LinkedIn", href: "https://linkedin.com/company/uniquemart", Icon: LinkedinIcon },
+  { label: "Facebook", href: "https://www.facebook.com/uniqeesmart", Icon: FacebookIcon },
+  { label: "Instagram", href: "https://www.instagram.com/uniqsmartbd", Icon: InstagramIcon },
+  { label: "TikTok", href: "https://www.tiktok.com/@uniquesmart.bd", Icon: TiktokIcon },
 ];

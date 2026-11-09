@@ -3,7 +3,7 @@ import { ForgotPassword } from "@/modules/Auth";
 
 export const metadata: Metadata = {
   title: "Forgot password",
-  description: "Reset the password on your Unique Mart account.",
+  description: "Reset the password on your Unique & Smart account.",
 };
 
 export default async function ForgotPasswordPage({

@@ -3,7 +3,7 @@ import { Checkout } from "@/modules/Checkout";
 
 export const metadata: Metadata = {
   title: "Checkout",
-  description: "Choose where to deliver and place your Unique Mart order.",
+  description: "Choose where to deliver and place your Unique & Smart order.",
   robots: { index: false, follow: false },
 };
 

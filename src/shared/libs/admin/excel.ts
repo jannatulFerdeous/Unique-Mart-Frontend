@@ -40,7 +40,7 @@ export const fileDate = () => new Date().toISOString().slice(0, 10);
 export async function downloadSheet<T>(filename: string, sheetName: string, columns: SheetColumn<T>[], rows: T[]) {
   const Excel = await loadExcel();
   const book = new Excel.Workbook();
-  book.creator = "Unique Mart";
+  book.creator = "Unique & Smart";
   const sheet = book.addWorksheet(sheetName, { views: [{ state: "frozen", ySplit: 1 }] });
 
   sheet.columns = columns.map((column) => ({

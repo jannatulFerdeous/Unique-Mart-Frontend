@@ -90,7 +90,7 @@ export const tpLinkDecoM4Router3Pack: ProductDetail = {
         ],
       },
       {
-        heading: "Buying the TP-Link Deco M4 AC1200 Dual-Band Mesh Router (3 Pack) from Unique Mart",
+        heading: "Buying the TP-Link Deco M4 AC1200 Dual-Band Mesh Router (3 Pack) from Unique & Smart",
         paragraphs: [
           "Every unit we list is sourced through official channels and intended for this market. Eligible purchases qualify for 0% EMI through partner banks, exchange is available on eligible products, and delivery is nationwide across Bangladesh.",
         ],

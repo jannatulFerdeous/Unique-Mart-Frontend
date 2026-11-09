@@ -3,7 +3,7 @@ import { Prose, termsPage } from "@/modules/Legal";
 
 export const metadata: Metadata = {
   title: "Terms & Conditions",
-  description: "The terms you agree to by using Unique Mart.",
+  description: "The terms you agree to by using Unique & Smart.",
 };
 
 export default function Page() {
