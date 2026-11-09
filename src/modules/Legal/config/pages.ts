@@ -1,9 +1,10 @@
+import { deliveryChargeSummary } from "@/shared/config/shipping";
 import { site } from "@/shared/config/site";
 import type { ProsePage } from "./types";
 
-const UPDATED = "2026-09-20";
+const UPDATED = "2026-11-10";
 
-const CONTACT = `Questions about this page can go to ${site.email} or ${site.phone}.`;
+const CONTACT = `Questions about this page can go to ${site.email} or ${site.phone}, or ask at our shop: ${site.address}.`;
 
 export const privacyPage: ProsePage = {
   title: "Privacy Policy",
@@ -15,11 +16,11 @@ export const privacyPage: ProsePage = {
       blocks: [
         {
           kind: "text",
-          text: `This policy covers ${site.url} and explains what happens to information about you when you browse the shop, sign in, save products, fill a basket or write a review.`,
+          text: `This policy covers ${site.url} and explains what happens to information about you when you create an account, shop, place an order, write a review or sign up for the newsletter.`,
         },
         {
           kind: "text",
-          text: "It is written to describe what the site actually does today rather than what an online shop usually does. Where the answer is 'nothing', it says so.",
+          text: `${site.name} is run from ${site.address}. That is who "we" means on this page.`,
         },
       ],
     },
@@ -28,37 +29,64 @@ export const privacyPage: ProsePage = {
       blocks: [
         {
           kind: "text",
-          text: "Only what you type in, and only on the screens that ask for it:",
+          text: "Only what you give us, on the screens that ask for it:",
         },
         {
           kind: "list",
           items: [
-            "A name, and optionally an email address or phone number, if you use the sign-in screen.",
-            "A rating and a comment, if you write a product review.",
-            "The products you put in your basket or save to your wishlist, and how many of each.",
-            "An email address, if you enter one in the newsletter box.",
+            "Your account: your name, email address, phone number and password, or your name and email from Google if you sign in with Google. A profile photo, if you add one.",
+            "Your delivery addresses: the name, phone number and address you want orders sent to.",
+            "Your orders: what you bought, the price, the delivery charge, any coupon you used and how each order is progressing.",
+            "Your payments: the payment method, the amount and whether it was paid or refunded. For online payments this includes the transaction reference SSLCOMMERZ gives us.",
+            "Your cart and wishlist, so they are still there when you come back or sign in on another device.",
+            "Your reviews: the rating and comment you write on a product.",
+            "Your email address, if you sign up for the newsletter.",
           ],
         },
         {
           kind: "text",
-          text: "We do not ask for a date of birth, a national ID number or a payment card, and there is nowhere on the site to enter one.",
+          text: "We never see or store your card number, PIN or mobile banking password. Those are entered on SSLCOMMERZ's payment page, not on this site.",
         },
       ],
     },
     {
-      heading: "Where your information is kept",
+      heading: "How we use information",
+      blocks: [
+        {
+          kind: "list",
+          items: [
+            "To run your account and keep you signed in.",
+            "To process, deliver and support your orders, including calling you about an order or a delivery.",
+            "To take payments and issue refunds.",
+            "To show your reviews on the products you reviewed.",
+            "To send you the newsletter, only if you signed up for it.",
+          ],
+        },
+        {
+          kind: "text",
+          text: "We do not sell your information, and we do not use it to build an advertising profile of you.",
+        },
+      ],
+    },
+    {
+      heading: "Who we share it with",
       blocks: [
         {
           kind: "text",
-          text: "In your own browser, and nowhere else. The site has no account database and no server that stores what you do. Everything listed above is written to your browser's local storage on the device you are using.",
+          text: "Only with the services needed to complete your order:",
+        },
+        {
+          kind: "list",
+          items: [
+            "SSLCOMMERZ, which processes online payments and refunds. It receives your name, contact details and the order amount.",
+            "The courier delivering your order, who receives the delivery name, phone number and address.",
+            "Google, only if you choose to sign in with Google.",
+            "Cloudinary, which stores and serves the site's images, including a profile photo if you upload one.",
+          ],
         },
         {
           kind: "text",
-          text: "Two consequences worth understanding. Nothing you enter reaches us, so we cannot read your basket, your wishlist or your reviews, and we cannot recover them for you. And nothing follows you to another device or another browser: sign in on a phone and the desktop knows nothing about it.",
-        },
-        {
-          kind: "text",
-          text: "Clearing your browser's site data for this site erases all of it permanently.",
+          text: "We may also disclose information where the law of Bangladesh requires it.",
         },
       ],
     },
@@ -67,33 +95,7 @@ export const privacyPage: ProsePage = {
       blocks: [
         {
           kind: "text",
-          text: "This site sets no cookies. It runs no analytics, no advertising pixels and no third-party tracking scripts, so there is no profile of your browsing to build, share or sell.",
-        },
-        {
-          kind: "text",
-          text: "It does use your browser's local storage, which is a different mechanism with a similar effect on privacy, and the Cookie Policy lists exactly what is stored under which name.",
-        },
-      ],
-    },
-    {
-      heading: "How we use information",
-      blocks: [
-        {
-          kind: "text",
-          text: "To show you the site: your basket on the basket page, your saved products on the wishlist, your name in the header, your review under the product you reviewed. That is the whole of it. Because the data never leaves your device, it cannot be used for marketing, scoring or anything else.",
-        },
-      ],
-    },
-    {
-      heading: "Sharing your information",
-      blocks: [
-        {
-          kind: "text",
-          text: "We share nothing, because we hold nothing. There are no third-party processors, no advertising partners and no data transfers to other countries.",
-        },
-        {
-          kind: "text",
-          text: "The site loads fonts from Google Fonts, which means your browser makes a request to Google when a page loads. That request carries your IP address, as any request to any server does. No other third party is contacted.",
+          text: "The site sets one cookie, to keep you signed in. It runs no analytics, no advertising pixels and no third-party tracking scripts. The Cookie Policy lists exactly what is stored in your browser.",
         },
       ],
     },
@@ -102,11 +104,16 @@ export const privacyPage: ProsePage = {
       blocks: [
         {
           kind: "text",
-          text: "Data kept in a browser is protected by that browser and that device. Anyone who can unlock your device can read it. Local storage is readable by scripts running on this site, so treat a shared or public computer accordingly and sign out when you finish.",
+          text: "Passwords are stored only in hashed form, so nobody at our end can read them. The sign-in cookie cannot be read by scripts on the page. Even so, no system is perfectly secure: use a password you don't use anywhere else, and log out when you finish on a shared or public computer.",
         },
+      ],
+    },
+    {
+      heading: "How long we keep it",
+      blocks: [
         {
           kind: "text",
-          text: "There is no password on the sign-in screen and nothing is verified, which the screen says plainly. Do not treat it as a secure account.",
+          text: "Account details are kept while your account exists. Order and payment records are kept after that, for as long as we need them for accounting, warranty and legal purposes.",
         },
       ],
     },
@@ -114,16 +121,13 @@ export const privacyPage: ProsePage = {
       heading: "Your choices",
       blocks: [
         {
-          kind: "text",
-          text: "Everything is reversible from the site itself, without asking us:",
-        },
-        {
           kind: "list",
           items: [
-            "Sign out to remove your name and contact details.",
-            "Empty the basket or clear the wishlist to remove those.",
-            "Delete a review from the product page it is on.",
-            "Clear this site's data in your browser settings to remove all of it at once.",
+            "Change your name, phone number, profile photo and password from your account.",
+            "Add, edit or delete delivery addresses from your account.",
+            "Remove items from your cart or wishlist at any time.",
+            "Unsubscribe from the newsletter at any time on the newsletter page.",
+            "Ask us to delete your account by contacting us. Order records we must keep by law are kept, but are no longer linked to an account you can sign in to.",
           ],
         },
       ],
@@ -133,7 +137,7 @@ export const privacyPage: ProsePage = {
       blocks: [
         {
           kind: "text",
-          text: "The shop is intended for adults. We do not knowingly collect information from children, and in any case nothing entered on this site is transmitted to us.",
+          text: "The shop is meant for adults. We do not knowingly collect information from children under 18. If you believe a child has given us their details, contact us and we will remove them.",
         },
       ],
     },
@@ -142,7 +146,7 @@ export const privacyPage: ProsePage = {
       blocks: [
         {
           kind: "text",
-          text: "When the shop gains real accounts, orders and payments, the answers above change substantially, and this page will be rewritten before that happens rather than after. The date at the top shows when it last changed.",
+          text: "If how we handle your information changes, we will update this page first. The date at the top shows when it last changed.",
         },
       ],
     },
@@ -155,7 +159,7 @@ export const privacyPage: ProsePage = {
 
 export const cookiePage: ProsePage = {
   title: "Cookie Policy",
-  intro: `What ${site.name} stores in your browser, and how to get rid of it.`,
+  intro: `What ${site.name} stores in your browser, and how to clear it.`,
   updated: UPDATED,
   sections: [
     {
@@ -163,59 +167,49 @@ export const cookiePage: ProsePage = {
       blocks: [
         {
           kind: "text",
-          text: "A cookie is a small file a website asks your browser to keep and send back on every later request. Cookies are how most sites remember a signed-in session, and how advertising networks recognise the same person across different sites.",
+          text: "A cookie is a small file a website asks your browser to keep and send back with later requests. Most sites use cookies to remember that you are signed in. Advertising networks also use them to recognise the same person across different sites.",
         },
       ],
     },
     {
-      heading: "Do we use cookies?",
+      heading: "The cookie we use",
       blocks: [
         {
           kind: "text",
-          text: "No. This site sets no cookies at all — not for sessions, not for preferences, not for analytics or advertising. There is no cookie banner because there is nothing to consent to.",
-        },
-        {
-          kind: "text",
-          text: "It does use local storage, which is the browser's other storage mechanism. The difference that matters to you: local storage is never attached to network requests, so it is not sent to us or to anyone else. It simply sits on your device until something clears it.",
-        },
-      ],
-    },
-    {
-      heading: "What we keep in your browser",
-      blocks: [
-        {
-          kind: "text",
-          text: "The full list. You can check it yourself under Local Storage in your browser's developer tools.",
+          text: "Just one, and it is needed for signing in. There is no cookie for analytics or advertising.",
         },
         {
           kind: "table",
-          head: ["Name", "What it holds", "When it is written"],
+          head: ["Name", "What it does", "How long it lasts"],
           rows: [
             [
-              "unique-mart.session.v1",
-              "The name, and any email or phone, from the sign-in screen.",
-              "When you sign in.",
-            ],
-            [
-              "unique-mart.cart.v1",
-              "The products in your basket, their chosen colour and options, and how many of each.",
-              "When you add something to the basket.",
-            ],
-            [
-              "unique-mart.wishlist.v1",
-              "The products you have saved, and when you saved them.",
-              "When you press a heart.",
-            ],
-            [
-              "unique-mart.reviews.v1.*",
-              "Reviews you have written, one entry per product.",
-              "When you submit a review.",
+              "refreshToken",
+              "Keeps you signed in, so you don't have to log in again on every visit. Scripts on the page cannot read it.",
+              "7 days, or until you log out.",
             ],
           ],
         },
         {
           kind: "text",
-          text: "Nothing in that list identifies your device, records where you came from or tracks where you go next.",
+          text: "The cookie is set only when you log in. If you never log in, no cookie is set. Because it is needed for the site to work, there is no cookie banner asking for consent.",
+        },
+      ],
+    },
+    {
+      heading: "What else we keep in your browser",
+      blocks: [
+        {
+          kind: "text",
+          text: "Your browser's local storage keeps a copy of your name, email and phone number, so the header can greet you without waiting for the server. Unlike a cookie, local storage is never sent with requests. It is removed when you log out.",
+        },
+        {
+          kind: "table",
+          head: ["Name", "What it holds", "When it is written"],
+          rows: [["unique-mart.session.v1", "Your name, email and phone number.", "When you log in."]],
+        },
+        {
+          kind: "text",
+          text: "Your cart, wishlist, orders and reviews are kept with your account on our server, not in your browser.",
         },
       ],
     },
@@ -224,20 +218,20 @@ export const cookiePage: ProsePage = {
       blocks: [
         {
           kind: "text",
-          text: "No web beacons, no tracking pixels, no fingerprinting and no Flash storage. The only request this site makes to a third party is to Google Fonts, for the typefaces the pages are set in.",
+          text: "We use no web beacons, tracking pixels or fingerprinting. Product and brand images load from Cloudinary, which serves the site's images. When you pay online you are taken to SSLCOMMERZ, and its own cookie policy applies on its pages.",
         },
       ],
     },
     {
-      heading: "How to see or clear what is stored",
+      heading: "How to clear what is stored",
       blocks: [
         {
           kind: "text",
-          text: "The site's own controls remove it piece by piece: sign out, empty the basket, clear the wishlist, delete a review.",
+          text: "Logging out removes both the cookie and the local storage entry.",
         },
         {
           kind: "text",
-          text: "To remove everything at once, clear site data for this site in your browser settings. In Chrome and Edge this is under Privacy and security, in Safari under Manage Website Data, and in Firefox under Cookies and Site Data. Private or incognito windows discard it automatically when you close them.",
+          text: "To remove everything at once, clear this site's data in your browser settings. In Chrome and Edge it is under Privacy and security, in Safari under Manage Website Data, and in Firefox under Cookies and Site Data. You will need to log in again afterwards.",
         },
       ],
     },
@@ -246,7 +240,7 @@ export const cookiePage: ProsePage = {
       blocks: [
         {
           kind: "text",
-          text: "If the shop ever sets a cookie — a real sign-in would need one — this page will list it, with its purpose and how long it lasts, before it is switched on.",
+          text: "If we ever add another cookie, this page will list it, with what it does and how long it lasts, before it is switched on.",
         },
       ],
     },
@@ -268,7 +262,7 @@ export const termsPage: ProsePage = {
       blocks: [
         {
           kind: "text",
-          text: `Using this site means accepting these terms. If you do not accept them, please do not use the site. "We" and "us" mean ${site.name}; "you" means anyone browsing or ordering.`,
+          text: `Using this site or buying from our shop means accepting these terms. If you do not accept them, please do not use the site. "We" and "us" mean ${site.name}, ${site.address}; "you" means anyone browsing or ordering.`,
         },
       ],
     },
@@ -277,7 +271,7 @@ export const termsPage: ProsePage = {
       blocks: [
         {
           kind: "text",
-          text: "The sign-in screen currently keeps a name in your own browser and verifies nothing. It is not a secure account and should not be treated as one. When real accounts exist, you will be responsible for keeping your password to yourself and for activity carried out under your sign-in.",
+          text: "You need an account to place an order. Give us correct details, keep your password to yourself, and tell us straight away if you think someone else has used your account. You are responsible for orders placed from your account.",
         },
       ],
     },
@@ -286,7 +280,7 @@ export const termsPage: ProsePage = {
       blocks: [
         {
           kind: "text",
-          text: "Descriptions, specifications, photographs and page copy are provided for information. We take care to keep them correct, but specifications can change without notice and we do not warrant that every detail is free of error. Where a product's specification matters to your purchase, please confirm it with us before ordering.",
+          text: "Descriptions, specifications, photographs and page copy are for information. We take care to keep them correct, but specifications can change without notice and we cannot promise every detail is free of error. If a specification matters to your purchase, confirm it with us before ordering.",
         },
       ],
     },
@@ -295,7 +289,7 @@ export const termsPage: ProsePage = {
       blocks: [
         {
           kind: "text",
-          text: "Product names, brand names and logos belong to their respective owners. They appear here to identify the products we sell and do not imply endorsement by, or partnership with, those owners beyond any authorisation we state explicitly.",
+          text: "Product names, brand names and logos belong to their owners. They appear here to identify the products we sell. Their appearance does not mean those owners endorse or partner with us, unless we say so explicitly.",
         },
       ],
     },
@@ -304,11 +298,11 @@ export const termsPage: ProsePage = {
       blocks: [
         {
           kind: "text",
-          text: "Prices are in Bangladeshi Taka and include applicable taxes unless a page says otherwise. Where a product shows a struck-through price, that is the price the product is normally listed at, and the saving shown is the difference.",
+          text: "Prices are in Bangladeshi Taka and include applicable taxes unless a page says otherwise. A struck-through price is the product's usual listed price, and the saving shown is the difference.",
         },
         {
           kind: "text",
-          text: "Prices and offers can change at any time. If a product is listed at an obviously incorrect price, we may cancel the order and refund you in full rather than fulfil it.",
+          text: "Prices and offers can change at any time. The price that applies is the one shown when you place your order. If a product is listed at an obviously wrong price, we may cancel the order and refund you in full rather than fulfil it.",
         },
       ],
     },
@@ -317,16 +311,27 @@ export const termsPage: ProsePage = {
       blocks: [
         {
           kind: "text",
-          text: "An order is an offer to buy. It is accepted when we confirm it, and we may decline an order — for example where stock has run out, where the price was wrong, or where we cannot verify the delivery details.",
+          text: "An order is an offer to buy. It is accepted when we confirm it. We may decline an order, for example when stock has run out, the price was wrong, or we cannot verify the delivery details.",
         },
       ],
     },
     {
-      heading: "Payment and billing",
+      heading: "Payment",
       blocks: [
         {
           kind: "text",
-          text: "Orders are paid online through SSLCOMMERZ, by card, mobile banking or internet banking, straight after you place them. Cash on delivery is not offered. Prices are in Taka, and we confirm an order only once SSLCOMMERZ has verified its payment.",
+          text: "You can pay in either of two ways:",
+        },
+        {
+          kind: "list",
+          items: [
+            "Full payment online through SSLCOMMERZ, by card, mobile banking or internet banking. We confirm the order once SSLCOMMERZ has verified the payment.",
+            "Cash on delivery, paid in full to the courier when the order arrives.",
+          ],
+        },
+        {
+          kind: "text",
+          text: "Coupons are applied at checkout, and the total you see before you confirm is the total you pay.",
         },
       ],
     },
@@ -335,11 +340,20 @@ export const termsPage: ProsePage = {
       blocks: [
         {
           kind: "text",
-          text: "Delivery is free on every order, anywhere in the country. If that ever changes, the basket will show the charge before you check out.",
+          text: `We deliver anywhere in Bangladesh. The delivery charge is ${deliveryChargeSummary}, and checkout shows it before you place your order.`,
         },
         {
           kind: "text",
-          text: "Delivery times quoted anywhere on the site are estimates. Delays caused by couriers, weather or circumstances outside our control are not a breach of these terms, and we will tell you as soon as we know about one.",
+          text: "How long delivery takes depends on your address and the courier serving it. Delays caused by couriers, weather or other events outside our control are not a breach of these terms, and we will tell you as soon as we know about one.",
+        },
+      ],
+    },
+    {
+      heading: "Buying at our shop",
+      blocks: [
+        {
+          kind: "text",
+          text: `You can also see products and buy in person at our shop: ${site.address}. It is open ${site.hours.toLowerCase()}. These terms apply to shop purchases too, apart from the sections on delivery and online payment.`,
         },
       ],
     },
@@ -348,7 +362,7 @@ export const termsPage: ProsePage = {
       blocks: [
         {
           kind: "text",
-          text: "Warranty is provided by the manufacturer or its authorised distributor, on that brand's terms and for that brand's stated period. Keep your invoice: warranty claims need proof of purchase. Warranty does not cover physical damage, liquid damage, unauthorised repair or normal wear.",
+          text: "Warranty is provided by the manufacturer or its authorised distributor, on that brand's terms and for that brand's stated period. Keep your invoice, because warranty claims need proof of purchase. Warranty does not cover physical damage, liquid damage, unauthorised repair or normal wear.",
         },
       ],
     },
@@ -357,11 +371,11 @@ export const termsPage: ProsePage = {
       blocks: [
         {
           kind: "text",
-          text: "Tell us within 3 days of delivery if a product arrives damaged, faulty or is not what you ordered, and return it unused in its original packaging with all accessories and the invoice.",
+          text: "Tell us within 3 days of delivery if a product arrives damaged or faulty, or is not what you ordered. Return it unused, in its original packaging, with all accessories and the invoice.",
         },
         {
           kind: "text",
-          text: "A return or replacement may not apply where:",
+          text: "A return or replacement may not apply when:",
         },
         {
           kind: "list",
@@ -379,16 +393,20 @@ export const termsPage: ProsePage = {
       blocks: [
         {
           kind: "text",
-          text: "You can cancel an order yourself from your account until it is paid. Once it is paid, contact us before it is dispatched and we will cancel it and refund you. If we cannot supply a product you have paid for, we will tell you and refund the amount in full through SSLCOMMERZ, to the method you paid with.",
+          text: "You can cancel an order yourself from your account until it is shipped, as long as it has not been paid online. Cash on delivery orders can be cancelled the same way.",
+        },
+        {
+          kind: "text",
+          text: "If you paid online, contact us before the order is shipped and we will cancel it and refund you through SSLCOMMERZ, to the method you paid with. If we cannot supply a product you have paid for, we will tell you and refund the full amount the same way.",
         },
       ],
     },
     {
-      heading: "Reviews and submissions",
+      heading: "Reviews",
       blocks: [
         {
           kind: "text",
-          text: "Reviews should be your own honest experience of the product. We may remove a review that is abusive, unlawful, or written to promote something else. Reviews written on this site are currently kept in your own browser rather than published, which the review form states.",
+          text: "Reviews should describe your own honest experience of the product. We may remove a review that is abusive or unlawful, or that is written to promote something else.",
         },
       ],
     },
@@ -397,7 +415,7 @@ export const termsPage: ProsePage = {
       blocks: [
         {
           kind: "text",
-          text: "To the extent the law allows, our liability for any claim relating to a product or to this site is limited to the amount you paid for the product concerned. We are not liable for indirect losses such as lost profit, lost data or loss of use. Nothing here limits liability that cannot lawfully be limited.",
+          text: "As far as the law allows, our liability for any claim about a product or this site is limited to the amount you paid for that product. We are not liable for indirect losses such as lost profit, lost data or loss of use. Nothing here limits liability that cannot lawfully be limited.",
         },
       ],
     },
@@ -415,7 +433,7 @@ export const termsPage: ProsePage = {
       blocks: [
         {
           kind: "text",
-          text: "We may update these terms. The date at the top of the page shows when they last changed, and the terms in force when you place an order are the ones that apply to it.",
+          text: "We may update these terms. The date at the top of the page shows when they last changed. Your order is covered by the terms in force when you placed it.",
         },
       ],
     },

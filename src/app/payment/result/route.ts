@@ -20,7 +20,7 @@ export function GET(request: NextRequest) {
 <html lang="en">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Payment</title></head>
 <body style="font:16px system-ui,sans-serif;display:grid;place-items:center;height:100vh;margin:0">
-<p>Taking you back to Unique Mart…</p>
+<p>Taking you back to Unique &amp; Smart…</p>
 <script>
 (function () {
   var message = ${JSON.stringify(message)};

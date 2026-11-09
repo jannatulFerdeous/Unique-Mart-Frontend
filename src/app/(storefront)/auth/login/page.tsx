@@ -3,7 +3,7 @@ import { Auth } from "@/modules/Auth";
 
 export const metadata: Metadata = {
   title: "Log in",
-  description: "Log in to your Unique Mart account.",
+  description: "Log in to your Unique & Smart account.",
 };
 
 export default async function LoginPage({

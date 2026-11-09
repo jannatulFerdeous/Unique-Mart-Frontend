@@ -50,7 +50,7 @@ export const belkinSheerforceGripSeriesCaseForIphone17Pro: ProductDetail = {
         ],
       },
       {
-        heading: "Buying the Belkin SheerForce Grip Series Case for iPhone 17 Pro from Unique Mart",
+        heading: "Buying the Belkin SheerForce Grip Series Case for iPhone 17 Pro from Unique & Smart",
         paragraphs: [
           "Every unit we list is sourced through official channels and intended for this market. Eligible purchases qualify for 0% EMI through partner banks, exchange is available on eligible products, and delivery is nationwide across Bangladesh.",
         ],

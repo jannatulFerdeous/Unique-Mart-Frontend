@@ -62,7 +62,7 @@ export const torrasOstandProCaseForIphone17ProMax: ProductDetail = {
         ],
       },
       {
-        heading: "Buying the TORRAS Ostand R Case for iPhone 17 Pro Max from Unique Mart",
+        heading: "Buying the TORRAS Ostand R Case for iPhone 17 Pro Max from Unique & Smart",
         paragraphs: [
           "Every unit we list is sourced through official channels and intended for this market. Eligible purchases qualify for 0% EMI through partner banks, exchange is available on eligible products, and delivery is nationwide across Bangladesh.",
         ],

@@ -125,7 +125,7 @@ export const honorWatch5UltraFluororubberStrap: ProductDetail = {
         ],
       },
       {
-        heading: "Buying the HONOR Watch 5 Ultra Fluororubber Strap (46mm) from Unique Mart",
+        heading: "Buying the HONOR Watch 5 Ultra Fluororubber Strap (46mm) from Unique & Smart",
         paragraphs: [
           "Every unit we list is sourced through official channels and intended for this market. Eligible purchases qualify for 0% EMI through partner banks, exchange is available on eligible products, and delivery is nationwide across Bangladesh.",
         ],

@@ -4,7 +4,7 @@ import { AdminShell } from "@/modules/AdminPortal";
 export const metadata: Metadata = {
   title: {
     default: "Dashboard",
-    template: "%s · Admin | Unique Mart",
+    template: "%s · Admin | Unique & Smart",
   },
   robots: { index: false, follow: false },
 };

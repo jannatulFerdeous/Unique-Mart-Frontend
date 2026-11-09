@@ -130,7 +130,7 @@ export const macbookAir15InchM4ChipDisplayUnit: ProductDetail = {
     title: "MacBook Air 15\" M4 Chip 16/256GB Midnight (10C CPU 10C GPU) (Display Unit)",
     blocks: [
       {
-        heading: "Buying the MacBook Air 15\" M4 Chip 16/256GB Midnight (10C CPU 10C GPU) (Display Unit) from Unique Mart",
+        heading: "Buying the MacBook Air 15\" M4 Chip 16/256GB Midnight (10C CPU 10C GPU) (Display Unit) from Unique & Smart",
         paragraphs: [
           "Every unit we list is sourced through official channels and intended for this market. Eligible purchases qualify for 0% EMI through partner banks, exchange is available on eligible products, and delivery is nationwide across Bangladesh.",
         ],

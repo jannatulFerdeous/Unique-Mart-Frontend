@@ -3,7 +3,7 @@ import { Unsubscribe } from "@/modules/Newsletter";
 
 export const metadata: Metadata = {
   title: "Newsletter",
-  description: "Stop getting the Unique Mart newsletter.",
+  description: "Stop getting the Unique & Smart newsletter.",
   robots: { index: false, follow: true },
 };
 

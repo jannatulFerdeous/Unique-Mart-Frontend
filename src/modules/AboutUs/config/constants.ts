@@ -8,13 +8,13 @@ export const about_data: AboutData = {
   title: `About ${site.name}`,
   metaTitle: "About Us",
 
-  lede: `${site.name} is an online technology store in Bangladesh. We started in ${site.since} with one aim: make buying a phone, a laptop, or the cable that goes with it straightforward — and stand behind every one of them.`,
+  lede: `${site.name} is a technology shop in Gangachara, Rangpur, that also sells online across Bangladesh. We started in ${site.since} with one aim: make buying a phone, a laptop, or the cable that goes with it straightforward — and stand behind every one of them.`,
 
   story: {
     title: "Why we started",
     paragraphs: [
       "Technology has folded itself into every part of the day — the phone that wakes you up, the laptop you work on, the earbuds on the commute. Buying it, though, is rarely as simple as it should be: stock of uncertain origin, terms that shift between conversations, and a price that depends on who you ask.",
-      `${site.name} is built the other way round. We sell online only. There is no showroom to find and no floor staff working to a target — one catalogue, one price, delivered anywhere in the country. What the product page says is what arrives.`,
+      `${site.name} is built the other way round. Our shop at ${site.address} is open ${site.hours.toLowerCase()}, so you can see a product and ask about it before you buy. Our website carries the same catalogue at the same prices and delivers anywhere in the country. What the product page says is what you get.`,
       "The catalogue runs from phones, Macs and tablets through to audio, wearables, cameras, networking gear and the accessories that keep all of it running.",
     ],
   },

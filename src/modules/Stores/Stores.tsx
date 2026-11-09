@@ -1,4 +1,4 @@
-import { Clock, Mail, MapPin, Phone, Truck } from "lucide-react";
+import { Clock, Mail, Map as MapIcon, MapPin, Phone, Truck } from "lucide-react";
 import { ProductBreadcrumb } from "@/modules/ProductDetails";
 import { site, mailHref, telHref } from "@/shared/config/site";
 import { stores_data } from "./config/constants";
@@ -17,29 +17,7 @@ export function Stores() {
           <p className="mt-3 text-ink-muted">{data.intro}</p>
         </header>
 
-        {branches.length === 0 ? (
-          <section
-            aria-labelledby="online"
-            className="mt-8 rounded-card border border-line bg-surface p-6 md:p-8"
-          >
-            <span className="grid size-11 place-items-center rounded-control bg-tertiary-soft text-tertiary">
-              <Truck className="size-5" aria-hidden />
-            </span>
-            <h2 id="online" className="mt-4 font-sans font-bold text-ink">
-              {data.onlineTitle}
-            </h2>
-            <p className="mt-2 text-ink-muted">{data.onlineBody}</p>
-
-            <ul className="mt-6 grid gap-4 md:grid-cols-3">
-              {data.delivery.map((item) => (
-                <li key={item.title} className="rounded-control border border-line p-4">
-                  <h3 className="font-sans text-sm font-bold text-ink">{item.title}</h3>
-                  <p className="mt-1 text-sm text-ink-muted">{item.body}</p>
-                </li>
-              ))}
-            </ul>
-          </section>
-        ) : (
+        {branches.length > 0 ? (
           <ul className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
             {branches.map((store) => (
               <li key={store.name} className="rounded-card border border-line bg-surface p-5">
@@ -54,14 +32,44 @@ export function Stores() {
                 </p>
                 <p className="mt-2 flex items-center gap-2 text-sm">
                   <Phone className="size-4 shrink-0 text-ink-muted" aria-hidden />
-                  <a href={`tel:${store.phone}`} className="text-tertiary hover:underline">
+                  <a href={`tel:${store.phone.replace(/[^+\d]/g, "")}`} className="text-tertiary hover:underline">
                     {store.phone}
                   </a>
                 </p>
+                {store.mapUrl ? (
+                  <p className="mt-2 flex items-center gap-2 text-sm">
+                    <MapIcon className="size-4 shrink-0 text-ink-muted" aria-hidden />
+                    <a href={store.mapUrl} target="_blank" rel="noreferrer" className="text-tertiary hover:underline">
+                      {data.mapLabel}
+                    </a>
+                  </p>
+                ) : null}
               </li>
             ))}
           </ul>
-        )}
+        ) : null}
+
+        <section
+          aria-labelledby="delivery"
+          className="mt-8 rounded-card border border-line bg-surface p-6 md:p-8"
+        >
+          <span className="grid size-11 place-items-center rounded-control bg-tertiary-soft text-tertiary">
+            <Truck className="size-5" aria-hidden />
+          </span>
+          <h2 id="delivery" className="mt-4 font-sans font-bold text-ink">
+            {branches.length > 0 ? data.deliveryTitle : data.onlineTitle}
+          </h2>
+          {branches.length > 0 ? null : <p className="mt-2 text-ink-muted">{data.onlineBody}</p>}
+
+          <ul className="mt-6 grid gap-4 md:grid-cols-3">
+            {data.delivery.map((item) => (
+              <li key={item.title} className="rounded-control border border-line p-4">
+                <h3 className="font-sans text-sm font-bold text-ink">{item.title}</h3>
+                <p className="mt-1 text-sm text-ink-muted">{item.body}</p>
+              </li>
+            ))}
+          </ul>
+        </section>
 
         <section aria-labelledby="reach" className="mt-12">
           <h2 id="reach" className="font-sans font-bold text-ink">

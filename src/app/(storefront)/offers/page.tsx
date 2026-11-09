@@ -6,7 +6,7 @@ import { toCouponOffers, toOffers } from "@/shared/libs/storefront/catalog";
 export const metadata: Metadata = {
   title: "Offers",
   description:
-    "Every product reduced at Unique Mart right now, biggest saving first. Official products, nationwide delivery.",
+    "Every product reduced at Unique & Smart right now, biggest saving first. Official products, nationwide delivery.",
 };
 
 export default async function OffersPage() {

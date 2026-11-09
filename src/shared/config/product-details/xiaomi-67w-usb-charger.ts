@@ -80,7 +80,7 @@ export const xiaomi67wUsbCharger: ProductDetail = {
         ],
       },
       {
-        heading: "Buying the Xiaomi 67W USB Charger with Type C Cable from Unique Mart",
+        heading: "Buying the Xiaomi 67W USB Charger with Type C Cable from Unique & Smart",
         paragraphs: [
           "Every unit we list is sourced through official channels and intended for this market. Eligible purchases qualify for 0% EMI through partner banks, exchange is available on eligible products, and delivery is nationwide across Bangladesh.",
         ],

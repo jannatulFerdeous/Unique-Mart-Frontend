@@ -13,7 +13,7 @@ export const admin_data: AdminData = {
   },
 
   shell: {
-    brand: "Unique Mart",
+    brand: "Unique & Smart",
     subtitle: "Dashboard",
     viewSite: "View shop",
     signOut: "Sign out",

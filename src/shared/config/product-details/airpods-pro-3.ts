@@ -92,7 +92,7 @@ export const airpodsPro3: ProductDetail = {
         ],
       },
       {
-        heading: "Buying the AirPods Pro 3 from Unique Mart",
+        heading: "Buying the AirPods Pro 3 from Unique & Smart",
         paragraphs: [
           "Every unit we list is sourced through official channels and intended for this market. Eligible purchases qualify for 0% EMI through partner banks, exchange is available on eligible products, and delivery is nationwide across Bangladesh.",
         ],

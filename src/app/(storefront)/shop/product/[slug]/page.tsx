@@ -18,7 +18,7 @@ export async function generateMetadata({
 
   return {
     title: product.name,
-    description: `${product.name} price in Bangladesh — ${formatPrice(product.price - product.discount)} at Unique Mart. Official product, nationwide delivery.`,
+    description: `${product.name} price in Bangladesh — ${formatPrice(product.price - product.discount)} at Unique & Smart. Official product, nationwide delivery.`,
   };
 }
 

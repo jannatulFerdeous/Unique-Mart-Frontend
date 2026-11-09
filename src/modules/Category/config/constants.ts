@@ -5,7 +5,7 @@ export const category_data: CategoryData = {
 
   summaryOne: "Browse the {name} we carry and order yours below.",
   summaryRange:
-    "{name} start from {from} at Unique Mart. Browse the range below and order yours.",
+    "{name} start from {from} at Unique & Smart. Browse the range below and order yours.",
   summaryEmpty: "We are not carrying anything in this category yet.",
 
   itemsOne: "1 item found in {name}",

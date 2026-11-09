@@ -115,7 +115,7 @@ export const oneplusNordBuds4ProEarbuds: ProductDetail = {
         ],
       },
       {
-        heading: "Buying the OnePlus Nord Buds 4 Pro Earbuds from Unique Mart",
+        heading: "Buying the OnePlus Nord Buds 4 Pro Earbuds from Unique & Smart",
         paragraphs: [
           "Every unit we list is sourced through official channels and intended for this market. Eligible purchases qualify for 0% EMI through partner banks, exchange is available on eligible products, and delivery is nationwide across Bangladesh.",
         ],
