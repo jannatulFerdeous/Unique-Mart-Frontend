@@ -6,15 +6,18 @@ import type { Banner, BannerFields, CreateBannerArgs, UpdateBannerArgs } from ".
 
 const LIST = { type: TAG.banner, id: "LIST" } as const;
 
+type BannerFiles = { image?: File; mobileImage?: File };
+
 // Multipart only when an image rides along; plain JSON otherwise.
-const toBody = (fields: Partial<BannerFields>, image?: File) => {
-  if (!image) return fields;
+const toBody = (fields: Partial<BannerFields> & { removeMobileImage?: boolean }, { image, mobileImage }: BannerFiles) => {
+  if (!image && !mobileImage) return fields;
 
   const form = new FormData();
   for (const [key, value] of Object.entries(fields)) {
     if (value !== undefined) form.append(key, String(value));
   }
-  form.append("image", image);
+  if (image) form.append("image", image);
+  if (mobileImage) form.append("mobileImage", mobileImage);
   return form;
 };
 
@@ -47,10 +50,10 @@ export const bannerApi = baseApi.injectEndpoints({
     }),
 
     createBanner: build.mutation<Banner, CreateBannerArgs>({
-      query: ({ image, ...fields }) => ({
+      query: ({ image, mobileImage, ...fields }) => ({
         url: "/banners",
         method: "POST",
-        body: toBody(fields, image),
+        body: toBody(fields, { image, mobileImage }),
       }),
       transformResponse: (response: ApiResponse<Banner>) => response.data,
       onQueryStarted: (_args, api) => refreshHomepage(api),
@@ -58,12 +61,12 @@ export const bannerApi = baseApi.injectEndpoints({
     }),
 
     updateBanner: build.mutation<Banner, UpdateBannerArgs>({
-      query: ({ banner, changes: { image, ...changes } }) => ({
+      query: ({ banner, changes: { image, mobileImage, ...changes } }) => ({
         url: `/banners/${banner._id}`,
         method: "PATCH",
         // The backend's update validator defaults a missing sortOrder to 0,
         // so always send the current one to keep the slide in place.
-        body: toBody({ ...changes, sortOrder: banner.sortOrder }, image),
+        body: toBody({ ...changes, sortOrder: banner.sortOrder }, { image, mobileImage }),
       }),
       transformResponse: (response: ApiResponse<Banner>) => response.data,
       onQueryStarted: (_args, api) => refreshHomepage(api),

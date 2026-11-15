@@ -180,6 +180,9 @@ function BannerRow({
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={banner.image.url} alt="" className="h-full w-full object-cover" />
         </span>
+        <p className="mt-1 text-xs text-ink-muted">
+          {banner.mobileImage ? "Has mobile image" : "No mobile image"}
+        </p>
       </Td>
       <Td className="max-w-0">
         <p className="truncate font-medium text-ink">{banner.title}</p>

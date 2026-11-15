@@ -42,7 +42,9 @@ export const stores_data = {
     },
     {
       title: "How you pay",
-      body: "Pay online through SSLCOMMERZ, or cash on delivery when your order arrives.",
+      // TEMP: online payment (SSLCommerz) is switched off; restore when it's back.
+      // body: "Pay online through SSLCOMMERZ, or cash on delivery when your order arrives.",
+      body: "Cash on delivery: pay in cash when your order arrives.",
     },
   ],
 

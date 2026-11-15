@@ -37,16 +37,19 @@ export const privacyPage: ProsePage = {
             "Your account: your name, email address, phone number and password, or your name and email from Google if you sign in with Google. A profile photo, if you add one.",
             "Your delivery addresses: the name, phone number and address you want orders sent to.",
             "Your orders: what you bought, the price, the delivery charge, any coupon you used and how each order is progressing.",
-            "Your payments: the payment method, the amount and whether it was paid or refunded. For online payments this includes the transaction reference SSLCOMMERZ gives us.",
+            // TEMP: online payment (SSLCommerz) is switched off; restore when it's back.
+            // "Your payments: the payment method, the amount and whether it was paid or refunded. For online payments this includes the transaction reference SSLCOMMERZ gives us.",
+            "Your payments: the payment method, the amount and whether it was paid.",
             "Your cart and wishlist, so they are still there when you come back or sign in on another device.",
             "Your reviews: the rating and comment you write on a product.",
             "Your email address, if you sign up for the newsletter.",
           ],
         },
-        {
-          kind: "text",
-          text: "We never see or store your card number, PIN or mobile banking password. Those are entered on SSLCOMMERZ's payment page, not on this site.",
-        },
+        // TEMP: online payment (SSLCommerz) is switched off; restore when it's back.
+        // {
+        //   kind: "text",
+        //   text: "We never see or store your card number, PIN or mobile banking password. Those are entered on SSLCOMMERZ's payment page, not on this site.",
+        // },
       ],
     },
     {
@@ -78,7 +81,8 @@ export const privacyPage: ProsePage = {
         {
           kind: "list",
           items: [
-            "SSLCOMMERZ, which processes online payments and refunds. It receives your name, contact details and the order amount.",
+            // TEMP: online payment (SSLCommerz) is switched off; restore when it's back.
+            // "SSLCOMMERZ, which processes online payments and refunds. It receives your name, contact details and the order amount.",
             "The courier delivering your order, who receives the delivery name, phone number and address.",
             "Google, only if you choose to sign in with Google.",
             "Cloudinary, which stores and serves the site's images, including a profile photo if you upload one.",
@@ -218,7 +222,9 @@ export const cookiePage: ProsePage = {
       blocks: [
         {
           kind: "text",
-          text: "We use no web beacons, tracking pixels or fingerprinting. Product and brand images load from Cloudinary, which serves the site's images. When you pay online you are taken to SSLCOMMERZ, and its own cookie policy applies on its pages.",
+          // TEMP: online payment (SSLCommerz) is switched off; restore when it's back.
+          // text: "We use no web beacons, tracking pixels or fingerprinting. Product and brand images load from Cloudinary, which serves the site's images. When you pay online you are taken to SSLCOMMERZ, and its own cookie policy applies on its pages.",
+          text: "We use no web beacons, tracking pixels or fingerprinting. Product and brand images load from Cloudinary, which serves the site's images.",
         },
       ],
     },
@@ -318,16 +324,21 @@ export const termsPage: ProsePage = {
     {
       heading: "Payment",
       blocks: [
+        // TEMP: online payment (SSLCommerz) is switched off; restore when it's back.
+        // {
+        //   kind: "text",
+        //   text: "You can pay in either of two ways:",
+        // },
+        // {
+        //   kind: "list",
+        //   items: [
+        //     "Full payment online through SSLCOMMERZ, by card, mobile banking or internet banking. We confirm the order once SSLCOMMERZ has verified the payment.",
+        //     "Cash on delivery, paid in full to the courier when the order arrives.",
+        //   ],
+        // },
         {
           kind: "text",
-          text: "You can pay in either of two ways:",
-        },
-        {
-          kind: "list",
-          items: [
-            "Full payment online through SSLCOMMERZ, by card, mobile banking or internet banking. We confirm the order once SSLCOMMERZ has verified the payment.",
-            "Cash on delivery, paid in full to the courier when the order arrives.",
-          ],
+          text: "Orders are paid by cash on delivery, in full to the courier when the order arrives. At our shop you can pay in person.",
         },
         {
           kind: "text",
@@ -353,7 +364,9 @@ export const termsPage: ProsePage = {
       blocks: [
         {
           kind: "text",
-          text: `You can also see products and buy in person at our shop: ${site.address}. It is open ${site.hours.toLowerCase()}. These terms apply to shop purchases too, apart from the sections on delivery and online payment.`,
+          // TEMP: online payment (SSLCommerz) is switched off; restore when it's back.
+          // text: `You can also see products and buy in person at our shop: ${site.address}. It is open ${site.hours.toLowerCase()}. These terms apply to shop purchases too, apart from the sections on delivery and online payment.`,
+          text: `You can also see products and buy in person at our shop: ${site.address}. It is open ${site.hours.toLowerCase()}. These terms apply to shop purchases too, apart from the section on delivery.`,
         },
       ],
     },
@@ -393,12 +406,15 @@ export const termsPage: ProsePage = {
       blocks: [
         {
           kind: "text",
-          text: "You can cancel an order yourself from your account until it is shipped, as long as it has not been paid online. Cash on delivery orders can be cancelled the same way.",
+          // TEMP: online payment (SSLCommerz) is switched off; restore when it's back.
+          // text: "You can cancel an order yourself from your account until it is shipped, as long as it has not been paid online. Cash on delivery orders can be cancelled the same way.",
+          text: "You can cancel an order yourself from your account until it is shipped.",
         },
-        {
-          kind: "text",
-          text: "If you paid online, contact us before the order is shipped and we will cancel it and refund you through SSLCOMMERZ, to the method you paid with. If we cannot supply a product you have paid for, we will tell you and refund the full amount the same way.",
-        },
+        // TEMP: online payment (SSLCommerz) is switched off; restore when it's back.
+        // {
+        //   kind: "text",
+        //   text: "If you paid online, contact us before the order is shipped and we will cancel it and refund you through SSLCOMMERZ, to the method you paid with. If we cannot supply a product you have paid for, we will tell you and refund the full amount the same way.",
+        // },
       ],
     },
     {

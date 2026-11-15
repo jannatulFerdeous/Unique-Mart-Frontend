@@ -13,7 +13,13 @@ import { useGetAddressesQuery } from "@/redux/features/address/addressApi";
 import type { Address } from "@/redux/features/address/address.types";
 import { useCreateOrderMutation } from "@/redux/features/order/orderApi";
 import { useCreatePaymentMutation } from "@/redux/features/payment/paymentApi";
-import { PAYMENT_METHODS, type PaymentMethod } from "@/redux/features/payment/payment.types";
+// TEMP: online payment (SSLCommerz) is switched off; only cash on delivery is
+// offered. To bring it back, restore this import and the two lines marked TEMP below.
+// import { PAYMENT_METHODS, type PaymentMethod } from "@/redux/features/payment/payment.types";
+import type { PaymentMethod } from "@/redux/features/payment/payment.types";
+
+// TEMP: was PAYMENT_METHODS (["sslcommerz", "cod"]).
+const CHECKOUT_METHODS: readonly PaymentMethod[] = ["cod"];
 import { deliveryChargeFor } from "@/shared/config/shipping";
 import { useCart, type CartLine } from "@/shared/libs/cart";
 import { goToPayment, openPaymentWindow, usePaymentPopup } from "@/shared/libs/paymentPopup";
@@ -95,7 +101,8 @@ function CheckoutForm({
   const router = useRouter();
   const [chosen, setChosen] = useState<string | null>(null);
   const [adding, setAdding] = useState(addresses.length === 0);
-  const [method, setMethod] = useState<PaymentMethod>("sslcommerz");
+  // TEMP: was useState<PaymentMethod>("sslcommerz").
+  const [method, setMethod] = useState<PaymentMethod>("cod");
   const [coupon, setCoupon] = useState<AppliedCoupon | null>(null);
   const [failure, setFailure] = useState<string | null>(null);
   const [leaving, setLeaving] = useState(false);
@@ -288,7 +295,7 @@ function CheckoutForm({
             {copy.paymentHeading}
           </h2>
           <div role="radiogroup" aria-labelledby="checkout-payment" className="mt-4 grid gap-3 sm:grid-cols-2">
-            {PAYMENT_METHODS.map((each) => {
+            {CHECKOUT_METHODS.map((each) => {
               const current = each === method;
               const Icon = each === "cod" ? Banknote : CreditCard;
               return (

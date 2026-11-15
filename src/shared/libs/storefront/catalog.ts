@@ -89,13 +89,16 @@ export const buildCatalog = (input: {
     return made;
   };
 
-  const byName = <T extends { name: string }>(a: T, b: T) => a.name.localeCompare(b.name);
-  const tree = [...input.mains].sort(byName).map((main) => node(main, 0));
-  for (const category of [...input.categories].sort(byName)) {
+  // The backend has no menu-order field, so the menu follows the order the
+  // categories were added in: oldest first, so new ones from admin go last.
+  const byAdded = <T extends { createdAt: string; name: string }>(a: T, b: T) =>
+    a.createdAt.localeCompare(b.createdAt) || a.name.localeCompare(b.name);
+  const tree = [...input.mains].sort(byAdded).map((main) => node(main, 0));
+  for (const category of [...input.categories].sort(byAdded)) {
     const parent = nodeById.get(refId(category.mainCategoryId));
     if (parent?.level === 0) node(category, 1, parent);
   }
-  for (const sub of [...input.subs].sort(byName)) {
+  for (const sub of [...input.subs].sort(byAdded)) {
     const parent = nodeById.get(refId(sub.categoryId));
     if (parent?.level === 1) node(sub, 2, parent);
   }

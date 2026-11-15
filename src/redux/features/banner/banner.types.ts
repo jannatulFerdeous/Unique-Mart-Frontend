@@ -11,6 +11,8 @@ export type Banner = {
   title: string;
   description: string | null;
   image: BannerImage;
+  // Phone art; null → phones crop `image`.
+  mobileImage: BannerImage | null;
   buttonText: string | null;
   link: string;
   status: BannerStatus;
@@ -26,9 +28,14 @@ export type BannerFields = {
   sortOrder: number;
 };
 
-export type CreateBannerArgs = BannerFields & { image: File };
+export type CreateBannerArgs = BannerFields & { image: File; mobileImage?: File };
 
 export type UpdateBannerArgs = {
   banner: Banner;
-  changes: Partial<Omit<BannerFields, "sortOrder">> & { image?: File };
+  changes: Partial<Omit<BannerFields, "sortOrder">> & {
+    image?: File;
+    mobileImage?: File;
+    // Drops the current mobile image (ignored when a new one is sent).
+    removeMobileImage?: boolean;
+  };
 };

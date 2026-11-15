@@ -37,7 +37,9 @@ export const faqGroups: FaqGroup[] = [
       {
         id: "change-order",
         question: "Can I change or cancel an order after placing it?",
-        answer: `You can cancel an order yourself from your account until it is shipped, as long as it has not been paid online. If you paid online, or want to change something, call ${site.phone} as soon as you can. The sooner you reach us, the more we can do.`,
+        // TEMP: online payment (SSLCommerz) is switched off; restore when it's back.
+        // answer: `You can cancel an order yourself from your account until it is shipped, as long as it has not been paid online. If you paid online, or want to change something, call ${site.phone} as soon as you can. The sooner you reach us, the more we can do.`,
+        answer: `You can cancel an order yourself from your account until it is shipped. To change something, call ${site.phone} as soon as you can. The sooner you reach us, the more we can do.`,
       },
     ],
   },
@@ -76,15 +78,19 @@ export const faqGroups: FaqGroup[] = [
       {
         id: "payment-methods",
         question: "What payment methods can I use?",
+        // TEMP: online payment (SSLCommerz) is switched off; restore when it's back.
+        // answer:
+        //   "Two ways: pay in full online through SSLCOMMERZ, by card, mobile banking or internet banking, or pay cash on delivery when the order arrives. At our shop you can pay in person.",
         answer:
-          "Two ways: pay in full online through SSLCOMMERZ, by card, mobile banking or internet banking, or pay cash on delivery when the order arrives. At our shop you can pay in person.",
+          "Cash on delivery: you pay in cash when your order arrives. At our shop you can pay in person.",
       },
-      {
-        id: "payment-safe",
-        question: "Is it safe to pay online?",
-        answer:
-          "Yes. Online payments go through SSLCOMMERZ over an encrypted connection. You enter your card or mobile banking details on SSLCOMMERZ's page, not ours, so we never see or store them.",
-      },
+      // TEMP: online payment (SSLCommerz) is switched off; restore when it's back.
+      // {
+      //   id: "payment-safe",
+      //   question: "Is it safe to pay online?",
+      //   answer:
+      //     "Yes. Online payments go through SSLCOMMERZ over an encrypted connection. You enter your card or mobile banking details on SSLCOMMERZ's page, not ours, so we never see or store them.",
+      // },
     ],
   },
   {
@@ -170,7 +176,9 @@ export const faqPath = "/faq";
 
 export const faqItems: FaqItem[] = faqGroups.flatMap((group) => group.items);
 
-const featuredIds = ["showroom", "delivery-where", "genuine", "payment-safe", "exchange"];
+// TEMP: online payment (SSLCommerz) is switched off; restore when it's back.
+// const featuredIds = ["showroom", "delivery-where", "genuine", "payment-safe", "exchange"];
+const featuredIds = ["showroom", "delivery-where", "genuine", "payment-methods", "exchange"];
 
 export const featuredFaqs: FaqItem[] = featuredIds.map((id) => {
   const item = faqItems.find((faq) => faq.id === id);
