@@ -1,5 +1,8 @@
 export const HERO_SIZE = { width: 1920, height: 570 };
 
+// Phones show the hero at 10:7 (HeroBanner's aspect-10/7).
+export const HERO_MOBILE_SIZE = { width: 1000, height: 700 };
+
 export const HERO_MAX_BYTES = 5 * 1024 * 1024;
 
 // The backend allows this many active banners at once.
@@ -21,6 +24,8 @@ export const TITLE_MAX = 150;
 export const HREF_HINT = "A page on this site, like /category/iphone, or a full https:// address.";
 
 export const SIZE_HINT = `${HERO_SIZE.width} × ${HERO_SIZE.height} px. PNG, JPG, WebP or AVIF, up to 5 MB.`;
+
+export const MOBILE_SIZE_HINT = `Optional. ${HERO_MOBILE_SIZE.width} × ${HERO_MOBILE_SIZE.height} px, shown on phones. Without it, phones crop the banner image.`;
 
 export const checkImage = (file: File): string | null => {
   if (!(file.type in HERO_TYPES)) return "Choose a PNG, JPG, WebP or AVIF image.";

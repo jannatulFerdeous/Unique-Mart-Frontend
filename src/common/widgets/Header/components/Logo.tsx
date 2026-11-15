@@ -12,7 +12,7 @@ export function Logo({ className }: { className?: string }) {
       aria-label={`${site.name} — home`}
       className={cn("flex shrink-0 items-center focus-visible:outline-ink-inverse", className)}
     >
-      <Image src={logoLight} alt="" priority sizes="120px" className="h-10 w-auto lg:h-12" />
+      <Image src={logoLight} alt="" priority sizes="120px" className="h-12 w-auto" />
     </Link>
   );
 }

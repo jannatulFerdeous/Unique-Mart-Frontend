@@ -155,10 +155,15 @@ export const PAYMENT_RESULT_NOTICE: Record<PaymentResult, { tone: "good" | "dang
 // payment may be one the shopper left (reloaded or closed SSLCommerz): the
 // backend asks SSLCommerz about it first and records it if it was paid. Never
 // for cash on delivery.
-export const canPay = (status: OrderStatus, payment: PaymentStatus | null, method: PaymentMethod | null) =>
-  method !== "cod" &&
-  status === "pending" &&
-  (payment === null || payment === "pending" || payment === "failed" || payment === "cancelled");
+//
+// TEMP: online payment (SSLCommerz) is switched off, so no order offers the
+// "Pay now" button. To bring it back, restore the original below.
+// export const canPay = (status: OrderStatus, payment: PaymentStatus | null, method: PaymentMethod | null) =>
+//   method !== "cod" &&
+//   status === "pending" &&
+//   (payment === null || payment === "pending" || payment === "failed" || payment === "cancelled");
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const canPay = (_status: OrderStatus, _payment: PaymentStatus | null, _method: PaymentMethod | null) => false;
 
 // The backend won't cancel a shipped, delivered or cancelled order, nor one
 // that's being paid for or has been paid (that needs a refund first). A cash
