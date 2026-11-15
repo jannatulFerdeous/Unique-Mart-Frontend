@@ -47,14 +47,25 @@ const unpack = <T>(body: ListBody<T> | null): { items: T[]; totalPage: number } 
 
 const list = async <T>(path: string) => unpack(await read<ListBody<T>>(path)).items;
 
+// Pages fetched at once while walking the product list.
+const PAGES_PER_BATCH = 5;
+
+// The backend caps `meta.total` at the page size, so `totalPage` reads 1 once
+// there are more products than fit on a page. Keep fetching until a page comes
+// back short (or empty) instead of trusting it.
 const allProducts = async (): Promise<ApiProduct[]> => {
-  const page = (number: number) =>
-    read<ListBody<ApiProduct>>(`/products?limit=${PAGE_SIZE}&page=${number}&sort=-createdAt&fields=${LIST_FIELDS}`);
-  const first = unpack(await page(1));
-  const rest = await Promise.all(
-    Array.from({ length: Math.max(0, first.totalPage - 1) }, (_, index) => page(index + 2)),
-  );
-  return [...first.items, ...rest.flatMap((body) => unpack(body).items)];
+  const page = async (number: number) =>
+    unpack(
+      await read<ListBody<ApiProduct>>(`/products?limit=${PAGE_SIZE}&page=${number}&sort=-createdAt&fields=${LIST_FIELDS}`),
+    ).items;
+  const products: ApiProduct[] = [];
+  for (let start = 1; ; start += PAGES_PER_BATCH) {
+    const batch = await Promise.all(Array.from({ length: PAGES_PER_BATCH }, (_, index) => page(start + index)));
+    for (const items of batch) {
+      products.push(...items);
+      if (items.length < PAGE_SIZE) return products;
+    }
+  }
 };
 
 // Everything listings need, once per request. When the backend can't be
