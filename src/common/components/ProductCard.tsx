@@ -12,7 +12,7 @@ type Props = {
 };
 
 export function ProductCard({ product, ribbon }: Props) {
-  const { id, variantId, slug, name, image, brand, price, compareAt, rating, badge } = product;
+  const { id, variantId, slug, name, image, brand, price, compareAt, rating, badge, used } = product;
   const href = `/shop/product/${slug}`;
   const corner = ribbon ?? badge;
 
@@ -84,7 +84,7 @@ export function ProductCard({ product, ribbon }: Props) {
             href={href}
             className="block rounded-full border border-tertiary bg-tertiary-soft py-1.5 text-xs font-medium text-tertiary transition-colors md:text-[0.85rem] hover:bg-tertiary hover:text-tertiary-contrast"
           >
-            Buy Now
+            {used ? "Contact to Buy" : "Buy Now"}
             <span className="sr-only"> — {name}</span>
           </Link>
         </div>
