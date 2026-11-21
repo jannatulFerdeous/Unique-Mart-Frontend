@@ -22,6 +22,7 @@ import type {
   VariantGroup,
   VariantOffer,
 } from "@/shared/config/catalog";
+import { isUsedProduct } from "@/shared/config/used";
 
 export type { ApiProduct };
 
@@ -220,6 +221,7 @@ export const toCard = (catalog: Catalog, product: ApiProduct): Product => ({
   price: salePrice(product),
   compareAt: product.discount > 0 ? product.price : undefined,
   badge: product.isUpcoming ? "COMING SOON" : product.isExclusive ? "EXCLUSIVE" : undefined,
+  used: isUsedProduct(product.name, catalog.nodeById.get(refId(product.mainCategoryId))?.slug),
 });
 
 export type Offer = {

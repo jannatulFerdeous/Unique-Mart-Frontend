@@ -16,6 +16,11 @@ export type ProductDetailsData = {
     viewCart: string;
     cashPrice: string;
     cashNote: string;
+    usedTitle: string;
+    usedBody: string;
+    callToBuy: string;
+    whatsappToBuy: string;
+    whatsappMessage: string;
     similar: string;
     trust: string;
     noSpecs: string;

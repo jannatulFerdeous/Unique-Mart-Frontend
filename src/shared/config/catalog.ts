@@ -14,6 +14,8 @@ export type Product = {
   compareAt?: number;
   rating?: number;
   badge?: string;
+  // Second-hand: no cart or checkout, shoppers call or WhatsApp to buy.
+  used?: boolean;
 };
 
 export type ProductRailData = {

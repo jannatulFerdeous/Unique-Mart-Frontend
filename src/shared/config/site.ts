@@ -9,8 +9,8 @@ export const site = {
   newsletterPath: "/newsletter",
   // Shown in the local form (it has to fit the footer's call button); dialled
   // in the international one so it also works from abroad.
-  phone: "01770-067000",
-  phoneIntl: "+8801770067000",
+  phone: "01355-539041",
+  phoneIntl: "+8801355539041",
   email: "uniquesmartbd@gmail.com",
   address: "Kazim Uddin Market, Gangachara Bazar, Gangachara, Rangpur",
   mapUrl: "https://maps.app.goo.gl/6TYVE1ih2m7W2Mds6",
@@ -19,3 +19,7 @@ export const site = {
 
 export const telHref = `tel:${site.phoneIntl}`;
 export const mailHref = `mailto:${site.email}`;
+
+// WhatsApp chat on the same number, with an optional message already typed in.
+export const whatsappHref = (message?: string) =>
+  `https://wa.me/${site.phoneIntl.replace(/\D/g, "")}${message ? `?text=${encodeURIComponent(message)}` : ""}`;

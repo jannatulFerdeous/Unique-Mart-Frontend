@@ -7,6 +7,7 @@ export type WishlistData = {
 
   addToCart: string;
   outOfStock: string;
+  contactToBuy: string;
   remove: string;
   removeOne: string;
   clear: string;

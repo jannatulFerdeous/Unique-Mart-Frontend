@@ -9,6 +9,7 @@ export const wishlist_data: WishlistData = {
 
   addToCart: "Add to basket",
   outOfStock: "Out of stock",
+  contactToBuy: "Contact to buy",
   remove: "Remove",
   removeOne: "Remove {name} from your wishlist",
   clear: "Clear the wishlist",

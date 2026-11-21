@@ -5,6 +5,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Minus, Plus } from "lucide-react";
+import { PhoneIcon } from "@/common/components/icons/PhoneIcon";
+import { WhatsappIcon } from "@/common/components/icons/WhatsappIcon";
 import { Stars } from "@/common/components/Stars";
 import { WishlistButton } from "@/common/components/WishlistButton";
 import { apiErrorMessage } from "@/redux/api/errors";
@@ -13,6 +15,8 @@ import { useGetProductReviewsQuery } from "@/redux/features/review/reviewApi";
 import { summarise } from "@/redux/features/review/review.types";
 import { MAX_QUANTITY } from "@/shared/libs/cart";
 import type { Product, ProductDetail } from "@/shared/config/catalog";
+import { site, telHref, whatsappHref } from "@/shared/config/site";
+import { productHref } from "@/shared/libs/storefront/catalog";
 import { useSignInFirst } from "@/shared/libs/useSignInFirst";
 import { cn } from "@/shared/utils/cn";
 import { formatPrice } from "@/shared/utils/price";
@@ -274,91 +278,123 @@ export function ProductTop({ product, detail }: Props) {
           );
         })}
 
-        <div className="mt-7 grid gap-3 sm:grid-cols-2">
-          <div className="border border-tertiary bg-tertiary-soft p-4">
-            <span className="block font-bold text-tertiary">
-              {formatPrice(price)}
-            </span>
-            <span className="mt-1 block font-medium text-ink">
-              {labels.cashPrice}
-            </span>
-            <span className="mt-0.5 block text-sm text-ink-muted">
-              {labels.cashNote}
-            </span>
-          </div>
-        </div>
-
-        {!needsColor ? (
-          <div className="mt-6 flex items-center gap-3">
-            <span className="text-ink-muted">{labels.quantity}:</span>
-            <div className="flex items-center gap-1">
-              <button
-                type="button"
-                onClick={() => setQuantity((n) => Math.max(1, n - 1))}
-                disabled={quantity <= 1}
-                aria-label={labels.decrease}
-                className="grid size-9 place-items-center rounded-control bg-surface-muted text-ink transition-colors hover:bg-line disabled:opacity-40"
+        {product.used ? (
+          <div className="mt-7 border border-tertiary bg-tertiary-soft p-5">
+            <p className="font-bold text-ink">{labels.usedTitle}</p>
+            <p className="mt-1 text-ink-muted">{labels.usedBody.replace("{phone}", site.phone)}</p>
+            <div className="mt-4 flex flex-col gap-3 sm:flex-row">
+              <a
+                href={telHref}
+                className="flex flex-1 items-center justify-center gap-2 rounded-control bg-tertiary px-6 py-3.5 font-bold whitespace-nowrap text-tertiary-contrast transition-colors hover:bg-tertiary-hover"
               >
-                <Minus className="size-4" aria-hidden />
-              </button>
-
-              <span
-                aria-live="polite"
-                className="min-w-10 text-center font-medium text-ink tabular-nums"
+                <PhoneIcon className="size-5" />
+                {labels.callToBuy.replace("{phone}", site.phone)}
+              </a>
+              <a
+                href={whatsappHref(
+                  labels.whatsappMessage
+                    .replace("{name}", product.name)
+                    .replace("{url}", `${site.url}${productHref(product.slug)}`),
+                )}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex flex-1 items-center justify-center gap-2 rounded-control bg-surface-muted px-6 py-3.5 font-bold whitespace-nowrap text-ink transition-colors hover:bg-line"
               >
-                {quantity}
-              </span>
-
-              <button
-                type="button"
-                onClick={() => setQuantity((n) => Math.min(MAX_QUANTITY, n + 1))}
-                disabled={quantity >= MAX_QUANTITY}
-                aria-label={labels.increase}
-                className="grid size-9 place-items-center rounded-control bg-surface-muted text-ink transition-colors hover:bg-line disabled:opacity-40"
-              >
-                <Plus className="size-4" aria-hidden />
-              </button>
+                <WhatsappIcon className="size-5" />
+                {labels.whatsappToBuy}
+              </a>
+              <WishlistButton variant="inline" productId={product.id} variantId={chosen?.id} name={product.name} />
             </div>
           </div>
-        ) : null}
+        ) : (
+          <>
+          <div className="mt-7 grid gap-3 sm:grid-cols-2">
+            <div className="border border-tertiary bg-tertiary-soft p-4">
+              <span className="block font-bold text-tertiary">
+                {formatPrice(price)}
+              </span>
+              <span className="mt-1 block font-medium text-ink">
+                {labels.cashPrice}
+              </span>
+              <span className="mt-0.5 block text-sm text-ink-muted">
+                {labels.cashNote}
+              </span>
+            </div>
+          </div>
 
-        {nagging && needsColor ? (
-          <p role="alert" className="mt-5 font-medium text-danger">
-            {labels.selectColorFirst}
-          </p>
-        ) : null}
-
-        <div className="mt-6 flex flex-col gap-3 sm:flex-row">
           {!needsColor ? (
-            <button
-              type="button"
-              onClick={async () => setAdded(await addLine())}
-              disabled={!available || adding}
-              className="flex-1 rounded-control bg-surface-muted px-6 py-3.5 font-bold whitespace-nowrap text-ink transition-colors hover:bg-line disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              {labels.addToCart}
-              <span className="sr-only"> — {product.name}</span>
-            </button>
+            <div className="mt-6 flex items-center gap-3">
+              <span className="text-ink-muted">{labels.quantity}:</span>
+              <div className="flex items-center gap-1">
+                <button
+                  type="button"
+                  onClick={() => setQuantity((n) => Math.max(1, n - 1))}
+                  disabled={quantity <= 1}
+                  aria-label={labels.decrease}
+                  className="grid size-9 place-items-center rounded-control bg-surface-muted text-ink transition-colors hover:bg-line disabled:opacity-40"
+                >
+                  <Minus className="size-4" aria-hidden />
+                </button>
+
+                <span
+                  aria-live="polite"
+                  className="min-w-10 text-center font-medium text-ink tabular-nums"
+                >
+                  {quantity}
+                </span>
+
+                <button
+                  type="button"
+                  onClick={() => setQuantity((n) => Math.min(MAX_QUANTITY, n + 1))}
+                  disabled={quantity >= MAX_QUANTITY}
+                  aria-label={labels.increase}
+                  className="grid size-9 place-items-center rounded-control bg-surface-muted text-ink transition-colors hover:bg-line disabled:opacity-40"
+                >
+                  <Plus className="size-4" aria-hidden />
+                </button>
+              </div>
+            </div>
           ) : null}
 
-          <button
-            type="button"
-            onClick={async () => {
-              if (needsColor) {
-                setNagging(true);
-                return;
-              }
-              if (await addLine()) router.push("/cart");
-            }}
-            disabled={!available || adding}
-            className="flex-1 rounded-control bg-tertiary px-6 py-3.5 font-bold whitespace-nowrap text-tertiary-contrast transition-colors hover:bg-tertiary-hover disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            {labels.buyNow}
-            <span className="sr-only"> — {product.name}</span>
-          </button>
+          {nagging && needsColor ? (
+            <p role="alert" className="mt-5 font-medium text-danger">
+              {labels.selectColorFirst}
+            </p>
+          ) : null}
 
-          <WishlistButton variant="inline" productId={product.id} variantId={chosen?.id} name={product.name} />
-        </div>
+          <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+            {!needsColor ? (
+              <button
+                type="button"
+                onClick={async () => setAdded(await addLine())}
+                disabled={!available || adding}
+                className="flex-1 rounded-control bg-surface-muted px-6 py-3.5 font-bold whitespace-nowrap text-ink transition-colors hover:bg-line disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {labels.addToCart}
+                <span className="sr-only"> — {product.name}</span>
+              </button>
+            ) : null}
+
+            <button
+              type="button"
+              onClick={async () => {
+                if (needsColor) {
+                  setNagging(true);
+                  return;
+                }
+                if (await addLine()) router.push("/cart");
+              }}
+              disabled={!available || adding}
+              className="flex-1 rounded-control bg-tertiary px-6 py-3.5 font-bold whitespace-nowrap text-tertiary-contrast transition-colors hover:bg-tertiary-hover disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {labels.buyNow}
+              <span className="sr-only"> — {product.name}</span>
+            </button>
+
+            <WishlistButton variant="inline" productId={product.id} variantId={chosen?.id} name={product.name} />
+          </div>
+          </>
+        )}
 
         {failure ? (
           <p role="alert" className="mt-3 text-sm font-medium text-danger">

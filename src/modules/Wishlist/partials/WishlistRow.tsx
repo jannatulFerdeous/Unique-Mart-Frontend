@@ -6,6 +6,7 @@ import { Trash2 } from "lucide-react";
 import { apiErrorMessage } from "@/redux/api/errors";
 import { useAddToCartMutation } from "@/redux/features/cart/cartApi";
 import { useRemoveFromWishlistMutation, type WishlistEntry } from "@/redux/features/wishlist/wishlistApi";
+import { isUsedProduct } from "@/shared/config/used";
 import { productHref, productImage, variantChoices } from "@/shared/libs/storefront/catalog";
 import { toast } from "@/shared/libs/toast";
 import { formatPrice } from "@/shared/utils/price";
@@ -97,15 +98,26 @@ export function WishlistRow({ entry }: { entry: WishlistEntry }) {
         {discount > 0 ? <s className="text-sm text-ink-subtle">{formatPrice(priced.price)}</s> : null}
       </p>
 
-      <button
-        type="button"
-        onClick={moveToCart}
-        disabled={busy || !available}
-        className="rounded-control bg-tertiary px-5 py-2.5 text-sm font-bold text-tertiary-contrast transition-colors hover:bg-tertiary-hover disabled:opacity-60"
-      >
-        {available ? wishlist_data.addToCart : wishlist_data.outOfStock}
-        <span className="sr-only"> — {product.name}</span>
-      </button>
+      {/* Used items aren't sold online: their page has the call/WhatsApp options. */}
+      {isUsedProduct(product.name) ? (
+        <Link
+          href={href}
+          className="rounded-control bg-tertiary px-5 py-2.5 text-sm font-bold text-tertiary-contrast transition-colors hover:bg-tertiary-hover"
+        >
+          {wishlist_data.contactToBuy}
+          <span className="sr-only"> — {product.name}</span>
+        </Link>
+      ) : (
+        <button
+          type="button"
+          onClick={moveToCart}
+          disabled={busy || !available}
+          className="rounded-control bg-tertiary px-5 py-2.5 text-sm font-bold text-tertiary-contrast transition-colors hover:bg-tertiary-hover disabled:opacity-60"
+        >
+          {available ? wishlist_data.addToCart : wishlist_data.outOfStock}
+          <span className="sr-only"> — {product.name}</span>
+        </button>
+      )}
 
       {removeButton(wishlist_data.removeOne.replace("{name}", product.name))}
     </li>
