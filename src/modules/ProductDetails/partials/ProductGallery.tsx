@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import type { StaticImageData } from "next/image";
 import { cn } from "@/shared/utils/cn";
@@ -9,9 +10,21 @@ type Props = {
   name: string;
   active: number;
   onSelect: (index: number) => void;
+  // "cover" for real photos (used items): they fill the frame, which takes their
+  // portrait 3:4 shape. Studio shots stay "contain" on a square.
+  fit?: "contain" | "cover";
 };
 
-export function ProductGallery({ images, name, active, onSelect }: Props) {
+export function ProductGallery({ images, name, active, onSelect, fit = "contain" }: Props) {
+  const cover = fit === "cover";
+  // Hover zoom, mouse only (a tap on a phone shouldn't zoom): the photo scales
+  // up around the cursor and follows it.
+  const [zoom, setZoom] = useState<string | null>(null);
+  const follow = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (event.pointerType !== "mouse") return;
+    const box = event.currentTarget.getBoundingClientRect();
+    setZoom(`${((event.clientX - box.left) / box.width) * 100}% ${((event.clientY - box.top) / box.height) * 100}%`);
+  };
   return (
     <div className="flex min-w-0 flex-col-reverse gap-3 sm:flex-row">
       {images.length > 1 && (
@@ -33,7 +46,7 @@ export function ProductGallery({ images, name, active, onSelect }: Props) {
                 <Image
                   src={image}
                   alt=""
-                  className="size-full object-contain p-1"
+                  className={cn("size-full", cover ? "object-cover" : "object-contain p-1")}
                 />
               </button>
             </li>
@@ -41,13 +54,23 @@ export function ProductGallery({ images, name, active, onSelect }: Props) {
         </ul>
       )}
 
-      <div className="min-w-0 flex-1 border border-line bg-surface">
+      <div
+        onPointerEnter={follow}
+        onPointerMove={follow}
+        onPointerLeave={() => setZoom(null)}
+        className={cn("min-w-0 flex-1 self-start overflow-hidden border border-line bg-surface", zoom && "cursor-zoom-in")}
+      >
         <Image
           src={images[active]}
           alt={name}
           priority
-          sizes="(min-width: 1024px) 34vw, (min-width: 640px) 50vw, 90vw"
-          className="aspect-square w-full object-contain p-4"
+          sizes="(min-width: 1024px) 68vw, 100vw"
+          style={zoom ? { transformOrigin: zoom } : undefined}
+          className={cn(
+            "w-full transition-transform duration-200 motion-reduce:transition-none",
+            cover ? "aspect-[3/4] object-cover" : "aspect-square object-contain p-4",
+            zoom && "scale-200",
+          )}
         />
       </div>
     </div>

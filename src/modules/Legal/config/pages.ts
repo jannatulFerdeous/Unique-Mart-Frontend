@@ -1,5 +1,6 @@
+import { legalPaths, refundTimeline, returnWindowDays } from "@/shared/config/legal";
 import { deliveryChargeSummary } from "@/shared/config/shipping";
-import { site } from "@/shared/config/site";
+import { company, site } from "@/shared/config/site";
 import type { ProsePage } from "./types";
 
 const UPDATED = "2026-11-10";
@@ -260,7 +261,7 @@ export const cookiePage: ProsePage = {
 export const termsPage: ProsePage = {
   title: "Terms & Conditions",
   intro: `The terms you agree to by using ${site.name}.`,
-  updated: UPDATED,
+  updated: "2026-11-22",
   numbered: true,
   sections: [
     {
@@ -268,7 +269,7 @@ export const termsPage: ProsePage = {
       blocks: [
         {
           kind: "text",
-          text: `Using this site or buying from our shop means accepting these terms. If you do not accept them, please do not use the site. "We" and "us" mean ${site.name}, ${site.address}; "you" means anyone browsing or ordering.`,
+          text: `Using this site or buying from our shop means accepting these terms. If you do not accept them, please do not use the site. "We" and "us" mean ${company.legalName} (Trade License No. ${company.tradeLicense}), ${company.registeredAddress}; "you" means anyone browsing or ordering.`,
         },
       ],
     },
@@ -380,41 +381,19 @@ export const termsPage: ProsePage = {
       ],
     },
     {
-      heading: "Returns and replacement",
+      heading: "Returns, refunds and cancellation",
       blocks: [
         {
           kind: "text",
-          text: "Tell us within 3 days of delivery if a product arrives damaged or faulty, or is not what you ordered. Return it unused, in its original packaging, with all accessories and the invoice.",
+          text: `Report a damaged, faulty or wrong item within ${returnWindowDays} days of delivery. You can cancel an order from your account until it is shipped. Approved refunds reach you within ${refundTimeline}.`,
         },
         {
-          kind: "text",
-          text: "A return or replacement may not apply when:",
+          kind: "link",
+          before: "The full rules are in our ",
+          label: "Return & Refund Policy",
+          href: legalPaths.refund,
+          after: ", which forms part of these terms.",
         },
-        {
-          kind: "list",
-          items: [
-            "the product has been used, installed or activated beyond checking that it works;",
-            "the packaging, seals, labels or accessories are missing or damaged;",
-            "the damage is physical or liquid damage that happened after delivery;",
-            "the product was sold as a display unit, clearance or final sale item and the listing said so.",
-          ],
-        },
-      ],
-    },
-    {
-      heading: "Cancellation and refunds",
-      blocks: [
-        {
-          kind: "text",
-          // TEMP: online payment (SSLCommerz) is switched off; restore when it's back.
-          // text: "You can cancel an order yourself from your account until it is shipped, as long as it has not been paid online. Cash on delivery orders can be cancelled the same way.",
-          text: "You can cancel an order yourself from your account until it is shipped.",
-        },
-        // TEMP: online payment (SSLCommerz) is switched off; restore when it's back.
-        // {
-        //   kind: "text",
-        //   text: "If you paid online, contact us before the order is shipped and we will cancel it and refund you through SSLCOMMERZ, to the method you paid with. If we cannot supply a product you have paid for, we will tell you and refund the full amount the same way.",
-        // },
       ],
     },
     {
@@ -450,6 +429,118 @@ export const termsPage: ProsePage = {
         {
           kind: "text",
           text: "We may update these terms. The date at the top of the page shows when they last changed. Your order is covered by the terms in force when you placed it.",
+        },
+      ],
+    },
+    {
+      heading: "Contact",
+      blocks: [{ kind: "text", text: CONTACT }],
+    },
+  ],
+};
+
+export const refundPage: ProsePage = {
+  title: "Return & Refund Policy",
+  intro: `When you can return a product to ${site.name}, how to do it, and how long a refund takes.`,
+  updated: "2026-11-22",
+  numbered: true,
+  sections: [
+    {
+      heading: "Summary",
+      blocks: [
+        {
+          kind: "list",
+          items: [
+            `Report a damaged, faulty or wrong item within ${returnWindowDays} days of delivery.`,
+            `Approved refunds are completed within ${refundTimeline}.`,
+            "Refunds go back to the payment method you used.",
+            "You can cancel an order from your account until it is shipped.",
+          ],
+        },
+      ],
+    },
+    {
+      heading: "When you can return a product",
+      blocks: [
+        {
+          kind: "text",
+          text: `Tell us within ${returnWindowDays} days of delivery if a product arrives damaged or faulty, or is not what you ordered. Return it unused, in its original packaging, with all accessories, free gifts and the invoice.`,
+        },
+      ],
+    },
+    {
+      heading: "When a return does not apply",
+      blocks: [
+        {
+          kind: "list",
+          items: [
+            "the product has been used, installed or activated beyond checking that it works;",
+            "the packaging, seals, labels or accessories are missing or damaged;",
+            "the damage is physical or liquid damage that happened after delivery;",
+            "the product was sold as a display unit, clearance or final sale item and the listing said so;",
+            "a used (second-hand) product matches the condition described in its listing.",
+          ],
+        },
+        {
+          kind: "text",
+          text: "Faults covered by the manufacturer's warranty after the return window are handled through that warranty.",
+        },
+      ],
+    },
+    {
+      heading: "How to request a return",
+      blocks: [
+        {
+          kind: "list",
+          items: [
+            `Call ${site.phone} or email ${site.email} with your order number and what is wrong. A photo or video of the problem helps.`,
+            "We confirm whether the return is accepted and arrange pick-up, or you can bring it to our shop.",
+            "We check the product when it reaches us, usually within 2 working days, and tell you the result.",
+          ],
+        },
+      ],
+    },
+    {
+      heading: "Refund timeline",
+      blocks: [
+        {
+          kind: "text",
+          text: `Once a return is approved, or an order is cancelled after payment, we complete the refund within ${refundTimeline}. The time your bank or mobile banking provider takes to show the money in your account can add to this.`,
+        },
+      ],
+    },
+    {
+      heading: "How you are refunded",
+      blocks: [
+        {
+          kind: "list",
+          items: [
+            "Paid online (card, mobile banking or internet banking through SSLCOMMERZ): refunded to the same card or account.",
+            "Paid cash on delivery: refunded by bank transfer or mobile banking to an account in your name that you give us.",
+            "Paid at our shop: refunded at the shop or by bank transfer or mobile banking.",
+          ],
+        },
+        {
+          kind: "text",
+          text: "If you prefer, we can replace the product with the same item, or exchange it for another product and settle any difference in price.",
+        },
+      ],
+    },
+    {
+      heading: "Delivery charges",
+      blocks: [
+        {
+          kind: "text",
+          text: `If the product was damaged, faulty or wrong, we refund the delivery charge and pay for the return. In other cases the original delivery charge (${deliveryChargeSummary}) is not refunded.`,
+        },
+      ],
+    },
+    {
+      heading: "Cancelling an order",
+      blocks: [
+        {
+          kind: "text",
+          text: `You can cancel an order yourself from your account until it is shipped. If you already paid online, the refund follows the timeline above. If we cannot supply a product you paid for, we tell you and refund the full amount within ${refundTimeline}.`,
         },
       ],
     },

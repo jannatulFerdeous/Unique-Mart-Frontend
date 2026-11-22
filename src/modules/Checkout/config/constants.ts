@@ -36,6 +36,12 @@ export const checkout_data = {
   couponRemove: "Remove",
   couponFailed: "Couldn't check that code. Please try again.",
 
+  agreeBefore: "I have read and agree to the ",
+  agreeTerms: "Terms & Conditions",
+  agreePrivacy: "Privacy Policy",
+  agreeRefund: "Return & Refund Policy",
+  agreeNeeded: "Tick the box to agree to our policies before placing your order.",
+
   paymentHeading: "Payment",
   methods: {
     sslcommerz: {

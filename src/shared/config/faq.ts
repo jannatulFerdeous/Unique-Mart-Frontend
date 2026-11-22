@@ -1,3 +1,4 @@
+import { refundTimeline, returnWindowDays } from "./legal";
 import { deliveryChargeSummary } from "./shipping";
 import { site } from "./site";
 
@@ -145,7 +146,7 @@ export const faqGroups: FaqGroup[] = [
       {
         id: "returns",
         question: "Can I return something?",
-        answer: `Contact us on ${site.phone} as soon as you can and tell us what the problem is. What is possible depends on the product and its condition, and we would rather sort it out with you directly than point you at a clause.`,
+        answer: `Yes, if a product arrives damaged or faulty, or is not what you ordered. Tell us within ${returnWindowDays} days of delivery on ${site.phone}. Approved refunds are completed within ${refundTimeline}. Our Return & Refund Policy has the full details.`,
       },
       {
         id: "damaged",

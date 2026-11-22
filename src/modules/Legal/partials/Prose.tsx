@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { ProductBreadcrumb } from "@/modules/ProductDetails";
 import { formatDate } from "@/shared/libs/admin/format";
 import type { Block, ProsePage } from "../config/types";
@@ -10,6 +11,18 @@ function Blocks({ blocks }: { blocks: Block[] }) {
           return (
             <p key={index} className="mt-3 text-ink-muted">
               {block.text}
+            </p>
+          );
+        }
+
+        if (block.kind === "link") {
+          return (
+            <p key={index} className="mt-3 text-ink-muted">
+              {block.before}
+              <Link href={block.href} className="font-medium text-tertiary underline">
+                {block.label}
+              </Link>
+              {block.after}
             </p>
           );
         }

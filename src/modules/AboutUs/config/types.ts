@@ -18,6 +18,11 @@ export type AboutData = {
     claims: TrustClaim[];
   };
   commitment: AboutSection;
+  company: {
+    title: string;
+    intro: string;
+    rows: { label: string; value: string }[];
+  };
   faq: {
     title: string;
     items: FaqItem[];

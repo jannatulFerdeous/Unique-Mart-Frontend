@@ -17,6 +17,18 @@ export const site = {
   hours: "Every day, 10am to 9pm",
 } as const;
 
+// From the trade license; SSLCommerz asks for these on the site (footer and
+// About Us). Personal details on the license (NID, parents, home address) stay off.
+export const company = {
+  legalName: site.name,
+  tradeLicense: "GUP-20260927-3056",
+  licenseIssuer: "4 No. Gangachara Union Parishad, Gangachara, Rangpur",
+  licenseValidUntil: "30 June 2027",
+  registeredAddress: site.address,
+  businessType: "Mobile phone and electronics sales",
+  management: [{ name: "Md. Shadhin Mia", role: "Proprietor" }],
+} as const;
+
 export const telHref = `tel:${site.phoneIntl}`;
 export const mailHref = `mailto:${site.email}`;
 

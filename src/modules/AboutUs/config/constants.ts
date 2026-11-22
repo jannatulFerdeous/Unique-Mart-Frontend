@@ -1,6 +1,6 @@
 import { brandsPath } from "@/shared/config/brands";
 import { faqPath, featuredFaqs } from "@/shared/config/faq";
-import { mailHref, site, telHref } from "@/shared/config/site";
+import { company, mailHref, site, telHref } from "@/shared/config/site";
 import { trustClaims } from "@/shared/config/trust";
 import type { AboutData } from "./types";
 
@@ -31,6 +31,22 @@ export const about_data: AboutData = {
     paragraphs: [
       "Clear information, genuine products, and an answer when you need one. We would rather talk you out of the wrong purchase than process the return a week later.",
       "We are new, and we would rather earn the benefit of the doubt than assume it. As the catalogue grows the standard does not move: if we cannot source something properly, we do not list it.",
+    ],
+  },
+
+  company: {
+    title: "Company information",
+    intro: `${site.name} is a licensed business registered with the ${company.licenseIssuer.split(",")[0]}.`,
+    rows: [
+      { label: "Business name", value: company.legalName },
+      { label: "Trade License No.", value: company.tradeLicense },
+      { label: "Issued by", value: company.licenseIssuer },
+      { label: "Valid until", value: company.licenseValidUntil },
+      { label: "Registered address", value: company.registeredAddress },
+      { label: "Nature of business", value: company.businessType },
+      ...company.management.map((person) => ({ label: person.role, value: person.name })),
+      { label: "Phone", value: site.phone },
+      { label: "Email", value: site.email },
     ],
   },
 
