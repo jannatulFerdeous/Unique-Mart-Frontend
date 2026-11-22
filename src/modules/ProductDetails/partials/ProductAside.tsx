@@ -4,6 +4,7 @@ import { Star } from "lucide-react";
 import type { Product } from "@/shared/config/catalog";
 import { productHref } from "@/shared/libs/storefront/catalog";
 import { trustClaims } from "@/shared/config/trust";
+import { USED_PRICE_LABEL } from "@/shared/config/used";
 import { formatPrice } from "@/shared/utils/price";
 import { product_details_data } from "../config/constants";
 
@@ -60,9 +61,9 @@ export function ProductAside({ similar }: Props) {
 
                     <p className="mt-1 flex flex-wrap items-baseline gap-x-2">
                       <span className="text-sm font-bold text-tertiary">
-                        {formatPrice(product.price)}
+                        {product.used ? USED_PRICE_LABEL : formatPrice(product.price)}
                       </span>
-                      {product.compareAt ? (
+                      {product.compareAt && !product.used ? (
                         <s className="text-xs text-ink-subtle">
                           {formatPrice(product.compareAt)}
                         </s>

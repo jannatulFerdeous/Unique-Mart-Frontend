@@ -4,6 +4,7 @@ import { Star } from "lucide-react";
 import { WishlistButton } from "@/common/components/WishlistButton";
 import type { Product } from "@/shared/config/catalog";
 import { cn } from "@/shared/utils/cn";
+import { USED_PRICE_LABEL } from "@/shared/config/used";
 import { formatPrice } from "@/shared/utils/price";
 
 type Props = {
@@ -53,16 +54,20 @@ export function ProductCard({ product, ribbon }: Props) {
           </Link>
         </h3>
 
-        <p className="mt-2 flex flex-wrap items-baseline justify-center gap-x-2 gap-y-0.5">
-          <span className="text-[0.9rem] font-bold text-tertiary md:text-base">
-            {formatPrice(price)}
-          </span>
-          {compareAt ? (
-            <s className="text-[0.625rem] text-ink-subtle md:text-xs">
-              {formatPrice(compareAt)}
-            </s>
-          ) : null}
-        </p>
+        {used ? (
+          <p className="mt-2 text-[0.9rem] font-bold text-tertiary md:text-base">{USED_PRICE_LABEL}</p>
+        ) : (
+          <p className="mt-2 flex flex-wrap items-baseline justify-center gap-x-2 gap-y-0.5">
+            <span className="text-[0.9rem] font-bold text-tertiary md:text-base">
+              {formatPrice(price)}
+            </span>
+            {compareAt ? (
+              <s className="text-[0.625rem] text-ink-subtle md:text-xs">
+                {formatPrice(compareAt)}
+              </s>
+            ) : null}
+          </p>
+        )}
 
         {rating ? (
           <p className="mt-2 flex items-center justify-center gap-1 text-ink-muted">

@@ -22,7 +22,8 @@ type Props = {
 
 export function Category({ name, slug, trail, items, childLinks, facetGroups, heading }: Props) {
   const { emptyTitle, emptyBody } = category_data;
-  const products: Product[] = items.map((item) => item.product);
+  // Used items have no public price, so they stay out of "from" and the price list.
+  const products: Product[] = items.map((item) => item.product).filter((product) => !product.used);
   const from = products.length
     ? Math.min(...products.map((product) => product.price))
     : null;

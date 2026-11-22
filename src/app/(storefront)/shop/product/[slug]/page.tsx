@@ -16,9 +16,12 @@ export async function generateMetadata({
   const product = await getProduct(slug);
   if (!product) return {};
 
+  const catalog = await getCatalog();
   return {
     title: product.name,
-    description: `${product.name} price in Bangladesh — ${formatPrice(product.price - product.discount)} at Unique & Smart. Official product, nationwide delivery.`,
+    description: toCard(catalog, product).used
+      ? `${product.name} at Unique & Smart. Call or WhatsApp us for the price.`
+      : `${product.name} price in Bangladesh — ${formatPrice(product.price - product.discount)} at Unique & Smart. Official product, nationwide delivery.`,
   };
 }
 
