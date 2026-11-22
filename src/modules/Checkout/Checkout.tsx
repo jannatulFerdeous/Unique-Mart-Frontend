@@ -20,6 +20,7 @@ import type { PaymentMethod } from "@/redux/features/payment/payment.types";
 
 // TEMP: was PAYMENT_METHODS (["sslcommerz", "cod"]).
 const CHECKOUT_METHODS: readonly PaymentMethod[] = ["cod"];
+import { legalPaths } from "@/shared/config/legal";
 import { deliveryChargeFor } from "@/shared/config/shipping";
 import { useCart, type CartLine } from "@/shared/libs/cart";
 import { goToPayment, openPaymentWindow, usePaymentPopup } from "@/shared/libs/paymentPopup";
@@ -106,6 +107,8 @@ function CheckoutForm({
   const [coupon, setCoupon] = useState<AppliedCoupon | null>(null);
   const [failure, setFailure] = useState<string | null>(null);
   const [leaving, setLeaving] = useState(false);
+  // The policy agreement: starts unticked and the shopper must tick it (SSLCommerz rule).
+  const [agreed, setAgreed] = useState(false);
   // An order that went in but whose payment couldn't be started.
   const [unpaid, setUnpaid] = useState<{ orderId: string; reason: string } | null>(null);
   const [createOrder] = useCreateOrderMutation();
@@ -119,7 +122,7 @@ function CheckoutForm({
   // Places the order (the backend empties the cart). Cash on delivery goes
   // straight to the order; full payment hands over to SSLCommerz in a pop-up.
   const place = async () => {
-    if (!selected) return;
+    if (!selected || !agreed) return;
     setFailure(null);
     setLeaving(true);
     // Opened now, during the click, or the browser blocks it.
@@ -334,14 +337,32 @@ function CheckoutForm({
           discount={coupon}
           coupon={COUPONS_AT_CHECKOUT && <CouponBox lines={lines} applied={coupon} onApplied={setCoupon} />}
           action={
-            <button
-              type="button"
-              onClick={place}
-              disabled={!selected || adding || leaving}
-              className="mt-5 w-full rounded-control bg-tertiary px-6 py-3.5 font-bold text-tertiary-contrast transition-colors hover:bg-tertiary-hover disabled:pointer-events-none disabled:opacity-50"
-            >
-              {leaving ? copy.methods[method].placing : copy.methods[method].place}
-            </button>
+            <>
+              <label className="mt-5 flex cursor-pointer items-start gap-2.5 text-sm text-ink-muted">
+                <input
+                  type="checkbox"
+                  checked={agreed}
+                  onChange={(event) => setAgreed(event.target.checked)}
+                  required
+                  className="mt-0.5 size-4 shrink-0 accent-tertiary"
+                />
+                <span>
+                  {copy.agreeBefore}
+                  <PolicyLink href={legalPaths.terms}>{copy.agreeTerms}</PolicyLink>,{" "}
+                  <PolicyLink href={legalPaths.privacy}>{copy.agreePrivacy}</PolicyLink> and{" "}
+                  <PolicyLink href={legalPaths.refund}>{copy.agreeRefund}</PolicyLink>.
+                </span>
+              </label>
+              <button
+                type="button"
+                onClick={place}
+                disabled={!selected || adding || leaving || !agreed}
+                className="mt-4 w-full rounded-control bg-tertiary px-6 py-3.5 font-bold text-tertiary-contrast transition-colors hover:bg-tertiary-hover disabled:pointer-events-none disabled:opacity-50"
+              >
+                {leaving ? copy.methods[method].placing : copy.methods[method].place}
+              </button>
+              {!agreed && selected && !adding && <p className="mt-2 text-xs text-ink-muted">{copy.agreeNeeded}</p>}
+            </>
           }
         />
         {!selected && !adding && <p className="mt-3 text-sm text-ink-muted">{copy.needAddress}</p>}
@@ -352,5 +373,14 @@ function CheckoutForm({
         )}
       </div>
     </div>
+  );
+}
+
+// Opens in a new tab so the checkout (address, coupon, tick) isn't lost.
+function PolicyLink({ href, children }: { href: string; children: React.ReactNode }) {
+  return (
+    <Link href={href} target="_blank" rel="noopener noreferrer" className="font-medium text-tertiary underline">
+      {children}
+    </Link>
   );
 }

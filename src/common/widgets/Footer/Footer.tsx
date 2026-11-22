@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import logoLight from "@/images/brand/logo-light.png";
 import { footerColumns } from "@/shared/config/footer";
-import { site } from "@/shared/config/site";
+import { company, site } from "@/shared/config/site";
 import { CallButton } from "./components/CallButton";
 import { FooterColumn } from "./components/FooterColumn";
 import { Newsletter } from "./components/Newsletter";
@@ -35,10 +35,16 @@ export function Footer() {
             <Image src={logoLight} alt="" sizes="120px" className="h-10 w-auto lg:h-12" />
           </Link>
 
-          <p className="text-center font-medium">
-            Copyright @ {new Date().getFullYear()} {site.name}. All rights
-            reserved.
-          </p>
+          <div className="text-center md:text-right">
+            <p className="font-medium">
+              Copyright @ {new Date().getFullYear()} {site.name}. All rights
+              reserved.
+            </p>
+            {/* SSLCommerz requires the trade license number and registered address here. */}
+            <p className="mt-1 text-sm text-ink-inverse-muted">
+              Trade License No. {company.tradeLicense} · Registered address: {company.registeredAddress}
+            </p>
+          </div>
         </div>
       </div>
     </footer>

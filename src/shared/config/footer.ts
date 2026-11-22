@@ -4,6 +4,7 @@ import { InstagramIcon } from "@/common/components/icons/InstagramIcon";
 import { TiktokIcon } from "@/common/components/icons/TiktokIcon";
 import { brandsPath } from "./brands";
 import { faqPath } from "./faq";
+import { legalPaths } from "./legal";
 import type { NavItem } from "./navigation";
 
 export type FooterColumn = {
@@ -24,14 +25,16 @@ export const footerColumns: FooterColumn[] = [
     title: "Help",
     items: [
       { label: "FAQ", href: faqPath },
-      { label: "Terms & Conditions", href: "/terms" },
+      { label: "Contact & Store", href: "/store-locator" },
     ],
   },
   {
     title: "Policy",
     items: [
-      { label: "Privacy Policy", href: "/privacy" },
-      { label: "Cookie Policy", href: "/cookies" },
+      { label: "Terms & Conditions", href: legalPaths.terms },
+      { label: "Return & Refund Policy", href: legalPaths.refund },
+      { label: "Privacy Policy", href: legalPaths.privacy },
+      { label: "Cookie Policy", href: legalPaths.cookies },
     ],
   },
 ];
