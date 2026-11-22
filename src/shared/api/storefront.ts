@@ -16,11 +16,14 @@ const REVALIDATE_SECONDS = 300;
 // Next's 2 MB per-fetch cache limit as the catalogue grows.
 const PAGE_SIZE = 200;
 
-// Only what cards, listings and filters need; the product page fetches the rest.
+// Only what cards and listings need; the product page fetches the rest.
+// `attributes` (the spec sheet) is left out: it tripled every page's size and
+// slowed builds past Next's 60s page limit. Listings only use it for shop
+// filters, and only used iPhones carry a filterable one (see usedAttributes).
 const LIST_FIELDS = [
   "name", "slug", "brandId", "mainCategoryId", "categoryId", "subCategoryId", "images",
   "price", "discount", "stock", "isFeatured", "isExclusive", "isUpcoming", "salesCount",
-  "status", "createdAt", "hasVariants", "variants", "attributes",
+  "status", "createdAt", "hasVariants", "variants",
 ].join(",");
 
 type ListBody<T> = ApiResponse<T[] | { data: T[]; meta: ApiMeta }>;
@@ -68,17 +71,28 @@ const allProducts = async (): Promise<ApiProduct[]> => {
   }
 };
 
+// The spec attributes of used items (named "... (Used)"), whose Storage and
+// Colour feed the 2nd Hand filters. A few dozen products, so one small request.
+const usedAttributes = async (): Promise<Map<string, ApiProduct["attributes"]>> => {
+  const items = await list<Pick<ApiProduct, "_id" | "attributes">>(
+    `/products?searchTerm=${encodeURIComponent("(Used)")}&limit=1000&fields=attributes`,
+  );
+  return new Map(items.map((item) => [item._id, item.attributes]));
+};
+
 // Everything listings need, once per request. When the backend can't be
 // reached the shop renders empty states rather than failing.
 export const getCatalog = cache(async (): Promise<Catalog> => {
-  const [products, brands, mains, categories, subs, attributes] = await Promise.all([
+  const [listed, used, brands, mains, categories, subs, attributes] = await Promise.all([
     allProducts(),
+    usedAttributes(),
     list<Brand>("/brands?status=active&limit=1000"),
     list<MainCategory>("/main-categories?status=active&limit=1000"),
     list<Category>("/categories?status=active&limit=1000"),
     list<SubCategory>("/sub-categories?status=active&limit=1000"),
     list<Attribute>("/attributes?status=active&limit=1000"),
   ]);
+  const products = listed.map((product) => (used.has(product._id) ? { ...product, attributes: used.get(product._id) } : product));
   return buildCatalog({ products, brands, mains, categories, subs, attributes });
 });
 

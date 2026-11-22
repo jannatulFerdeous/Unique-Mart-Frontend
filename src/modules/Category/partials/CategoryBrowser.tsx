@@ -30,10 +30,14 @@ export function CategoryBrowser({ name, items, facetGroups, childLabels }: Props
     pageSize, previous, next, filtersToggle, groups: labels,
   } = category_data;
 
+  // Used items have no public price: they set no bounds, pass the price filter
+  // and sort last. With only used items there is no price filter or price sort.
   const bounds = useMemo(() => {
-    const prices = items.map((item) => item.product.price);
-    return { min: Math.min(...prices), max: Math.max(...prices) };
+    const prices = items.filter((item) => !item.product.used).map((item) => item.product.price);
+    return prices.length ? { min: Math.min(...prices), max: Math.max(...prices) } : { min: 0, max: 0 };
   }, [items]);
+  const priced = items.some((item) => !item.product.used);
+  const sortOptions = priced ? sorts : sorts.filter((option) => !option.id.startsWith("price"));
 
   const [price, setPrice] = useState(bounds);
   const [selected, setSelected] = useState<Record<string, string[]>>(EMPTY);
@@ -125,7 +129,7 @@ export function CategoryBrowser({ name, items, facetGroups, childLabels }: Props
 
   const filtered = useMemo(() => {
     const matched = items.filter((item) => {
-      if (item.product.price < price.min || item.product.price > price.max) {
+      if (!item.product.used && (item.product.price < price.min || item.product.price > price.max)) {
         return false;
       }
 
@@ -139,8 +143,9 @@ export function CategoryBrowser({ name, items, facetGroups, childLabels }: Props
     });
 
     const sorted = [...matched];
-    if (sort === "price-asc") sorted.sort((a, b) => a.product.price - b.product.price);
-    if (sort === "price-desc") sorted.sort((a, b) => b.product.price - a.product.price);
+    const last = (item: ListingProduct) => (item.product.used ? 1 : 0);
+    if (sort === "price-asc") sorted.sort((a, b) => last(a) - last(b) || a.product.price - b.product.price);
+    if (sort === "price-desc") sorted.sort((a, b) => last(a) - last(b) || b.product.price - a.product.price);
     if (sort === "name") sorted.sort((a, b) => a.product.name.localeCompare(b.product.name));
     return sorted;
   }, [items, price, selected, sort, live]);
@@ -194,7 +199,7 @@ export function CategoryBrowser({ name, items, facetGroups, childLabels }: Props
 
             <SortMenu
               label={sortLabel}
-              options={sorts}
+              options={sortOptions}
               value={sort}
               onChange={(id) => {
                 setSort(id);

@@ -6,7 +6,7 @@ import { Trash2 } from "lucide-react";
 import { apiErrorMessage } from "@/redux/api/errors";
 import { useAddToCartMutation } from "@/redux/features/cart/cartApi";
 import { useRemoveFromWishlistMutation, type WishlistEntry } from "@/redux/features/wishlist/wishlistApi";
-import { isUsedProduct } from "@/shared/config/used";
+import { USED_PRICE_LABEL, isUsedProduct } from "@/shared/config/used";
 import { productHref, productImage, variantChoices } from "@/shared/libs/storefront/catalog";
 import { toast } from "@/shared/libs/toast";
 import { formatPrice } from "@/shared/utils/price";
@@ -94,8 +94,14 @@ export function WishlistRow({ entry }: { entry: WishlistEntry }) {
       </div>
 
       <p className="flex flex-wrap items-baseline gap-x-2 text-right">
-        <span className="font-bold text-tertiary">{formatPrice(Math.max(0, priced.price - discount))}</span>
-        {discount > 0 ? <s className="text-sm text-ink-subtle">{formatPrice(priced.price)}</s> : null}
+        {isUsedProduct(product.name) ? (
+          <span className="font-bold text-tertiary">{USED_PRICE_LABEL}</span>
+        ) : (
+          <>
+            <span className="font-bold text-tertiary">{formatPrice(Math.max(0, priced.price - discount))}</span>
+            {discount > 0 ? <s className="text-sm text-ink-subtle">{formatPrice(priced.price)}</s> : null}
+          </>
+        )}
       </p>
 
       {/* Used items aren't sold online: their page has the call/WhatsApp options. */}

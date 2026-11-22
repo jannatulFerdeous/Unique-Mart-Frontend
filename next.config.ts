@@ -1,6 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Pages are pre-built at deploy time with the whole catalogue (thousands of
+  // products, fetched page by page); a slow API can pass the default 60s.
+  staticPageGenerationTimeout: 180,
   turbopack: {
     root: import.meta.dirname,
   },

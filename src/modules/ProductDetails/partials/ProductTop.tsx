@@ -155,14 +155,17 @@ export function ProductTop({ product, detail }: Props) {
           ) : null}
         </div>
 
-        <p className="mt-4 flex flex-wrap items-baseline gap-3">
-          <span className="text-2xl font-bold text-tertiary md:text-3xl">
-            {formatPrice(price)}
-          </span>
-          {compareAt ? (
-            <s className="text-ink-subtle">{formatPrice(compareAt)}</s>
-          ) : null}
-        </p>
+        {/* Used items show no price: shoppers call or WhatsApp for it. */}
+        {!product.used && (
+          <p className="mt-4 flex flex-wrap items-baseline gap-3">
+            <span className="text-2xl font-bold text-tertiary md:text-3xl">
+              {formatPrice(price)}
+            </span>
+            {compareAt ? (
+              <s className="text-ink-subtle">{formatPrice(compareAt)}</s>
+            ) : null}
+          </p>
+        )}
 
         {detail?.highlights?.length ? (
           <ul className="mt-5 list-disc space-y-1 pl-5 text-ink-muted marker:text-line-strong">

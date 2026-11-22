@@ -1,3 +1,7 @@
+import { legalPaths, refundTimeline, returnWindowDays } from "@/shared/config/legal";
+import { deliveryChargeSummary } from "@/shared/config/shipping";
+import { site } from "@/shared/config/site";
+
 // The coupon list at checkout. Set false to hide it.
 export const COUPONS_AT_CHECKOUT = true;
 
@@ -40,7 +44,6 @@ export const checkout_data = {
   agreeTerms: "Terms & Conditions",
   agreePrivacy: "Privacy Policy",
   agreeRefund: "Return & Refund Policy",
-  agreeNeeded: "Tick the box to agree to our policies before placing your order.",
 
   paymentHeading: "Payment",
   methods: {
@@ -67,4 +70,56 @@ export const checkout_data = {
   unpaidFallback: "Couldn't start the payment.",
   showWindow: "Show the payment window",
   viewOrder: "Go to my order",
+} as const;
+
+// The agreement shown when the shopper presses Place order. Short versions of
+// each policy; the full pages are linked. The box starts unticked (SSLCommerz rule).
+export const agreement = {
+  title: "Before you place your order",
+  intro: "Please read this short summary of our policies. The full versions are linked below.",
+  sections: [
+    {
+      heading: "Returns & refunds",
+      href: legalPaths.refund,
+      link: "Read the full Return & Refund Policy",
+      points: [
+        `Report a damaged, faulty or wrong item within ${returnWindowDays} days of delivery.`,
+        "Return it unused, in its original packaging, with all accessories and the invoice.",
+        `Approved refunds are completed within ${refundTimeline}, to the payment method you used.`,
+        "You can cancel from your account until the order is shipped.",
+      ],
+    },
+    {
+      heading: "Delivery",
+      points: [
+        "We deliver anywhere in Bangladesh.",
+        `Delivery charge: ${deliveryChargeSummary}. It is shown in your order summary.`,
+      ],
+    },
+    {
+      heading: "Terms & conditions",
+      href: legalPaths.terms,
+      link: "Read the full Terms & Conditions",
+      points: [
+        "You are responsible for orders placed from your account, so keep your details correct.",
+        "The price that applies is the one shown when you place the order.",
+        "Warranty is given by the manufacturer on its own terms. Keep your invoice for claims.",
+      ],
+    },
+    {
+      heading: "Privacy",
+      href: legalPaths.privacy,
+      link: "Read the full Privacy Policy",
+      points: [
+        "We use your name, phone and address only to process and deliver your order and to contact you about it.",
+        "Online payments go through SSLCOMMERZ. We never see or store your card or mobile banking details.",
+        "We do not sell your information.",
+      ],
+    },
+  ],
+  contact: `Questions? Call ${site.phone} or email ${site.email}.`,
+  confirm: "Agree & place order",
+  cancel: "Cancel",
+  close: "Close",
+  tickFirst: "Tick the box above to continue.",
 } as const;

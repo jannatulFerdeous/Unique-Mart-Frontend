@@ -8,6 +8,7 @@ import {
   findNode,
   findNodeBySlug,
   productsUnder,
+  toCard,
   toListing,
 } from "@/shared/libs/storefront/catalog";
 import { formatPrice } from "@/shared/utils/price";
@@ -25,7 +26,9 @@ export async function generateMetadata({
   const { catalog, node } = await nodeFor(path);
   if (!node) return {};
 
-  const prices = productsUnder(catalog, node).map((each) => each.price - each.discount);
+  const prices = productsUnder(catalog, node)
+    .filter((each) => !toCard(catalog, each).used)
+    .map((each) => each.price - each.discount);
   return {
     title: `${node.name} Price in Bangladesh`,
     description: prices.length
