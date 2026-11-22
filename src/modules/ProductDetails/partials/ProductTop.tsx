@@ -123,6 +123,7 @@ export function ProductTop({ product, detail }: Props) {
         name={product.name}
         active={image}
         onSelect={setImage}
+        fit={product.used ? "cover" : "contain"}
       />
 
       <div>
@@ -279,33 +280,41 @@ export function ProductTop({ product, detail }: Props) {
         })}
 
         {product.used ? (
-          <div className="mt-7 border border-tertiary bg-tertiary-soft p-5">
-            <p className="font-bold text-ink">{labels.usedTitle}</p>
-            <p className="mt-1 text-ink-muted">{labels.usedBody.replace("{phone}", site.phone)}</p>
-            <div className="mt-4 flex flex-col gap-3 sm:flex-row">
-              <a
-                href={telHref}
-                className="flex flex-1 items-center justify-center gap-2 rounded-control bg-tertiary px-6 py-3.5 font-bold whitespace-nowrap text-tertiary-contrast transition-colors hover:bg-tertiary-hover"
-              >
-                <PhoneIcon className="size-5" />
-                {labels.callToBuy.replace("{phone}", site.phone)}
-              </a>
-              <a
-                href={whatsappHref(
-                  labels.whatsappMessage
-                    .replace("{name}", product.name)
-                    .replace("{url}", `${site.url}${productHref(product.slug)}`),
-                )}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex flex-1 items-center justify-center gap-2 rounded-control bg-surface-muted px-6 py-3.5 font-bold whitespace-nowrap text-ink transition-colors hover:bg-line"
-              >
-                <WhatsappIcon className="size-5" />
-                {labels.whatsappToBuy}
-              </a>
-              <WishlistButton variant="inline" productId={product.id} variantId={chosen?.id} name={product.name} />
+          <>
+            <div className="mt-7 border border-tertiary bg-tertiary-soft p-5">
+              <p className="font-bold text-ink">{labels.usedTitle}</p>
+              <p className="mt-1 text-ink-muted">{labels.usedBody.replace("{phone}", site.phone)}</p>
+              <div className="mt-4 flex flex-wrap gap-3">
+                <a
+                  href={telHref}
+                  className="flex flex-[1_1_auto] items-center justify-center gap-2 rounded-control bg-tertiary px-6 py-3.5 font-bold whitespace-nowrap text-tertiary-contrast transition-colors hover:bg-tertiary-hover"
+                >
+                  <PhoneIcon className="size-5" />
+                  {labels.callToBuy.replace("{phone}", site.phone)}
+                </a>
+                <a
+                  href={whatsappHref(
+                    labels.whatsappMessage
+                      .replace("{name}", product.name)
+                      .replace("{url}", `${site.url}${productHref(product.slug)}`),
+                  )}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex flex-[1_1_auto] items-center justify-center gap-2 rounded-control bg-surface-muted px-6 py-3.5 font-bold whitespace-nowrap text-ink transition-colors hover:bg-line"
+                >
+                  <WhatsappIcon className="size-5" />
+                  {labels.whatsappToBuy}
+                </a>
+              </div>
             </div>
-          </div>
+            <WishlistButton
+              variant="inline"
+              productId={product.id}
+              variantId={chosen?.id}
+              name={product.name}
+              className="mt-3"
+            />
+          </>
         ) : (
           <>
           <div className="mt-7 grid gap-3 sm:grid-cols-2">
